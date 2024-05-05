@@ -9,11 +9,10 @@ function Navbar() {
                 <p class="text-center">Log in</p>
                 <div class="mb-4 w-6/12 flex">
                     <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                    <input type="text" id="username" name="username" class="shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                </div>
+                    <input type="text" id="username" name="username" class="shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></input>                </div>
                 <div class="mb-6 w-6/12 flex">
                     <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                    <input type="password" id="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <input type="password" id="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></input>
                 </div>
                 <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-0.5 px-4 border border-blue-500 hover:border-transparent rounded">
                     Forgot Password
