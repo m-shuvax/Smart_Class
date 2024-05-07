@@ -1,17 +1,25 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import {LoginNavbar} from './features/Navbar';
-import { RegistrationPage } from './pages/RegistrationPage'; // Import the new component
-import LoginPage from './pages/LoginPage';
-
+import { useState } from 'react';
+import Navbar from './features/Navbar';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import AboutPage from './pages/AboutPage';
+import LoginPage  from './pages/LoginPage';
+import RegistrationPage  from './pages/RegistrationPage';
+import HomePageStudent  from './pages/HomePageStudent';
+import HomePageInstructor  from './pages/HomePageInstructor';
 function App() {
   return (
-    <BrowserRouter>
-      <LoginNavbar />
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/register" element={<RegistrationPage />} /> {/* Add the new route */}
-      </Routes>
-    </BrowserRouter>
+    <Router>
+      <div>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/HomePage" element={<HomePageStudent />} />
+          <Route path="/HomePageInstructor" element={<HomePageInstructor />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

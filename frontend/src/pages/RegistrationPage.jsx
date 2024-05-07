@@ -90,12 +90,12 @@ const RegistrationPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className={`w-full px-4 py-2 border ${
-                isPasswordValid() ? 'border-green-500' : 'border-red-500'
+                isPasswordValid() ? 'border-green-500' : 'border-500'
               } rounded-md`}
               required
             />
             {!isPasswordValid() && (
-              <p className="text-red-500 text-sm">
+              <p className="text-blue-500 text-sm">
                 Password must contain at least one uppercase letter, one lowercase letter, and be at least 8
                 characters long.
               </p>

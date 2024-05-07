@@ -21,15 +21,19 @@ const LoginPage = () => {
             />
           </div>
           <Link
-            to="/forgot-password"
+            to="/HomePageInstructor"
             className="text-sm text-gray-600 hover:text-gray-800 mb-6 inline-block"
           >
             Forgot Password?
-          </Link>
+          </Link >
           <div className="flex justify-center">
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">
-              Log In
-            </button>
+            <div>
+                <Link to="/HomePage">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">
+                    Log In
+                  </button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
