@@ -1,38 +1,77 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 
-class ClassPageStudent extends React.Component {
+class ClassPageStudent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      category: 'allFiles', // Set default category
+      category: 'assignments', // Set default category
       filesByCategory: {
-        allFiles: [
-          { name: 'File1.pdf', date: '2024-05-10', category: 'allFiles' },
-          { name: 'File2.docx', date: '2024-05-12', category: 'allFiles' },
-          { name: 'File3.jpg', date: '2024-05-14', category: 'allFiles' },
+        lessonSummaries: [
           { name: 'Summary1.pdf', date: '2024-05-15', category: 'lessonSummaries' },
           { name: 'Summary2.docx', date: '2024-05-17', category: 'lessonSummaries' },
           { name: 'Summary3.jpg', date: '2024-05-19', category: 'lessonSummaries' },
+        ],
+        studyMaterials: [
           { name: 'Material1.pdf', date: '2024-05-20', category: 'studyMaterials' },
           { name: 'Material2.docx', date: '2024-05-22', category: 'studyMaterials' },
           { name: 'Material3.jpg', date: '2024-05-24', category: 'studyMaterials' },
+        ],
+        assignments: [
           { name: 'Assignment1.pdf', date: '2024-05-25', category: 'assignments' },
           { name: 'Assignment2.docx', date: '2024-05-27', category: 'assignments' },
           { name: 'Assignment3.jpg', date: '2024-05-29', category: 'assignments' },
         ],
+        liveStreams: [
+            { name: 'Lesson 1', date: '2024-05-25', category: 'liveStreams' },
+            { name: 'Lesson 2', date: '2024-05-27', category: 'liveStreams' },
+            { name: 'Lesson 3', date: '2024-05-29', category: 'liveStreams' },
+       
+            // Add more live streams here
+          ],
+        
         // ... You can add more categories and files here
       },
+      filteredFiles: [],
+      liveStreams: [
+        { name: 'Lesson 1', date: '2024-05-10' },
+        { name: 'Lesson 2', date: '2024-05-12' },
+        { name: 'Lesson 3', date: '2024-05-14' },
+        // Add more live streams here
+      ],
+      showLiveStreams: false
       // ... other state properties
     };
   }
 
   handleCategoryChange = (newCategory) => {
-    this.setState({ category: newCategory });
+    const { filesByCategory } = this.state;
+    this.setState({
+      category: newCategory,
+      filteredFiles: filesByCategory[newCategory] || [],
+      showLiveStreams: false // Hide live streams when changing category
+    });
+  };
+
+  handleAllFilesClick = () => {
+    const { filesByCategory } = this.state;
+    const allFilesArray = Object.values(filesByCategory)
+      .filter(category => category !== filesByCategory.liveStreams)
+      .flat();
+    const sortedFiles = allFilesArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+    this.setState({ category: 'allFiles', filteredFiles: sortedFiles, showLiveStreams: false });
+  };
+  
+
+  handleLiveStreamsClick = () => {
+    this.setState({ showLiveStreams: true, category: null });
+  };
+
+  handleReplayClick = () => {
+    this.setState({ showLiveStreams: true, category: null });
   };
 
   render() {
-    const { category, filesByCategory } = this.state;
-    const filteredFiles = filesByCategory[category] || [];
+    const { category, filesByCategory, filteredFiles, liveStreams, showLiveStreams } = this.state;
 
     return (
       <div className="flex flex-col min-h-screen">
@@ -43,7 +82,7 @@ class ClassPageStudent extends React.Component {
             <div className="flex flex-row justify-between mb-4">
               <button
                 className={`inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md mr-2 ${category === 'allFiles' ? 'bg-blue-600' : ''}`}
-                onClick={() => this.handleCategoryChange('allFiles')}
+                onClick={this.handleAllFilesClick}
               >
                 All Files
               </button>
@@ -60,13 +99,13 @@ class ClassPageStudent extends React.Component {
                 Study Materials
               </button>
               <button
-  className={`inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md mr-2 ${category === 'assignments' ? 'bg-blue-600' : ''}`}
-  onClick={() => this.handleCategoryChange('assignments')}
->
-  Assignments
-</button>
+                className={`inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md mr-2 ${category === 'assignments' ? 'bg-blue-600' : ''}`}
+                onClick={() => this.handleCategoryChange('assignments')}
+              >
+                Assignments
+              </button>
               {/* YouTube Button */}
-              <button className="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-md mr-2">
+              <button className="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-md mr-2" onClick={() => window.open('https://www.youtube.com/watch?v=MACPJ88N0XU')}>
                 <svg
                   className="h-4 w-4 mr-2"
                   viewBox="0 0 20 20"
@@ -78,8 +117,9 @@ class ClassPageStudent extends React.Component {
                 </svg>
                 YouTube
               </button>
+
               {/* Replay Button */}
-              <button className="inline-flex items-center px-4 py-2 bg-gray-500 text-white rounded-md">
+              <button className="inline-flex items-center px-4 py-2 bg-gray-500 text-white rounded-md" onClick={this.handleReplayClick}>
                 <svg
                   className="h-4 w-4 mr-2"
                   viewBox="0 0 20 20"
@@ -96,14 +136,28 @@ class ClassPageStudent extends React.Component {
             </div>
 
             {/* Content Display */}
-            {category && (
-              <div className="flex flex-wrap justify-between w-60%">  {/* Adjusted width to 60% */}
+            {!showLiveStreams && (
+              <div className="flex flex-wrap justify-between w-60%">
                 {filteredFiles.map((file, index) => (
                   <div key={index} className="w-full md:w-1/2 p-2">
                     <div className="bg-pink-500 rounded-md p-4">
                       <div className="flex justify-between">
                         <span className="text-base font-medium">{file.name}</span>
                         <span className="text-gray-500">{file.date}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {showLiveStreams && (
+              <div className="flex flex-wrap justify-between w-60%">
+                {liveStreams.map((stream, index) => (
+                  <div key={index} className="w-full md:w-1/2 p-2">
+                    <div className="bg-pink-500 rounded-md p-4">
+                      <div className="flex justify-between">
+                        <span className="text-base font-medium">{stream.name}</span>
+                        <span className="text-gray-500">{stream.date}</span>
                       </div>
                     </div>
                   </div>
