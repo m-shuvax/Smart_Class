@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 
 const HomePageInstructor = () => {
-  const [classrooms, setClassrooms] = useState(['Math 101', 'English 202', 'History 303', 'Science 404']);
+  const [classrooms, setClassrooms] = useState([
+    { id: '1', name: 'Math 101' },
+    { id: '2', name: 'English 202' },
+    { id: '3', name: 'History 303' },
+    { id: '4', name: 'Science 404' }
+  ]);
   const [showInput, setShowInput] = useState(false);
   const [newClassName, setNewClassName] = useState('');
 
@@ -32,7 +36,7 @@ const HomePageInstructor = () => {
         <div className="grid grid-cols-4 gap-4">
           {classrooms.map((classroom) => (
             <div key={classroom.id} className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300">
-              {classroom.name}
+              {classroom.name} (ID: {classroom.id})
             </div>
           ))}
         </div>

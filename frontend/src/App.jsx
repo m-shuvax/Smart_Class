@@ -6,6 +6,7 @@ import LoginPage  from './pages/LoginPage';
 import RegistrationPage  from './pages/RegistrationPage';
 import HomePageStudent  from './pages/HomePageStudent';
 import HomePageInstructor  from './pages/HomePageInstructor';
+import ClassPageStudent from './pages/classPageStudent'
 function App() {
   return (
     <Router>
@@ -17,6 +18,7 @@ function App() {
           <Route path="/register" element={<RegistrationPage />} />
           <Route path="/HomePage" element={<HomePageStudent />} />
           <Route path="/HomePageInstructor" element={<HomePageInstructor />} />
+          <Route path="/ClassPageStudent" element={<ClassPageStudent />} />
         </Routes>
       </div>
     </Router>
