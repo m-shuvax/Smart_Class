@@ -30,7 +30,7 @@ const HomePageInstructor = () => {
   };
 
   return (
-    <div className="bg-blue-100 min-h-screen p-6 flex">
+    <div className="mt-16 min-h-screen bg-blue-100 p-6 flex">
       <div className="w-3/4">
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-4 gap-4">

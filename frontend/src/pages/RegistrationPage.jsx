@@ -25,14 +25,14 @@ const RegistrationPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="mt-10 min-h-screen bg-gray-100 flex flex-col">
     <Link
       to="/"
       className="mx-auto mt-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
     >
       Back to Login
     </Link>
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="mt-4 min-h-screen bg-gray-100 flex flex-col">
       <div className="w-full max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-6">Registration</h2>
         <form onSubmit={handleSubmit}>
