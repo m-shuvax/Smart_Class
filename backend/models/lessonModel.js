@@ -5,7 +5,7 @@ const lessonSchema = new mongoose.Schema({
         type:String,
         required: true
     }, 
-    Class:{
+    classId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Class',
         required: true

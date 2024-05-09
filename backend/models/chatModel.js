@@ -1,13 +1,13 @@
 const mongoose = require('mongoose')
 
 const chatSchema = new mongoose.Schema({
-    Class: {
-        type: mongoose.Schema.Types.ObjectId,
+    classId: {
+        type: mongoose.Schema.ObjectId,
         ref: 'Class',
         required: true
     }, 
     student: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: 'User'
     },
     cLink:{

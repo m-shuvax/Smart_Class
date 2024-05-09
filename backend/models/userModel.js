@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema({
-   name: {
+    name: {
         type:String,
         required:[true, 'The user must have a name']
     }, 
@@ -20,14 +20,12 @@ const userSchema = new mongoose.Schema({
     role:{
         type: String,
         enum:{
-            values:['admin', 'user','premium'],
-            message: 'The role must be either "admin", "user" or "premium"'
+            values:['admin', 'instructor', 'student'],
+            message: 'The role must be either "admin", "instructor" or "student"'
         },
-        default:'user'
     }
-
 })
-//document middleware - runs b4 actual document is saved in the db "THIS REFERS TO A CURRENT DOCUMENT"
+
 userSchema.pre('save', async function(next){
     if(!this.isModified('password'))
     return next()
@@ -36,18 +34,12 @@ userSchema.pre('save', async function(next){
     this.confirmPassword = undefined
     next()
 })
+
 userSchema.methods.checkPassword = async function(password,hashedPassword){
     const checkPasword = await bcrypt.compare(password, hashedPassword)
     return checkPasword
 }
+
 const User = mongoose.model('User', userSchema)
 
 module.exports = User
-
-// userSchema.pre('save', async function (next) {
-//     if (!this.isModified('password'))
-//         return next()
-//     const salt = await bcrypt.genSalt(12)
-//     this.password = await bcrypt.hash(this.password, salt)
-//     next()
-// })
