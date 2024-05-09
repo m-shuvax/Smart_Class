@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { FaPlay, FaEdit} from 'react-icons/fa';
+import { FaPlay, FaEdit } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 
-class classPageInstructor extends Component {
+class ClassPageInstructor extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -53,14 +53,14 @@ class classPageInstructor extends Component {
     this.setState({
       category: newCategory,
       filteredFiles: filesByCategory[newCategory] || [],
-      showLiveStreams: false // Hide live streams when changing category
+      showLiveStreams: false, // Hide live streams when changing category
     });
   };
 
   handleAllFilesClick = () => {
     const { filesByCategory } = this.state;
     const allFilesArray = Object.values(filesByCategory)
-      .filter(category => category !== filesByCategory.liveStreams)
+      .filter((category) => category !== filesByCategory.liveStreams)
       .flat();
     const sortedFiles = allFilesArray.sort((a, b) => new Date(a.date) - new Date(b.date));
     this.setState({ category: 'allFiles', filteredFiles: sortedFiles, showLiveStreams: false });
@@ -84,15 +84,18 @@ class classPageInstructor extends Component {
     const newFile = { id, name: newFileName, date: newFileDate, category: newFileCategory };
     const updatedFiles = [...filesByCategory[newFileCategory], newFile];
     const updatedFilesByCategory = { ...filesByCategory, [newFileCategory]: updatedFiles };
-    this.setState(prevState => ({
-      filesByCategory: updatedFilesByCategory,
-      isAddingLesson: false,
-      addCounter: prevState.addCounter + 1,
-    }), () => {
-      if (this.state.addCounter >= 7) {
-        this.setState({ addCounter: 0 });
+    this.setState(
+      (prevState) => ({
+        filesByCategory: updatedFilesByCategory,
+        isAddingLesson: false,
+        addCounter: prevState.addCounter + 1,
+      }),
+      () => {
+        if (this.state.addCounter >= 7) {
+          this.setState({ addCounter: 0 });
+        }
       }
-    });
+    );
   };
 
   handleEditLiveBroadcastLink = () => {
@@ -108,10 +111,20 @@ class classPageInstructor extends Component {
 
   handleEditButtonClick = () => {
     this.setState({ isEditingBroadcast: true });
-  }
+  };
 
   render() {
-    const { category, filteredFiles, liveStreams, showLiveStreams, newFileName, newFileDate, editLiveBroadcastLink, isEditingBroadcast, isAddingLesson } = this.state;
+    const {
+      category,
+      filteredFiles,
+      liveStreams,
+      showLiveStreams,
+      newFileName,
+      newFileDate,
+      editLiveBroadcastLink,
+      isEditingBroadcast,
+      isAddingLesson,
+    } = this.state;
     return (
       <div className="flex flex-col min-h-screen bg-blue-100">
         <div className="my-24 container mx-auto px-4 py-8">
@@ -126,16 +139,11 @@ class classPageInstructor extends Component {
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              ></path>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
             </svg>
             Back to Login
           </Link>
-  
+
           <div className="flex flex-row">
             <div className="w-2/3 p-4">
               <div className="flex flex-row justify-between mb-4">
@@ -188,7 +196,12 @@ class classPageInstructor extends Component {
                       <>
                         <button
                           className="w-40 inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-md mr-2 shadow hover:bg-red-700 relative"
-                          onClick={() => window.open(editLiveBroadcastLink || 'https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success')}
+                          onClick={() =>
+                            window.open(
+                              editLiveBroadcastLink ||
+                                'https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success'
+                            )
+                          }
                         >
                           <FaPlay className="h-4 w-4 mr-2" />
                           Live Broadcast
@@ -212,15 +225,17 @@ class classPageInstructor extends Component {
                       </button>
                     </div>
                   </div>
-                  <div className="mt-4">
-                    <button
-                      className="w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700"
-                      onClick={this.handleReplayClick}
-                      style={{ height: 'auto', display: isAddingLesson ? 'none' : 'block' }}
-                    >
-                      <FiMenu className="h-4 w-4 mr-2" /> Replay
-                    </button>
+                  <div>
+                  <button
+                    className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md mr-2 shadow hover:bg-blue-700"
+                    onClick={this.handleReplayClick}
+                  >
+                    <FiMenu className="h-6 w-6 mr-2" />
+                    <span>Replay</span>
+                  </button>
+
                   </div>
+
                   <div className="mt-4">
                     <button
                       className="w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white font-bold py-2 px-4 rounded"
@@ -303,4 +318,4 @@ class classPageInstructor extends Component {
   }
 }
 
-export default classPageInstructor;
+export default ClassPageInstructor;
