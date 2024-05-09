@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 
 const HomePageInstructor = () => {
@@ -35,9 +36,13 @@ const HomePageInstructor = () => {
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-4 gap-4">
           {classrooms.map((classroom) => (
-            <div key={classroom.id} className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300">
+            <Link
+              key={classroom.id}
+              to={`/classPageInstructor`} // Changed to `/classPageInstructor`
+              className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
+            >
               {classroom.name} (ID: {classroom.id})
-            </div>
+            </Link>
           ))}
         </div>
       </div>

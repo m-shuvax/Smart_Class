@@ -212,7 +212,12 @@ const RegistrationPage = () => {
 >
   Register
 </button>
-
+<Link
+      to="/"
+      className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+    >
+      Back to Login
+    </Link>
 </form>
 </div>
 </div>
