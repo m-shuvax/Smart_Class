@@ -6,7 +6,7 @@ const chatSchema = new mongoose.Schema({
         ref: 'Class',
         required: true
     }, 
-    student: {
+    studentId: {
         type: mongoose.Schema.ObjectId,
         ref: 'User'
     },

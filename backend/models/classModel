@@ -9,12 +9,12 @@ const classSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    instructor:{
+    instructorId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    students:[{
+    studentsId:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }]
