@@ -7,12 +7,11 @@ const globalErrorHandler = require('./utils/errorHandler')
 const AppError = require('./utils/AppError')
 
 app.use(cors())
-app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use('/api/users', userRouter )
  
 app.all('*', (req, res, next)=>{
-  return next(new AppError(400, 'This route is not exist'))
+  return next(new AppError(404, 'This route is not exist'))
 })
 app.use(globalErrorHandler)
 
