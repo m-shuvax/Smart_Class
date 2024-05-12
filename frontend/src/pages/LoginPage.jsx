@@ -66,7 +66,7 @@ const LoginPage = () => {
             />
           </div>
           <Link
-            to="/classPageStudent"
+            to="/HomePageInstructor"
             className="text-sm text-gray-600 hover:text-gray-800 mb-6 inline-block"
           >
             Forgot Password?

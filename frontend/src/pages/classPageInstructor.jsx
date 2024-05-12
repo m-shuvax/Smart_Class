@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { FaPlay, FaEdit } from 'react-icons/fa';
+import { FiMenu } from 'react-icons/fi';
 
-class ClassPageStudent extends Component {
+class ClassPageInstructor extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -34,7 +36,15 @@ class ClassPageStudent extends Component {
         { name: 'Lesson 2', date: '2024-05-12' },
         { name: 'Lesson 3', date: '2024-05-14' },
       ],
-      showLiveStreams: false
+      showLiveStreams: false,
+      newFileName: '',
+      newFileCategory: '',
+      newFileDate: '',
+      editLiveBroadcastLink: '',
+      newRecurringBroadcast: '',
+      isEditingBroadcast: false,
+      isAddingLesson: false,
+      addCounter: 0,
     };
   }
 
@@ -43,14 +53,14 @@ class ClassPageStudent extends Component {
     this.setState({
       category: newCategory,
       filteredFiles: filesByCategory[newCategory] || [],
-      showLiveStreams: false // Hide live streams when changing category
+      showLiveStreams: false, // Hide live streams when changing category
     });
   };
 
   handleAllFilesClick = () => {
     const { filesByCategory } = this.state;
     const allFilesArray = Object.values(filesByCategory)
-      .filter(category => category !== filesByCategory.liveStreams)
+      .filter((category) => category !== filesByCategory.liveStreams)
       .flat();
     const sortedFiles = allFilesArray.sort((a, b) => new Date(a.date) - new Date(b.date));
     this.setState({ category: 'allFiles', filteredFiles: sortedFiles, showLiveStreams: false });
@@ -61,17 +71,65 @@ class ClassPageStudent extends Component {
   };
 
   handleReplayClick = () => {
-    this.setState({ showLiveStreams: true, category: null });
+    this.setState({ showLiveStreams: true, category: null, isAddingLesson: false });
+  };
+
+  handleFileInputChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  handleAddFile = () => {
+    const { newFileName, newFileCategory, newFileDate, filesByCategory, addCounter } = this.state;
+    const id = `file-${Date.now()}`;
+    const newFile = { id, name: newFileName, date: newFileDate, category: newFileCategory };
+    const updatedFiles = [...filesByCategory[newFileCategory], newFile];
+    const updatedFilesByCategory = { ...filesByCategory, [newFileCategory]: updatedFiles };
+    this.setState(
+      (prevState) => ({
+        filesByCategory: updatedFilesByCategory,
+        isAddingLesson: false,
+        addCounter: prevState.addCounter + 1,
+      }),
+      () => {
+        if (this.state.addCounter >= 7) {
+          this.setState({ addCounter: 0 });
+        }
+      }
+    );
+  };
+
+  handleEditLiveBroadcastLink = () => {
+    const { editLiveBroadcastLink } = this.state;
+    // Implement logic to handle editing live broadcast link
+    this.setState({ isEditingBroadcast: false });
+  };
+
+  handleAddRecurringBroadcast = () => {
+    const { newRecurringBroadcast } = this.state;
+    // Implement logic to handle adding recurring broadcast
+  };
+
+  handleEditButtonClick = () => {
+    this.setState({ isEditingBroadcast: true });
   };
 
   render() {
-    const { category, filteredFiles, liveStreams, showLiveStreams } = this.state;
-
+    const {
+      category,
+      filteredFiles,
+      liveStreams,
+      showLiveStreams,
+      newFileName,
+      newFileDate,
+      editLiveBroadcastLink,
+      isEditingBroadcast,
+      isAddingLesson,
+    } = this.state;
     return (
       <div className="flex flex-col min-h-screen bg-blue-100">
         <div className="my-24 container mx-auto px-4 py-8">
           <Link
-            to="/HomePageStudent"
+            to="/HomePageInstructor"
             className="fixed top-12 my-10 mx-auto mb-8 bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
           >
             <svg
@@ -81,12 +139,7 @@ class ClassPageStudent extends Component {
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              ></path>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
             </svg>
             Back to Login
           </Link>
@@ -130,39 +183,97 @@ class ClassPageStudent extends Component {
               <div className="flex flex-row">
                 <div className="fixed bottom-10 left-10">
                   <div>
-                    <button
-                      className="w-40 inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-md mr-2 shadow hover:bg-red-700"
-                      onClick={() => window.open('https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success')}
-                    >
-                    <svg className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                        clipRule="evenodd"
+                    {isEditingBroadcast ? (
+                      <input
+                        type="text"
+                        placeholder="Edit Live Broadcast Link"
+                        name="editLiveBroadcastLink"
+                        value={editLiveBroadcastLink}
+                        onChange={this.handleFileInputChange}
+                        className="border border-gray-300 rounded px-3 py-2 w-64 mr-2"
                       />
-                    </svg>
-                    Live Broadcast
-                    </button>
+                    ) : (
+                      <>
+                        <button
+                          className="w-40 inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-md mr-2 shadow hover:bg-red-700 relative"
+                          onClick={() =>
+                            window.open(
+                              editLiveBroadcastLink ||
+                                'https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success'
+                            )
+                          }
+                        >
+                          <FaPlay className="h-4 w-4 mr-2" />
+                          Live Broadcast
+                        </button>
+                      </>
+                    )}
+                    {isEditingBroadcast && (
+                      <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={this.handleEditLiveBroadcastLink}
+                      >
+                        Save
+                      </button>
+                    )}
+                    <div>
+                      <button
+                        className="mt-4 bg-blue-400 hover:bg-blue-600 text-white py-2 px-4 rounded flex items-center"
+                        onClick={this.handleEditButtonClick}
+                      >
+                        <FaEdit className="mr-2" /> Edit
+                      </button>
+                    </div>
                   </div>
-                  <div className='mt-4'>
+                  <div>
+                  <button
+                    className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md mr-2 shadow hover:bg-blue-700"
+                    onClick={this.handleReplayClick}
+                  >
+                    <FiMenu className="h-6 w-6 mr-2" />
+                    <span>Replay</span>
+                  </button>
+
+                  </div>
+
+                  <div className="mt-4">
                     <button
-                        className="w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700"
-                        onClick={this.handleReplayClick}
+                      className="w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                      onClick={() => this.setState({ isAddingLesson: true })}
                     >
-                    <svg
-                      className="h-4 w-4 mr-2"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 8a3 3 0 0 0-3-3v-.5a.5.5 0 0 0-1-1H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-.5a.5.5 0 0 0-1-1zm5 2v8a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1z"
-                      clipRule="evenodd"
-                    />
-                    </svg>
-                    Replay
+                      <FaPlay className="mr-2" />
+                      Add Lesson
                     </button>
+                    {isAddingLesson && (
+                      <div className="mt-4">
+                        <input
+                          type="text"
+                          placeholder="Lesson Name"
+                          name="newFileName"
+                          value={newFileName}
+                          onChange={this.handleFileInputChange}
+                          className="border border-gray-300 rounded px-3 py-2 w-full mr-2 mb-2"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Lesson Link"
+                          name="newFileDate"
+                          value={newFileDate}
+                          onChange={this.handleFileInputChange}
+                          className="border border-gray-300 rounded px-3 py-2 w-full mr-2 mb-2"
+                        />
+                        <button
+                          className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                          onClick={() => {
+                            this.handleAddFile();
+                          }}
+                        >
+                          Add
+                        </button>
+                      </div>
+                    )}
                   </div>
+                </div>
               </div>
               {!showLiveStreams && (
                 <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
@@ -191,19 +302,15 @@ class ClassPageStudent extends Component {
                         <span className="text-gray-500">{stream.date}</span>
                       </div>
                     </div>
-                    
                   ))}
                 </div>
-                
               )}
-              </div>
             </div>
             <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
               <h2 className="text-lg font-bold mb-4 text-white">Chat with Teacher</h2>
               {/* Implement your chat component or placeholder here */}
               {/* ... Chat content or placeholder */}
             </div>
-            
           </div>
         </div>
       </div>
@@ -211,4 +318,4 @@ class ClassPageStudent extends Component {
   }
 }
 
-export default ClassPageStudent;
+export default ClassPageInstructor;
