@@ -25,14 +25,14 @@ const HomePageStudent = () => {
   };
 
   return (
-    <div className="bg-blue-100 min-h-screen p-6 flex">
+    <div className="fixed top-16 w-screen bg-blue-100 min-h-screen p-6 flex">
       <div className="w-3/4">
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-4 gap-4">
           {classrooms.map((classroom, index) => (
             <Link
               key={index}
-              to={`/classroom/${index}`}
+              to={`/classPageStudent`}
               className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
               {classroom}
