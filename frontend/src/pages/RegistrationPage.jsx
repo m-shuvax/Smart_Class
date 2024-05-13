@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 
 const RegistrationPage = () => {
-  
 
   const [accountType, setAccountType] = useState('');
   const [email, setEmail] = useState('');
@@ -19,10 +19,32 @@ const RegistrationPage = () => {
   const [zipCode, setZipCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit  = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted');
+
+    try {
+      const response = await axios.post('http://localhost:3000/register', {
+        accountType,
+        email,
+        password,
+        firstName,
+        lastName,
+        street,
+        houseNumber,
+        city,
+        state,
+        zipCode,
+        phoneNumber
+      });
+
+
+      console.log('Registration successful:', response.data);
+      // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
+    }
+    catch (error) {
+      console.log('Registration failed:', error.response.data);
+      // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
+    }
   };
 
   const isPasswordValid = () => {
