@@ -88,7 +88,7 @@ class ClassPageStudent extends Component {
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               ></path>
             </svg>
-            Back to Login
+            Back To Home Page
           </Link>
 
           <div className="flex flex-row">

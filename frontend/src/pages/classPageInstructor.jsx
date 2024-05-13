@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { FaPlay, FaEdit } from 'react-icons/fa';
+import { FaPlay, FaEdit, FaPlus, FaTrash, FaUser } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 
 class ClassPageInstructor extends Component {
@@ -127,54 +127,80 @@ class ClassPageInstructor extends Component {
     } = this.state;
     return (
       <div className="flex flex-col min-h-screen bg-blue-100">
-        <div className="my-24 container mx-auto px-4 py-8">
-          <Link
-            to="/HomePageInstructor"
-            className="fixed top-12 my-10 mx-auto mb-8 bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
-          >
-            <svg
-              className="w-6 h-6 inline-block mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+        <div className="my-14 container mx-auto px-4 py-8">
+          <div className="flex flex-row justify-between">
+          {!isAddingLesson && (
+          <div className="flex justify-between items-center mb-6">
+            <Link
+              to="/HomePageInstructor"
+              className="mr-20 flex items-center bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Back to Login
-          </Link>
-
+              <svg
+                className="w-6 h-6 inline-block mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+              </svg>
+              Back To Home Page
+            </Link>
+            <div className="flex">
+              <button
+                className="mx-auto bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow-md mr-2"
+                onClick={() => this.setState({ isAddingLesson: true })}
+              >
+                <FaPlus className="w-6 h-6 inline-block mr-2" />
+                Add File
+              </button>
+              <button
+                className="mx-auto bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded shadow-md"
+                //onClick={() => this.setState({ isAddingLesson: true })}
+              >
+                <FaTrash className="w-6 h-6 inline-block mr-2" />
+                Delete File
+              </button>
+            </div>
+            <div className="flex">
+              <Link
+                to="/StudentList"
+                className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md"
+              >
+                <FaUser className="w-6 h-6 inline-block mr-2" />
+                Students List
+              </Link>
+            </div>
+          </div>
+        )}
+          </div>
           <div className="flex flex-row">
             <div className="w-2/3 p-4">
               <div className="flex flex-row justify-between mb-4">
                 <button
-                  className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${
-                    category === 'allFiles' ? 'bg-indigo-700' : ''
-                  }`}
+                  className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${category === 'allFiles' ? 'bg-indigo-700' : ''
+                    }`}
                   onClick={this.handleAllFilesClick}
                 >
                   All Files
                 </button>
                 <button
-                  className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${
-                    category === 'lessonSummaries' ? 'bg-indigo-700' : ''
-                  }`}
+                  className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${category === 'lessonSummaries' ? 'bg-indigo-700' : ''
+                    }`}
                   onClick={() => this.handleCategoryChange('lessonSummaries')}
                 >
                   Lesson Summaries
                 </button>
                 <button
-                  className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${
-                    category === 'studyMaterials' ? 'bg-indigo-700' : ''
-                  }`}
+                  className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${category === 'studyMaterials' ? 'bg-indigo-700' : ''
+                    }`}
                   onClick={() => this.handleCategoryChange('studyMaterials')}
                 >
                   Study Materials
                 </button>
                 <button
-                  className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${
-                    category === 'assignments' ? 'bg-indigo-700' : ''
-                  }`}
+                  className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${category === 'assignments' ? 'bg-indigo-700' : ''
+                    }`}
                   onClick={() => this.handleCategoryChange('assignments')}
                 >
                   Assignments
@@ -199,7 +225,7 @@ class ClassPageInstructor extends Component {
                           onClick={() =>
                             window.open(
                               editLiveBroadcastLink ||
-                                'https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success'
+                              'https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success'
                             )
                           }
                         >
@@ -226,16 +252,14 @@ class ClassPageInstructor extends Component {
                     </div>
                   </div>
                   <div>
-                  <button
-                    className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md mr-2 shadow hover:bg-blue-700"
-                    onClick={this.handleReplayClick}
-                  >
-                    <FiMenu className="h-6 w-6 mr-2" />
-                    <span>Replay</span>
-                  </button>
-
+                    <button
+                      className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md mr-2 shadow hover:bg-blue-700"
+                      onClick={this.handleReplayClick}
+                    >
+                      <FiMenu className="h-6 w-6 mr-2" />
+                      <span>Recordings</span>
+                    </button>
                   </div>
-
                   <div className="mt-4">
                     <button
                       className="w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white font-bold py-2 px-4 rounded"
@@ -245,14 +269,14 @@ class ClassPageInstructor extends Component {
                       Add Lesson
                     </button>
                     {isAddingLesson && (
-                      <div className="mt-4">
+                      <div className="mt-4 ml-80">
                         <input
                           type="text"
                           placeholder="Lesson Name"
                           name="newFileName"
                           value={newFileName}
                           onChange={this.handleFileInputChange}
-                          className="border border-gray-300 rounded px-3 py-2 w-full mr-2 mb-2"
+                          className="border border-gray-300 rounded px-3 py-2 w-1/2 mr-2 mb-2"
                         />
                         <input
                           type="text"
@@ -260,10 +284,20 @@ class ClassPageInstructor extends Component {
                           name="newFileDate"
                           value={newFileDate}
                           onChange={this.handleFileInputChange}
-                          className="border border-gray-300 rounded px-3 py-2 w-full mr-2 mb-2"
+                          className="border border-gray-300 rounded px-3 py-2 w-1/2 mr-2 mb-2"
                         />
+                        <select
+                          name="newFileCategory"
+                          value={this.state.newFileCategory}
+                          onChange={this.handleFileInputChange}
+                          className="border border-gray-300 rounded px-3 w-1/2 py-2 mr-2 mb-2"
+                        >
+                          <option value="lessonSummaries">Lesson Summaries</option>
+                          <option value="studyMaterials">Study Materials</option>
+                          <option value="assignments">Assignments</option>
+                        </select>
                         <button
-                          className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                          className="bg-blue-600 text-white font-bold py-2 w-1/2 px-4 rounded"
                           onClick={() => {
                             this.handleAddFile();
                           }}
@@ -307,7 +341,7 @@ class ClassPageInstructor extends Component {
               )}
             </div>
             <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
-              <h2 className="text-lg font-bold mb-4 text-white">Chat with Teacher</h2>
+              <h2 className="text-lg font-bold mb-4 text-white">Chat with Students</h2>
               {/* Implement your chat component or placeholder here */}
               {/* ... Chat content or placeholder */}
             </div>
