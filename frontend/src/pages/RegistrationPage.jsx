@@ -24,7 +24,11 @@ const RegistrationPage = () => {
         password,
         firstName,
         lastName,
+<<<<<<< HEAD
+        phoneNumber,
+=======
         phoneNumber
+>>>>>>> 33942f66245ac17015d5d162ecd72fd83b308715
       });
 
       if (response.data) {
