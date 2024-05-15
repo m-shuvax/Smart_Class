@@ -15,8 +15,10 @@ const fileSchema = new mongoose.Schema({
         default: Date.now
     },
     category:{
-        type: Date,
-        required: true
+        type: string,
+        enum:{
+            values:['admin', 'instructor', 'student'],
+            message: '{VALUE} is not a valid category'}
     },
     fLink:{
         type: String,
