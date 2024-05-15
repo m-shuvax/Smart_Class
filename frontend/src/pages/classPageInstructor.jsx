@@ -6,7 +6,7 @@ import FilesNav from '../components/filesNav';
 
 const ClassPageInstructor = () => {
   const [category, setCategory] = useState('assignments');
-  const [filesByCategory] = useState({
+  const [filesByCategory, setFilesByCategory] = useState({
     lessonSummaries: [
       { name: 'Summary1.pdf', date: '2024-05-15', category: 'lessonSummaries' },
       { name: 'Summary2.docx', date: '2028-05-17', category: 'lessonSummaries' },
@@ -22,11 +22,6 @@ const ClassPageInstructor = () => {
       { name: 'Assignment2.docx', date: '2024-05-27', category: 'assignments' },
       { name: 'Assignment3.jpg', date: '2024-05-29', category: 'assignments' },
     ],
-    liveStreams: [
-      { name: 'Lesson 1', date: '2024-05-25', category: 'liveStreams' },
-      { name: 'Lesson 2', date: '2024-05-27', category: 'liveStreams' },
-      { name: 'Lesson 3', date: '2024-05-29', category: 'liveStreams' },
-    ],
   });
   const [filteredFiles, setFilteredFiles] = useState([]);
   const [liveStreams] = useState([
@@ -37,22 +32,12 @@ const ClassPageInstructor = () => {
   const [showLiveStreams, setShowLiveStreams] = useState(false);
   const [newFileName, setNewFileName] = useState('');
   const [newFileDate, setNewFileDate] = useState('');
+  const [newLessonName, setNewLessonName] = useState('');
+  const [newLessonDate, setNewLessonDate] = useState('');
   const [editLiveBroadcastLink, setEditLiveBroadcastLink] = useState('');
   const [isEditingBroadcast, setIsEditingBroadcast] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
-
-
-
-  const handleLiveStreamsClick = () => {
-    setShowLiveStreams(true);
-    setCategory(null);
-  };
-
-  const handleReplayClick = () => {
-    setShowLiveStreams(true);
-    setCategory(null);
-    setIsAddingLesson(false);
-  };
+  const [isAddingFile, setIsAddingFile] = useState(false);
 
   const handleFileInputChange = (event) => {
     if (event.target.name === 'newFileName') {
@@ -70,10 +55,25 @@ const ClassPageInstructor = () => {
     const updatedFiles = [...filesByCategory[category], newFile];
     const updatedFilesByCategory = { ...filesByCategory, [category]: updatedFiles };
     setFilesByCategory(updatedFilesByCategory);
-    setIsAddingLesson(false);
-    if (addCounter >= 7) {
-      setAddCounter(0);
+    setIsAddingFile(false); // Close the add file dialog
+  };
+
+  const handleLessonInputChange = (event) => {
+    if (event.target.name === 'newLessonName') {
+      setNewLessonName(event.target.value);
+    } else if (event.target.name === 'newLessonDate') {
+      setNewLessonDate(event.target.value);
+    } else if (event.target.name === 'editLiveBroadcastLink') {
+      setEditLiveBroadcastLink(event.target.value);
     }
+  };
+
+  const handleAddLesson = () => {
+    const id = `lesson-${Date.now()}`;
+    const newLesson = { id, name: newLessonName, date: newLessonDate }; // קובץ יתווסף לרשימה liveStreams, לכן לא צריך להוסיף את הקטגוריה
+    const updatedLessons = [...liveStreams, newLesson];
+    setLiveStreams(updatedLessons); // עדכון המשתנה liveStreams במקום setShowLiveStreams
+    setIsAddingLesson(false); // סגירת תיבת הדווח לאחר הוספת השיעור
   };
 
   const handleEditLiveBroadcastLink = () => {
@@ -84,15 +84,6 @@ const ClassPageInstructor = () => {
   const handleEditButtonClick = () => {
     setIsEditingBroadcast(true);
   };
-  function openDialog() {
-    document.body.style.overflow = 'hidden';
-    setIsAddingLesson(true);
-  }
-
-  function closeDialog() {
-    document.body.style.overflow = '';
-    setIsAddingLesson(false);
-  }
 
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
@@ -118,7 +109,7 @@ const ClassPageInstructor = () => {
               <div className="flex">
                 <button
                   className="mx-auto bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow-md mr-2"
-                  onClick={() => setIsAddingLesson(true)}
+                  onClick={() => setIsAddingFile(true)}
                 >
                   <FaPlus className="w-6 h-6 inline-block mr-2" />
                   Add File
@@ -137,7 +128,13 @@ const ClassPageInstructor = () => {
 
         <div className="flex flex-row">
           <div className="w-2/3 p-4">
-            <FilesNav />
+            <FilesNav
+              category={category}
+              setCategory={setCategory}
+              setFilteredFiles={setFilteredFiles}
+              filesByCategory={filesByCategory}
+            />
+
             <div className="flex flex-row">
               <div className="fixed bottom-10 left-10">
                 <div>
@@ -176,7 +173,7 @@ const ClassPageInstructor = () => {
                   )}
                   <div>
                     <button
-                      className="mt-4 bg-blue-400 hover:bg-blue-600 text-white py-2 px-4 rounded flex items-center"
+                      className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center"
                       onClick={handleEditButtonClick}
                     >
                       <FaEdit className="mr-2" /> Edit
@@ -186,7 +183,7 @@ const ClassPageInstructor = () => {
                 <div>
                   <button
                     className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md mr-2 shadow hover:bg-blue-700"
-                    onClick={handleReplayClick}
+                    onClick={() => setShowLiveStreams(true)}
                   >
                     <FiMenu className="h-6 w-6 mr-2" />
                     <span>Recordings</span>
@@ -200,67 +197,58 @@ const ClassPageInstructor = () => {
                     <FaPlay className="mr-2" />
                     Add Lesson
                   </button>
-                  {isAddingLesson && (
-                    <div className={`relative ${isAddingLesson ? 'overflow-hidden h-screen' : ''}`}>
-                      <dialog className="fixed inset-0 overflow-y-auto z-10" open={isAddingLesson}>
-                        <div className="flex items-center justify-center">
-                          <div className="bg-white rounded-lg shadow-lg p-8">
-                            <h2 className="text-xl font-semibold mb-4">Add Lesson</h2>
-                            <div className="mb-4">
-                              <input
-                                type="text"
-                                placeholder="Lesson Name"
-                                name="newFileName"
-                                value={newFileName}
-                                onChange={handleFileInputChange}
-                                className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
-                              />
-                              <input
-                                type="text"
-                                placeholder="Lesson Link"
-                                name="newFileDate"
-                                value={newFileDate}
-                                onChange={handleFileInputChange}
-                                className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
-                              />
-                              <select
-                                name="newFileCategory"
-                                value={category}
-                                onChange={(event) => setCategory(event.target.value)}
-                                className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
-                              >
-                                <option value="lessonSummaries">Lesson Summaries</option>
-                                <option value="studyMaterials">Study Materials</option>
-                                <option value="assignments">Assignments</option>
-                              </select>
-                            </div>
-                            <div className="flex justify-end">
-                              <button
-                                className="bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
-                                onClick={handleAddFile}
-                              >
-                                Add
-                              </button>
-                              <button
-                                className="bg-red-600 text-white font-bold py-2 px-4 rounded"
-                                onClick={() => setIsAddingLesson(false)}
-                              >
-                                Cancel
-                              </button>
-                            </div>
+                </div>
+                {/* Adding Lesson Dialog */}
+                {isAddingLesson && (
+                  <div className={`relative ${isAddingLesson ? 'overflow-hidden h-screen' : ''}`}>
+                    <dialog className="fixed inset-0 overflow-y-auto z-10" open={isAddingLesson}>
+                      <div className="flex items-center justify-center">
+                        <div className="bg-white rounded-lg shadow-lg p-8">
+                          <h2 className="text-xl font-semibold mb-4">Add Lesson</h2>
+                          <div className="mb-4">
+                            <input
+                              type="text"
+                              placeholder="Lesson Name"
+                              name="newLessonName"
+                              value={newLessonName}
+                              onChange={handleLessonInputChange}
+                              className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                            />
+                            <input
+                              type="text"
+                              placeholder="Lesson Link"
+                              name="newLessonDate"
+                              value={newLessonDate}
+                              onChange={handleLessonInputChange}
+                              className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                            />
+                          </div>
+                          <div className="flex justify-end">
+                            <button
+                              className="bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
+                              onClick={handleAddLesson}
+                            >
+                              Add
+                            </button>
+                            <button
+                              className="bg-red-600 text-white font-bold py-2 px-4 rounded"
+                              onClick={() => setIsAddingLesson(false)}
+                            >
+                              Cancel
+                            </button>
                           </div>
                         </div>
-                      </dialog>
                       </div>
-                  )}
-                  
-                </div>
+                    </dialog>
+                  </div>
+                )}
+                {/* End of Adding Lesson Dialog */}
               </div>
             </div>
 
             {!showLiveStreams && (
               <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
-                {filteredFiles.map((file, index) => (
+                {filesByCategory[category].map((file, index) => ( // נשנה את filteredFiles לfilesByCategory[category]
                   <div
                     key={index}
                     className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
@@ -269,13 +257,9 @@ const ClassPageInstructor = () => {
                       <span className="text-base font-medium">{file.name}</span>
                     </div>
                     <div style={{ textAlign: 'center', flex: 1 }}>
-                      <span className="text-gray-500">
-                        {new Date(file.date).toLocaleDateString('en-GB')}
-                      </span>
+                      <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
                     </div>
-                    <button
-                    //onClick={() => setIsAddingLesson(true)}
-                    >
+                    <button onClick={() => handleDeleteFile(file.id)}>
                       <FaTrash className="w-4 h-4 inline-block" style={{ verticalAlign: 'middle' }} />
                     </button>
                   </div>
@@ -294,9 +278,7 @@ const ClassPageInstructor = () => {
                       <span className="text-base font-medium">{stream.name}</span>
                       <span className="text-gray-500">{stream.date}</span>
                     </div>
-                    <button
-                    //onClick={() => setIsAddingLesson(true)}
-                    >
+                    <button onClick={() => handleDeleteLiveStream(stream.id)}>
                       <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
                     </button>
                   </div>
@@ -310,15 +292,13 @@ const ClassPageInstructor = () => {
               <h2 className="text-lg font-bold mb-4 text-white">Chat with Students</h2>
               {/* Implement your chat component or placeholder here */}
               {/* ... Chat content or placeholder */}
-
-
             </div>
           )}
         </div>
-
       </div>
     </div>
   );
+
 };
 
 export default ClassPageInstructor;
