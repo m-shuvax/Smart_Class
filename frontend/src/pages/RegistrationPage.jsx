@@ -14,12 +14,12 @@ const RegistrationPage = () => {
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const handleSubmit  = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5000/', {
-        accountType,
+      const response = await axios.post('http://localhost:5000/signup', {
+        role: accountType,
         email,
         password,
         firstName,
@@ -27,12 +27,30 @@ const RegistrationPage = () => {
         phoneNumber
       });
 
+      if (response.data) {
+        console.log('Registration successful:', response.data);
+      }
+      else if (response) {
+        console.error('Registration successful but response is not as expected:', response);
+      }
+      else {
+        console.error('Registration successful but response is not as expected.');
+      }
 
-      console.log('Registration successful:', response.data);
       // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
     }
     catch (error) {
-      console.log('Registration failed:', error.response.data);
+      if (error.response && error.response.data) {
+        console.log('Registration failed:', error.response.data);
+      }
+      else if (error.response) {
+        console.log('Registration failed with response but no data:', error.response);
+      }
+      else {
+        console.log('Registration failed:'); 
+      }
+
+
       // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
     }
   };
