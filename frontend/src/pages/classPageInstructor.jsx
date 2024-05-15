@@ -41,8 +41,8 @@ const ClassPageInstructor = () => {
   const [isEditingBroadcast, setIsEditingBroadcast] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
 
-  
- 
+
+
   const handleLiveStreamsClick = () => {
     setShowLiveStreams(true);
     setCategory(null);
@@ -75,7 +75,7 @@ const ClassPageInstructor = () => {
       setAddCounter(0);
     }
   };
-  
+
   const handleEditLiveBroadcastLink = () => {
     // Implement logic to handle editing live broadcast link
     setIsEditingBroadcast(false);
@@ -84,6 +84,15 @@ const ClassPageInstructor = () => {
   const handleEditButtonClick = () => {
     setIsEditingBroadcast(true);
   };
+  function openDialog() {
+    document.body.style.overflow = 'hidden';
+    setIsAddingLesson(true);
+  }
+
+  function closeDialog() {
+    document.body.style.overflow = '';
+    setIsAddingLesson(false);
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
@@ -192,57 +201,59 @@ const ClassPageInstructor = () => {
                     Add Lesson
                   </button>
                   {isAddingLesson && (
-                    <dialog className="fixed inset-0 z-10 overflow-y-auto" open={isAddingLesson}>
-                      <div className="flex items-center justify-center min-h-screen">
-                        <div className="bg-white rounded-lg shadow-lg p-8">
-                          <h2 className="text-xl font-semibold mb-4">Add Lesson</h2>
-                          <div className="mb-4">
-                            <input
-                              type="text"
-                              placeholder="Lesson Name"
-                              name="newFileName"
-                              value={newFileName}
-                              onChange={handleFileInputChange}
-                              className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
-                            />
-                            <input
-                              type="text"
-                              placeholder="Lesson Link"
-                              name="newFileDate"
-                              value={newFileDate}
-                              onChange={handleFileInputChange}
-                              className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
-                            />
-                            <select
-                              name="newFileCategory"
-                              value={category}
-                              onChange={(event) => setCategory(event.target.value)}
-                              className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
-                            >
-                              <option value="lessonSummaries">Lesson Summaries</option>
-                              <option value="studyMaterials">Study Materials</option>
-                              <option value="assignments">Assignments</option>
-                            </select>
-                          </div>
-                          <div className="flex justify-end">
-                            <button
-                              className="bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
-                              onClick={handleAddFile}
-                            >
-                              Add
-                            </button>
-                            <button
-                              className="bg-red-600 text-white font-bold py-2 px-4 rounded"
-                              onClick={() => setIsAddingLesson(false)}
-                            >
-                              Cancel
-                            </button>
+                    <div className={`relative ${isAddingLesson ? 'overflow-hidden h-screen' : ''}`}>
+                      <dialog className="fixed inset-0 overflow-y-auto z-10" open={isAddingLesson}>
+                        <div className="flex items-center justify-center">
+                          <div className="bg-white rounded-lg shadow-lg p-8">
+                            <h2 className="text-xl font-semibold mb-4">Add Lesson</h2>
+                            <div className="mb-4">
+                              <input
+                                type="text"
+                                placeholder="Lesson Name"
+                                name="newFileName"
+                                value={newFileName}
+                                onChange={handleFileInputChange}
+                                className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                              />
+                              <input
+                                type="text"
+                                placeholder="Lesson Link"
+                                name="newFileDate"
+                                value={newFileDate}
+                                onChange={handleFileInputChange}
+                                className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                              />
+                              <select
+                                name="newFileCategory"
+                                value={category}
+                                onChange={(event) => setCategory(event.target.value)}
+                                className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                              >
+                                <option value="lessonSummaries">Lesson Summaries</option>
+                                <option value="studyMaterials">Study Materials</option>
+                                <option value="assignments">Assignments</option>
+                              </select>
+                            </div>
+                            <div className="flex justify-end">
+                              <button
+                                className="bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
+                                onClick={handleAddFile}
+                              >
+                                Add
+                              </button>
+                              <button
+                                className="bg-red-600 text-white font-bold py-2 px-4 rounded"
+                                onClick={() => setIsAddingLesson(false)}
+                              >
+                                Cancel
+                              </button>
+                            </div>
                           </div>
                         </div>
+                      </dialog>
                       </div>
-                    </dialog>
                   )}
-
+                  
                 </div>
               </div>
             </div>
@@ -295,16 +306,16 @@ const ClassPageInstructor = () => {
 
           </div>
           {!isAddingLesson && (
-          <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
-            <h2 className="text-lg font-bold mb-4 text-white">Chat with Students</h2>
-            {/* Implement your chat component or placeholder here */}
-            {/* ... Chat content or placeholder */}
-            
-            
-          </div>
-       )}
+            <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
+              <h2 className="text-lg font-bold mb-4 text-white">Chat with Students</h2>
+              {/* Implement your chat component or placeholder here */}
+              {/* ... Chat content or placeholder */}
+
+
+            </div>
+          )}
         </div>
-        
+
       </div>
     </div>
   );
