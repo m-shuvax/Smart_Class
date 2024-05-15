@@ -26,10 +26,10 @@ const LoginPage = () => {
 
       // Redirect based on user role
       if (isStudent) {
-        navigate('/dashboard');
+        navigate('/HomePageStudent');
       }
       else {
-        navigate('/class');
+        navigate('/HomePageInstructor');
       }
     }
     catch (error) {
