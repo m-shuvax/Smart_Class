@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import Navbar from './features/navigation/Navbar';
+import Navbar from './features/Navbar';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import ClassroomPage from './pages/ClassroomPage';
 import LoginPage  from './pages/LoginPage';
+import RegistrationPage  from './pages/RegistrationPage';
+import HomePageStudent  from './pages/HomePageStudent';
+import HomePageInstructor  from './pages/HomePageInstructor';
+import ClassPageStudent from './pages/classPageStudent'
+import ClassPageInstructor from './pages/classPageInstructor'
 function App() {
   return (
     <Router>
@@ -12,9 +14,11 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<LoginPage />} />
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/classrooms" element={<ClassroomPage />} />
+          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/HomePageStudent" element={<HomePageStudent />} />
+          <Route path="/HomePageInstructor" element={<HomePageInstructor />} />
+          <Route path="/ClassPageStudent" element={<ClassPageStudent />} />
+          <Route path="/ClassPageInstructor" element={<ClassPageInstructor />} />
         </Routes>
       </div>
     </Router>
