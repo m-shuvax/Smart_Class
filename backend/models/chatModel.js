@@ -10,10 +10,10 @@ const chatSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'User'
     },
-    cLink:{
-        type: String,
-        required: true
-    }
+    messages:[{
+        type: mongoose.Schema.ObjectId,
+        ref: 'Message',
+    }]
 })
      
 const chat = mongoose.model('Chat', chatSchema)
