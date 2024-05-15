@@ -85,6 +85,15 @@ const ClassPageInstructor = () => {
     setIsEditingBroadcast(true);
   };
 
+  const handleAllFilesClick = () => {
+    const allFilesArray = Object.values(filesByCategory)
+      .filter(category => category !== filesByCategory.liveStreams)
+      .flat();
+    const sortedFiles = allFilesArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+    setCategory('allFiles');
+    setFilteredFiles(sortedFiles);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
       <div className="my-14 container mx-auto px-4 py-8">
@@ -248,7 +257,7 @@ const ClassPageInstructor = () => {
 
             {!showLiveStreams && (
               <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
-                {filesByCategory[category].map((file, index) => ( // נשנה את filteredFiles לfilesByCategory[category]
+                {filesByCategory[category].map((file, index) => (
                   <div
                     key={index}
                     className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"

@@ -12,11 +12,6 @@ const RegistrationPage = () => {
   const [passwordError, setPasswordError] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [street, setStreet] = useState('');
-  const [houseNumber, setHouseNumber] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [zipCode, setZipCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
   const handleSubmit  = async (e) => {
@@ -29,12 +24,7 @@ const RegistrationPage = () => {
         password,
         firstName,
         lastName,
-        street,
-        houseNumber,
-        city,
-        state,
-        zipCode,
-        phoneNumber
+        phoneNumber,
       });
 
 
