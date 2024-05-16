@@ -6,8 +6,16 @@ const router = express.Router()
 router.route('/register')
     .post(userControllers.createUser)
 
+
+
+/* 
+router.route('/class')
+    .get(userControllers.renderStudentClass)
+    .post(userControllers.createUser)
+
 router.route('/login')  
     .post(userControllers.login)
+
 
 // router.route('/class/file')
 //     .post(userControllers.createFile)
@@ -22,11 +30,8 @@ router.route('/login')
 //     .put(userControllers.updateUser)
 //     .delete(userControllers.deleteUser)    
 
-// //router.route('/login')
-//     //.post(userControllers.login)
 
-// router.route('/signup')
-//     .post(authControllers.register)
+
 
 
 module.exports = router
