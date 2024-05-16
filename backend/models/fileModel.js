@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const fileSchema = new mongoose.Schema({
     name: {
-        type:String,
+        type: String,
         required:true
     }, 
     classId:{
@@ -15,7 +15,7 @@ const fileSchema = new mongoose.Schema({
         default: Date.now
     },
     category:{
-        type: string,
+        type: String,
         enum:{
             values:['admin', 'instructor', 'student'],
             message: '{VALUE} is not a valid category'}
