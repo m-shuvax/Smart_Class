@@ -14,32 +14,34 @@ const RegistrationPage = () => {
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const handleSubmit  = async (e) => {
-    e.preventDefault();
+  const handleSubmit  = async (e) => {console.log(e.target.value);}
 
-    try {
-      const response = await axios.post('http://localhost:5000/', {
-        accountType,
-        email,
-        password,
-        firstName,
-        lastName,
-<<<<<<< HEAD
-        phoneNumber,
-=======
-        phoneNumber
->>>>>>> 33942f66245ac17015d5d162ecd72fd83b308715
-      });
+//   const handleSubmit  = async (e) => {
+//     e.preventDefault();
+
+//     try {
+//       const response = await axios.post('http://localhost:5000/', {
+//         accountType,
+//         email,
+//         password,
+//         firstName,
+//         lastName,
+// <<<<<<< HEAD
+//         phoneNumber,
+// =======
+//         phoneNumber
+// >>>>>>> 33942f66245ac17015d5d162ecd72fd83b308715
+//       });
 
 
-      console.log('Registration successful:', response.data);
-      // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
-    }
-    catch (error) {
-      console.log('Registration failed:', error.response.data);
-      // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
-    }
-  };
+//       console.log('Registration successful:', response.data);
+//       // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
+//     }
+//     catch (error) {
+//       console.log('Registration failed:', error.response.data);
+//       // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
+//     }
+//   };
 
   const isPasswordValid = () => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
@@ -193,12 +195,6 @@ const RegistrationPage = () => {
             >
               Register
             </button>
-            <Link
-              to="/"
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Back to Login
-            </Link>
           </form>
         </div>
       </div>

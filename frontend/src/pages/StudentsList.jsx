@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // חשוב לייבא את ה-Link מהריאקט ראוטר כדי להשתמש בו
 
 const StudentList = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -16,7 +17,22 @@ const StudentList = () => {
 
   return (
     <div className="flex mt-20">
-      <div className="w-2/3 bg-gray-200 p-4">
+      <div className="w-1/3 bg-gray-200 p-4">
+        <Link
+          to="/classPageInstructor" // הוספתי קישור לדף המתאים
+          className="mr-20 flex items-center bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
+        >
+          <svg
+            className="w-6 h-6 inline-block mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Back To class Page
+        </Link>
         <h2 className="text-xl font-bold mb-2">List Of Students</h2>
         <ul>
           {students.map((student) => (
@@ -37,7 +53,11 @@ const StudentList = () => {
           </div>
         )}
       </div>
-      
+      <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
+        <h2 className="text-lg font-bold mb-4 text-white">Chat with Teacher</h2>
+        {/* Implement your chat component or placeholder here */}
+        {/* ... Chat content or placeholder */}
+      </div>
     </div>
   );
 };
