@@ -7,24 +7,46 @@ const Message = require('./../models/messageModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const { liveLinkObj } = require('./../utils/liveLink');
+const bcrypt = require('bcryptjs');
+
+
+let liveLink = liveLinkObj.value;
+
+// Utility function to handle response
+const handleResponse = (res, data, statusCode = 200) => {
+  res.status(statusCode).json({
+    success: true,
+    data,
+  });
+};
+
+// Utility function to handle errors
+const handleError = (next, message, statusCode) => {
+  return next(new AppError(message, statusCode));
+};
+
 
 // User Controllers
 exports.createUser = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
 
+  const hashedPassword = await bcrypt.hash(password, 12);
+
   const user = await User.create({
     firstName,
     lastName,
     email,
-    password,
+    password: hashedPassword,
     phoneNumber,
     role,
   });
 
   if (!user) {
-    return next(new AppError('Failed to create user', 500));
+    return handleError(next, 'Failed to create user', 500);
   }
 
+  handleResponse(res, user, 201);
+  
   console.log('hhhh');
 
   res.status(201).json({
@@ -38,28 +60,27 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 
   const user = await User.findById(req.params.id);
   if (!user) {
-    return next(new AppError('User not found', 404));
+    return handleError(next, 'User not found', 404);
   }
 
   user.firstName = firstName;
   user.lastName = lastName;
   user.email = email;
-  user.password = password;
+  if (password) {
+    user.password = await bcrypt.hash(password, 12);
+  }
   user.phoneNumber = phoneNumber;
   user.role = role;
   await user.save();
 
-  res.status(200).json({
-    success: true,
-    data: user,
-  });
+  handleResponse(res, user);
 });
 
 exports.deleteUser = asyncHandler(async (req, res, next) => {
   const user = await User.findByIdAndDelete(req.params.id);
 
   if (!user) {
-    return next(new AppError(`User not found with id of ${req.params.id}`, 404));
+    return handleError(next, `User not found with id of ${req.params.id}`, 404);
   }
 
   res.status(204).json({ success: true, data: null });
@@ -77,20 +98,17 @@ exports.createFile = asyncHandler(async (req, res, next) => {
   });
 
   if (!file) {
-    return next(new AppError('Failed to create file', 500));
+    return handleError(next, 'Failed to create file', 500);
   }
 
-  res.status(201).json({
-    success: true,
-    data: file,
-  });
+  handleResponse(res, file, 201);
 });
 
 exports.deleteFile = asyncHandler(async (req, res, next) => {
   const file = await File.findByIdAndDelete(req.params.id);
 
   if (!file) {
-    return next(new AppError('File not found', 404));
+    return handleError(next, 'File not found', 404);
   }
 
   res.status(200).json({
@@ -101,39 +119,31 @@ exports.deleteFile = asyncHandler(async (req, res, next) => {
 
 // Lesson Controllers
 exports.createLesson = asyncHandler(async (req, res, next) => {
-  const { title, description, classId } = req.body;
+  const { name, classId, lLink } = req.body;
 
   const lesson = await Lesson.create({
-    title,
-    description,
+    name,
     classId,
+    lLink,
   });
 
   if (!lesson) {
-    return next(new AppError('Failed to create lesson', 500));
+    return handleError(next, 'Failed to create lesson', 500);
   }
 
-  res.status(201).json({
-    success: true,
-    data: lesson,
-  });
+  handleResponse(res, lesson, 201);
 });
 
-exports.updateLesson = asyncHandler(async (req, res, next) => {
-  const { title, description } = req.body;
+exports.deleteLesson = asyncHandler(async (req, res, next) => {
+  const lesson = await Lesson.findByIdAndDelete(req.params.id);
 
-  const lesson = await Lesson.findById(req.params.id);
   if (!lesson) {
-    return next(new AppError('Lesson not found', 404));
+    return handleError(next, 'Lesson not found', 404);
   }
-
-  lesson.title = title;
-  lesson.description = description;
-  await lesson.save();
 
   res.status(200).json({
     success: true,
-    data: lesson,
+    message: 'Lesson deleted successfully',
   });
 });
 
