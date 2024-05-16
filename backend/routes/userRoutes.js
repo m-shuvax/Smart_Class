@@ -7,7 +7,10 @@ const router = express.Router()
 router.route('/register')
     .post(userControllers.createUser)
 
-/* router.route('/class')
+
+
+/* 
+router.route('/class')
     .get(userControllers.renderStudentClass)
     .post(userControllers.createUser)
 

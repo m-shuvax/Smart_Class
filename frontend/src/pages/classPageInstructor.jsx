@@ -123,6 +123,49 @@ const ClassPageInstructor = () => {
                   <FaPlus className="w-6 h-6 inline-block mr-2" />
                   Add File
                 </button>
+                {isAddingFile && (
+                  <div className={`relative ${isAddingFile ? 'overflow-hidden h-screen' : ''}`}>
+                    <dialog className="fixed inset-0 overflow-y-auto z-10" open={isAddingFile}>
+                      <div className="flex items-center justify-center">
+                        <div className="bg-white rounded-lg shadow-lg p-8">
+                          <h2 className="text-xl font-semibold mb-4">Add File</h2>
+                          <div className="mb-4">
+                            <input
+                              type="text"
+                              placeholder="File Name"
+                              name="newFileName"
+                              value={newFileName}
+                              onChange={handleFileInputChange}
+                              className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                            />
+                            <input
+                              type="text"
+                              placeholder="File Link"
+                              name="newFileDate"
+                              value={newFileDate}
+                              onChange={handleFileInputChange}
+                              className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                            />
+                          </div>
+                          <div className="flex justify-end">
+                            <button
+                              className="bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
+                              onClick={handleAddFile}
+                            >
+                              Add
+                            </button>
+                            <button
+                              className="bg-red-600 text-white font-bold py-2 px-4 rounded"
+                              onClick={() => setIsAddingFile(false)}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </dialog>
+                  </div>
+                )}
                 <Link
                   to="/StudentList"
                   className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md"
@@ -207,7 +250,6 @@ const ClassPageInstructor = () => {
                     Add Lesson
                   </button>
                 </div>
-                {/* Adding Lesson Dialog */}
                 {isAddingLesson && (
                   <div className={`relative ${isAddingLesson ? 'overflow-hidden h-screen' : ''}`}>
                     <dialog className="fixed inset-0 overflow-y-auto z-10" open={isAddingLesson}>
@@ -251,13 +293,13 @@ const ClassPageInstructor = () => {
                     </dialog>
                   </div>
                 )}
-                {/* End of Adding Lesson Dialog */}
+
               </div>
             </div>
 
             {!showLiveStreams && (
               <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
-                {filesByCategory[category].map((file, index) => (
+                {filteredFiles.map((file, index) => (
                   <div
                     key={index}
                     className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
