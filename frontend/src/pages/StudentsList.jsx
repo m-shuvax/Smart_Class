@@ -37,6 +37,7 @@ const StudentList = () => {
           </div>
         )}
       </div>
+      
     </div>
   );
 };
