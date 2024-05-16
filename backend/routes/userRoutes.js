@@ -30,7 +30,7 @@ router.route('/login')
 //     .put(userControllers.updateUser)
 //     .delete(userControllers.deleteUser)    
 
-
+*/
 
 
 
