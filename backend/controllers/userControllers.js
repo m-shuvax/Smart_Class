@@ -45,6 +45,13 @@ exports.createUser = asyncHandler(async (req, res, next) => {
   }
 
   handleResponse(res, user, 201);
+  
+  console.log('hhhh');
+
+  res.status(201).json({
+    success: true,
+    data: user,
+  });
 });
 
 exports.updateUser = asyncHandler(async (req, res, next) => {
@@ -139,7 +146,7 @@ exports.deleteLesson = asyncHandler(async (req, res, next) => {
   });
 });
 
-// LiveLink Controllers
+// LiveLink Controller
 exports.updateLiveLink = asyncHandler(async (req, res, next) => {
   const { newLink } = req.body;
 

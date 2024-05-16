@@ -12,40 +12,70 @@ const RegistrationPage = () => {
   const [passwordError, setPasswordError] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [street, setStreet] = useState('');
-  const [houseNumber, setHouseNumber] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [zipCode, setZipCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const handleSubmit  = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate email and password before submission
+    if (!isEmailValid) {
+      setEmailError('Please enter a valid email address.');
+      return;
+    }
+    else {
+      setEmailError('');
+    }
+    if (!isPasswordValid) {
+      setPasswordError('Please enter a valid password.');
+      return;
+
+    }
+    else {
+      setPasswordError('');
+    }
+
     try {
-      const response = await axios.post('http://localhost:3000/register', {
-        accountType,
+      const response = await axios.post('/register', {
+        role: accountType,
         email,
         password,
         firstName,
         lastName,
-        street,
-        houseNumber,
-        city,
-        state,
-        zipCode,
-        phoneNumber
+        phoneNumber,
       });
 
-
-      console.log('Registration successful:', response.data);
-      // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
+      if (response.data) {
+        console.log('Registration successful:', response.data);
+      }
+      else if (response) {
+        console.error('Registration successful but response is not as expected:', response);
+      }
+      else {
+        console.error('Registration successful but response is not as expected.');
+      }
     }
+
+    // TO DO: to  
+
+    // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
+
+
+
     catch (error) {
-      console.log('Registration failed:', error.response.data);
+      if (error.response && error.response.data) {
+        console.log('Registration failed:', error.response.data);
+      }
+      else if (error.response) {
+        console.log('Registration failed with response but no data:', error.response);
+      }
+      else {
+        console.log('Registration failed:');
+      }
+
       // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
     }
   };
+
 
   const isPasswordValid = () => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
@@ -180,71 +210,6 @@ const RegistrationPage = () => {
               )}
             </div>
             <div className="mb-4">
-              <label htmlFor="street" className="block font-bold mb-2">
-                Street
-              </label>
-              <input
-                type="text"
-                id="street"
-                value={street}
-                onChange={(e) => setStreet(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="houseNumber" className="block font-bold mb-2">
-                House Number
-              </label>
-              <input
-                type="text"
-                id="houseNumber"
-                value={houseNumber}
-                onChange={(e) => setHouseNumber(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="city" className="block font-bold mb-2">
-                City
-              </label>
-              <input
-                type="text"
-                id="city"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="state" className="block font-bold mb-2">
-                State
-              </label>
-              <input
-                type="text"
-                id="state"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="zipCode" className="block font-bold mb-2">
-                Zip Code
-              </label>
-              <input
-                type="text"
-                id="zipCode"
-                value={zipCode}
-                onChange={(e) => setZipCode(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div className="mb-4">
               <label htmlFor="phoneNumber" className="block font-bold mb-2">
                 Phone Number
               </label>
@@ -264,12 +229,6 @@ const RegistrationPage = () => {
             >
               Register
             </button>
-            <Link
-              to="/"
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Back to Login
-            </Link>
           </form>
         </div>
       </div>
