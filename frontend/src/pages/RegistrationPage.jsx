@@ -10,6 +10,7 @@ const RegistrationPage = () => {
   const [emailError, setEmailError] = useState('');
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -35,7 +36,7 @@ const RegistrationPage = () => {
     }
 
     try {
-      const response = await axios.post('/register', {
+      const response = await axios.post('http://localhost:5000/api/users/register', {
         role: accountType,
         email,
         password,
@@ -53,12 +54,15 @@ const RegistrationPage = () => {
       else {
         console.error('Registration successful but response is not as expected.');
       }
+
+      alert('Registration successful')
+      // Navigate to the login page
+      window.location.href = '/';
+
+      // TO DO: to  
+
+      // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
     }
-
-    // TO DO: to  
-
-    // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
-
 
 
     catch (error) {
@@ -71,6 +75,10 @@ const RegistrationPage = () => {
       else {
         console.log('Registration failed:');
       }
+      alert('Registration failed')
+      
+      
+
 
       // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
     }
