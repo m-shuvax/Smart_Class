@@ -27,8 +27,8 @@ router.route('/:email')
 //router.route('/login')
     //.post(userControllers.login)
 
-//router.route('/signup')
-//    .post(authControllers.register)
+router.route('/signup')
+    .post(authControllers.register)
 
 
 

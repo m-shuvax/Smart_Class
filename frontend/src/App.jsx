@@ -7,6 +7,7 @@ import HomePageStudent  from './pages/HomePageStudent';
 import HomePageInstructor  from './pages/HomePageInstructor';
 import ClassPageStudent from './pages/classPageStudent'
 import ClassPageInstructor from './pages/classPageInstructor'
+import StudentList from './pages/StudentsList'
 function App() {
   return (
     <Router>
@@ -19,6 +20,7 @@ function App() {
           <Route path="/HomePageInstructor" element={<HomePageInstructor />} />
           <Route path="/ClassPageStudent" element={<ClassPageStudent />} />
           <Route path="/ClassPageInstructor" element={<ClassPageInstructor />} />
+          <Route path="/StudentList" element={<StudentList />} />
         </Routes>
       </div>
     </Router>

@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import cookies from 'js-cookie';
 
 
 const LoginPage = () => {
@@ -21,15 +22,18 @@ const LoginPage = () => {
       // Store the token in state or other storage
       localStorage.setItem('token', response.data.token);
 
+      // Save the token in cookies
+      Cookies.set('token', token, { expires: 7 }); // The token will be saved for 7 days
+
       // Check if the user is a student or a teacher
       const isStudent = response.data.role === 'student';
 
       // Redirect based on user role
       if (isStudent) {
-        navigate('/dashboard');
+        navigate('/HomePageStudent');
       }
       else {
-        navigate('/class');
+        navigate('/HomePageInstructor');
       }
     }
     catch (error) {
