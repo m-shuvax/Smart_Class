@@ -28,6 +28,8 @@ exports.createUser = asyncHandler(async (req, res, next) => {
     return next(new AppError('Failed to create user', 500));
   }
 
+  console.log('hhhh');
+
   res.status(201).json({
     success: true,
     data: user,
@@ -138,7 +140,7 @@ exports.updateLesson = asyncHandler(async (req, res, next) => {
   });
 });
 
-// LiveLink Controllers
+// LiveLink Controller
 exports.updateLiveLink = asyncHandler(async (req, res, next) => {
   const { newLink } = req.body;
 

@@ -14,6 +14,7 @@ const RegistrationPage = () => {
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
+<<<<<<< HEAD
   const handleSubmit  = async (e) => {console.log(e.target.value);}
 
 //   const handleSubmit  = async (e) => {
@@ -32,8 +33,51 @@ const RegistrationPage = () => {
 //         phoneNumber
 // >>>>>>> 33942f66245ac17015d5d162ecd72fd83b308715
 //       });
+=======
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    // Validate email and password before submission
+    if (!isEmailValid) {
+      setEmailError('Please enter a valid email address.');
+      return;
+    }
+    else{
+      setEmailError('');
+    }
+    if (!isPasswordValid) {
+      setPasswordError('Please enter a valid password.');
+      return;
+        
+    }
+    else{
+      setPasswordError('');
+    }
 
+    try {
+      const response = await axios.post('http://localhost:5000/signup', {
+        role: accountType,
+        email,
+        password,
+        firstName,
+        lastName,
+        phoneNumber,
+      });
+>>>>>>> 22554a3dfbb034ab8e1f3153571aec06700d4aaf
+
+      if (response.data) {
+        console.log('Registration successful:', response.data);
+      }
+      else if (response) {
+        console.error('Registration successful but response is not as expected:', response);
+      }
+      else {
+        console.error('Registration successful but response is not as expected.');
+      }
+
+      // TO DO: to  
+
+<<<<<<< HEAD
 //       console.log('Registration successful:', response.data);
 //       // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
 //     }
@@ -42,6 +86,25 @@ const RegistrationPage = () => {
 //       // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
 //     }
 //   };
+=======
+      // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
+    }
+    catch (error) {
+      if (error.response && error.response.data) {
+        console.log('Registration failed:', error.response.data);
+      }
+      else if (error.response) {
+        console.log('Registration failed with response but no data:', error.response);
+      }
+      else {
+        console.log('Registration failed:');
+      }
+
+
+      // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
+    }
+  };
+>>>>>>> 22554a3dfbb034ab8e1f3153571aec06700d4aaf
 
   const isPasswordValid = () => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;

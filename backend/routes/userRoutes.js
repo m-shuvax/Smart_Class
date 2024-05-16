@@ -3,10 +3,9 @@ const authControllers = require('./../controllers/authControllers')
 const userControllers = require('./../controllers/userControllers')
 const router = express.Router()
 
-router.route('/:email')
-    .get(userControllers.getUser)
-    .put(userControllers.updateUser)
-    .delete(userControllers.deleteUser)
+
+router.route('/register')
+    .post(userControllers.createUser)
 
 router.route('/class')
     .get(userControllers.renderStudentClass)
@@ -20,13 +19,16 @@ router.route('/class/lesson')
     .post(userControllers.createLesson)
     .delete(userControllers.deleteLesson)
 
-    
+router.route('/:email')
+    .get(userControllers.getUser)
+    .put(userControllers.updateUser)
+    .delete(userControllers.deleteUser)    
 
 //router.route('/login')
     //.post(userControllers.login)
 
-//router.route('/signup')
-//    .post(authControllers.register)
+router.route('/signup')
+    .post(authControllers.register)
 
 
 
