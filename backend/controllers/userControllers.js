@@ -140,7 +140,7 @@ exports.updateLesson = asyncHandler(async (req, res, next) => {
   });
 });
 
-// LiveLink Controllers
+// LiveLink Controller
 exports.updateLiveLink = asyncHandler(async (req, res, next) => {
   const { newLink } = req.body;
 
