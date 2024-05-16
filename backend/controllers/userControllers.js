@@ -9,7 +9,7 @@ const AppError = require('./../utils/AppError');
 const { liveLinkObj } = require('./../utils/liveLink');
 const bcrypt = require('bcryptjs');
 
-// Accessing liveLink
+
 let liveLink = liveLinkObj.value;
 
 // Utility function to handle response
@@ -24,6 +24,7 @@ const handleResponse = (res, data, statusCode = 200) => {
 const handleError = (next, message, statusCode) => {
   return next(new AppError(message, statusCode));
 };
+
 
 // User Controllers
 exports.createUser = asyncHandler(async (req, res, next) => {
