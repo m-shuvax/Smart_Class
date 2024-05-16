@@ -17,6 +17,23 @@ const RegistrationPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate email and password before submission
+    if (!isEmailValid) {
+      setEmailError('Please enter a valid email address.');
+      return;
+    }
+    else{
+      setEmailError('');
+    }
+    if (!isPasswordValid) {
+      setPasswordError('Please enter a valid password.');
+      return;
+        
+    }
+    else{
+      setPasswordError('');
+    }
+
     try {
       const response = await axios.post('http://localhost:5000/signup', {
         role: accountType,
@@ -37,6 +54,8 @@ const RegistrationPage = () => {
         console.error('Registration successful but response is not as expected.');
       }
 
+      // TO DO: to  
+
       // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
     }
     catch (error) {
@@ -47,7 +66,7 @@ const RegistrationPage = () => {
         console.log('Registration failed with response but no data:', error.response);
       }
       else {
-        console.log('Registration failed:'); 
+        console.log('Registration failed:');
       }
 
 
