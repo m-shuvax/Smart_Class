@@ -16,8 +16,9 @@ const StudentList = () => {
   };
 
   return (
-    <div className="flex mt-20">
-      <div className="w-1/3 bg-gray-200 p-4">
+    <div className="flex mt-20 bg-blue-100 h-1/1">
+      
+      <div className="w-1/3 bg-gray-200 p-4 h-1/1">
         <Link
           to="/classPageInstructor" // הוספתי קישור לדף המתאים
           className="mr-20 flex items-center bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
@@ -42,11 +43,9 @@ const StudentList = () => {
           ))}
         </ul>
       </div>
-      <div className="w-1/3 p-4">
-        <h2 className="text-xl font-bold mb-2">Chat with Teacher</h2>
-        {/* Here goes the chat with the teacher */}
+      <div className="w-1/3 p-4 h-1/1">
         {selectedStudent && (
-          <div className="bg-white p-4 mt-4">
+          <div className="p-4 mt-4">
             <h2 className="text-xl font-bold">{selectedStudent.firstName} {selectedStudent.lastName}</h2>
             <p>Age: {selectedStudent.age}</p>
             {/* Additional details about the student can be added here */}
