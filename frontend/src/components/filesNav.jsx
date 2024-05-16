@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 
 function FilesNav({ category, setCategory, setFilteredFiles, filesByCategory }) {
+
     const handleAllFilesClick = () => {
-        const allFilesArray = Object.values(filesByCategory)
-            .filter(category => category !== filesByCategory.liveStreams)
-            .flat();
+        const allFilesArray = Object.values(filesByCategory).flat();
         const sortedFiles = allFilesArray.sort((a, b) => new Date(a.date) - new Date(b.date));
         setCategory('allFiles');
         setFilteredFiles(sortedFiles);
@@ -19,7 +18,7 @@ function FilesNav({ category, setCategory, setFilteredFiles, filesByCategory }) 
         <div className="flex flex-row justify-between mb-4">
             <button
                 className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${category === 'allFiles' ? 'bg-indigo-700' : ''}`}
-                onClick={handleAllFilesClick}
+                onClick={() => handleAllFilesClick()} 
             >
                 All Files
             </button>
