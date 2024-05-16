@@ -10,6 +10,7 @@ const RegistrationPage = () => {
   const [emailError, setEmailError] = useState('');
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -22,20 +23,20 @@ const RegistrationPage = () => {
       setEmailError('Please enter a valid email address.');
       return;
     }
-    else{
+    else {
       setEmailError('');
     }
     if (!isPasswordValid) {
       setPasswordError('Please enter a valid password.');
       return;
-        
+
     }
-    else{
+    else {
       setPasswordError('');
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/signup', {
+      const response = await axios.post('http://localhost:5000/api/users/register', {
         role: accountType,
         email,
         password,
@@ -54,10 +55,16 @@ const RegistrationPage = () => {
         console.error('Registration successful but response is not as expected.');
       }
 
+      alert('Registration successful')
+      // Navigate to the login page
+      window.location.href = '/';
+
       // TO DO: to  
 
       // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
     }
+
+
     catch (error) {
       if (error.response && error.response.data) {
         console.log('Registration failed:', error.response.data);
@@ -68,11 +75,15 @@ const RegistrationPage = () => {
       else {
         console.log('Registration failed:');
       }
+      alert('Registration failed')
+      
+      
 
 
       // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
     }
   };
+
 
   const isPasswordValid = () => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
@@ -226,12 +237,6 @@ const RegistrationPage = () => {
             >
               Register
             </button>
-            <Link
-              to="/"
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Back to Login
-            </Link>
           </form>
         </div>
       </div>
