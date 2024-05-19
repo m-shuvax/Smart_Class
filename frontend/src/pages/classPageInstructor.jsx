@@ -99,10 +99,11 @@ const ClassPageInstructor = () => {
       <div className="my-14 container mx-auto px-4 py-8">
         <div className="flex flex-row justify-between">
           {!isAddingLesson && (
+           
             <div className="flex justify-between items-center mb-6">
               <Link
                 to="/HomePageInstructor"
-                className="mr-20 flex items-center bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
+                className="mr-20 bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
               >
                 <svg
                   className="w-6 h-6 inline-block mr-2"
@@ -117,7 +118,7 @@ const ClassPageInstructor = () => {
               </Link>
               <div className="flex">
                 <button
-                  className="mx-auto bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow-md mr-2"
+                  className="mx-auto bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow-md mr-2 h-10"
                   onClick={() => setIsAddingFile(true)}
                 >
                   <FaPlus className="w-6 h-6 inline-block mr-2" />
@@ -168,7 +169,7 @@ const ClassPageInstructor = () => {
                 )}
                 <Link
                   to="/StudentList"
-                  className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md"
+                  className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md h-10"
                 >
                   <FaUser className="w-6 h-6 inline-block mr-2" />
                   Students List
@@ -178,174 +179,176 @@ const ClassPageInstructor = () => {
           )}
         </div>
 
-        <div className="flex flex-row">
-          <div className="w-2/3 p-4">
-            <FilesNav
-              category={category}
-              setCategory={setCategory}
-              setFilteredFiles={setFilteredFiles}
-              filesByCategory={filesByCategory}
-            />
+        {!isAddingFile && (
+          <div className="flex flex-row">
+            <div className="w-2/3 p-4">
+              <FilesNav
+                category={category}
+                setCategory={setCategory}
+                setFilteredFiles={setFilteredFiles}
+                filesByCategory={filesByCategory}
+              />
 
-            <div className="flex flex-row">
-              <div className="fixed bottom-10 left-10">
-                <div>
-                  {isEditingBroadcast ? (
-                    <input
-                      type="text"
-                      placeholder="Edit Live Broadcast Link"
-                      name="editLiveBroadcastLink"
-                      value={editLiveBroadcastLink}
-                      onChange={handleFileInputChange}
-                      className="border border-gray-300 rounded px-3 py-2 w-64 mr-2"
-                    />
-                  ) : (
-                    <>
+              <div className="flex flex-row">
+                <div className="fixed bottom-10 left-10">
+                  <div>
+                    {isEditingBroadcast ? (
+                      <input
+                        type="text"
+                        placeholder="Edit Live Broadcast Link"
+                        name="editLiveBroadcastLink"
+                        value={editLiveBroadcastLink}
+                        onChange={handleFileInputChange}
+                        className="border border-gray-300 rounded px-3 py-2 w-64 mr-2"
+                      />
+                    ) : (
+                      <>
+                        <button
+                          className="w-40 inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-md mr-2 shadow hover:bg-red-700 relative"
+                          onClick={() =>
+                            window.open(
+                              editLiveBroadcastLink ||
+                              'https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success'
+                            )
+                          }
+                        >
+                          <FaPlay className="h-4 w-4 mr-2" />
+                          Live Broadcast
+                        </button>
+                      </>
+                    )}
+                    {isEditingBroadcast && (
                       <button
-                        className="w-40 inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-md mr-2 shadow hover:bg-red-700 relative"
-                        onClick={() =>
-                          window.open(
-                            editLiveBroadcastLink ||
-                            'https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success'
-                          )
-                        }
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleEditLiveBroadcastLink}
                       >
-                        <FaPlay className="h-4 w-4 mr-2" />
-                        Live Broadcast
+                        Save
                       </button>
-                    </>
-                  )}
-                  {isEditingBroadcast && (
-                    <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                      onClick={handleEditLiveBroadcastLink}
-                    >
-                      Save
-                    </button>
-                  )}
+                    )}
+                    <div>
+                      <button
+                        className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center"
+                        onClick={handleEditButtonClick}
+                      >
+                        <FaEdit className="mr-2" /> Edit
+                      </button>
+                    </div>
+                  </div>
                   <div>
                     <button
-                      className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center"
-                      onClick={handleEditButtonClick}
+                      className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md mr-2 shadow hover:bg-blue-700"
+                      onClick={() => setShowLiveStreams(true)}
                     >
-                      <FaEdit className="mr-2" /> Edit
+                      <FiMenu className="h-6 w-6 mr-2" />
+                      <span>Recordings</span>
                     </button>
                   </div>
-                </div>
-                <div>
-                  <button
-                    className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md mr-2 shadow hover:bg-blue-700"
-                    onClick={() => setShowLiveStreams(true)}
-                  >
-                    <FiMenu className="h-6 w-6 mr-2" />
-                    <span>Recordings</span>
-                  </button>
-                </div>
-                <div className="mt-4">
-                  <button
-                    className="w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => setIsAddingLesson(true)}
-                  >
-                    <FaPlay className="mr-2" />
-                    Add Lesson
-                  </button>
-                </div>
-                {isAddingLesson && (
-                  <div className={`relative ${isAddingLesson ? 'overflow-hidden h-screen' : ''}`}>
-                    <dialog className="fixed inset-0 overflow-y-auto z-10" open={isAddingLesson}>
-                      <div className="flex items-center justify-center">
-                        <div className="bg-white rounded-lg shadow-lg p-8">
-                          <h2 className="text-xl font-semibold mb-4">Add Lesson</h2>
-                          <div className="mb-4">
-                            <input
-                              type="text"
-                              placeholder="Lesson Name"
-                              name="newLessonName"
-                              value={newLessonName}
-                              onChange={handleLessonInputChange}
-                              className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
-                            />
-                            <input
-                              type="text"
-                              placeholder="Lesson Link"
-                              name="newLessonDate"
-                              value={newLessonDate}
-                              onChange={handleLessonInputChange}
-                              className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
-                            />
-                          </div>
-                          <div className="flex justify-end">
-                            <button
-                              className="bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
-                              onClick={handleAddLesson}
-                            >
-                              Add
-                            </button>
-                            <button
-                              className="bg-red-600 text-white font-bold py-2 px-4 rounded"
-                              onClick={() => setIsAddingLesson(false)}
-                            >
-                              Cancel
-                            </button>
+                  <div className="mt-4">
+                    <button
+                      className="w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                      onClick={() => setIsAddingLesson(true)}
+                    >
+                      <FaPlay className="mr-2" />
+                      Add Lesson
+                    </button>
+                  </div>
+                  {isAddingLesson && (
+                    <div className={`relative ${isAddingLesson ? 'overflow-hidden h-screen' : ''}`}>
+                      <dialog className="fixed inset-0 overflow-y-auto z-10" open={isAddingLesson}>
+                        <div className="flex items-center justify-center">
+                          <div className="bg-white rounded-lg shadow-lg p-8">
+                            <h2 className="text-xl font-semibold mb-4">Add Lesson</h2>
+                            <div className="mb-4">
+                              <input
+                                type="text"
+                                placeholder="Lesson Name"
+                                name="newLessonName"
+                                value={newLessonName}
+                                onChange={handleLessonInputChange}
+                                className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                              />
+                              <input
+                                type="text"
+                                placeholder="Lesson Link"
+                                name="newLessonDate"
+                                value={newLessonDate}
+                                onChange={handleLessonInputChange}
+                                className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                              />
+                            </div>
+                            <div className="flex justify-end">
+                              <button
+                                className="bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
+                                onClick={handleAddLesson}
+                              >
+                                Add
+                              </button>
+                              <button
+                                className="bg-red-600 text-white font-bold py-2 px-4 rounded"
+                                onClick={() => setIsAddingLesson(false)}
+                              >
+                                Cancel
+                              </button>
+                            </div>
                           </div>
                         </div>
+                      </dialog>
+                    </div>
+                  )}
+
+                </div>
+              </div>
+
+              {!showLiveStreams && (
+                <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
+                  {filteredFiles.map((file, index) => (
+                    <div
+                      key={index}
+                      className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
+                    >
+                      <div className="flex items-center">
+                        <span className="text-base font-medium">{file.name}</span>
                       </div>
-                    </dialog>
-                  </div>
-                )}
+                      <div style={{ textAlign: 'center', flex: 1 }}>
+                        <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
+                      </div>
+                      <button onClick={() => handleDeleteFile(file.id)}>
+                        <FaTrash className="w-4 h-4 inline-block" style={{ verticalAlign: 'middle' }} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
 
-              </div>
+              {showLiveStreams && (
+                <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
+                  {liveStreams.map((stream, index) => (
+                    <div
+                      key={index}
+                      className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
+                    >
+                      <div>
+                        <span className="text-base font-medium">{stream.name}</span>
+                        <span className="text-gray-500">{stream.date}</span>
+                      </div>
+                      <button onClick={() => handleDeleteLiveStream(stream.id)}>
+                        <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
             </div>
-
-            {!showLiveStreams && (
-              <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
-                {filteredFiles.map((file, index) => (
-                  <div
-                    key={index}
-                    className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
-                  >
-                    <div className="flex items-center">
-                      <span className="text-base font-medium">{file.name}</span>
-                    </div>
-                    <div style={{ textAlign: 'center', flex: 1 }}>
-                      <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
-                    </div>
-                    <button onClick={() => handleDeleteFile(file.id)}>
-                      <FaTrash className="w-4 h-4 inline-block" style={{ verticalAlign: 'middle' }} />
-                    </button>
-                  </div>
-                ))}
+            {!isAddingLesson && (
+              <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
+                <h2 className="text-lg font-bold mb-4 text-white">Chat with Students</h2>
+                {/* Implement your chat component or placeholder here */}
+                {/* ... Chat content or placeholder */}
               </div>
             )}
-
-            {showLiveStreams && (
-              <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
-                {liveStreams.map((stream, index) => (
-                  <div
-                    key={index}
-                    className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
-                  >
-                    <div>
-                      <span className="text-base font-medium">{stream.name}</span>
-                      <span className="text-gray-500">{stream.date}</span>
-                    </div>
-                    <button onClick={() => handleDeleteLiveStream(stream.id)}>
-                      <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
           </div>
-          {!isAddingLesson && (
-            <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
-              <h2 className="text-lg font-bold mb-4 text-white">Chat with Students</h2>
-              {/* Implement your chat component or placeholder here */}
-              {/* ... Chat content or placeholder */}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
