@@ -34,63 +34,54 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-
+// Controller for user registration
 exports.register = asyncHandler(async (req, res, next) => {
-  const { email, password, confirmPassword, name } = req.body;
-  if (!email || !password || !confirmPassword) return next(new AppError('Request details are missing', 400));
-  if (password !== confirmPassword) return next(new AppError('Passwords do not match', 400));
-  const newUser = await User.create({ email, password, confirmPassword, name });
-  createSendToken(newUser, 201, res);
-});
+  const { email, password, confirmPassword, name } = req.body
+  if (!email || !password || !confirmPassword) return next(new AppError(403, 'Request details are missing'))
+  const newUser = await User.create({ email, password, confirmPassword, name })
+  createSendToken(newUser, 201, res)
+})
 
-
-
+// Middleware to protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
   let token;
   if (req.headers.cookie) {
     token = req.headers.cookie.split('=')[1];
   }
-
   if (!token) return next(new AppError('Please login', 401));
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
   if (!decoded) return next(new AppError('Token is invalid or has expired', 401));
 
   const user = await User.findById(decoded.id);
+
   if (!user) return next(new AppError('The user belonging to this token does no longer exist', 401));
 
   req.user = user;
   next();
 });
 
-    const token = signToken(user._id);
-    const cookieOptions = {
-      expires: new Date(
-        Date.now() + process.env.JWT_EXPIRES_IN
-      ),
-      httpOnly: true,
-      secure : true
-    }
-    
-    // Setting the JWT token as a cookie
-    res.cookie('jwt', token, cookieOptions);
-    // Sending the response with the token and user data
-    res.status(statusCode).json({
-      status: 'success',
-      token,
-      data: {
-        user
-      }
-    });
+const token = signToken(user._id);
+const cookieOptions = {
+  expires: new Date(
+    Date.now() + process.env.JWT_EXPIRES_IN
+  ),
+  httpOnly: true,
+  secure: true
+}
 
+// Setting the JWT token as a cookie
+res.cookie('jwt', token, cookieOptions);
+// Sending the response with the token and user data
+res.status(statusCode).json({
+  status: 'success',
+  token,
+  data: {
+    user
+  }
+});
 
-// Controller for user registration
-exports.register = asyncHandler(async(req, res, next)=>{
-    const {email, password, confirmPassword,name} = req.body
-    if (!email ||!password||!confirmPassword) return next(new AppError(403,'Request details are missing'))
-    const newUser = await User.create({email, password, confirmPassword, name})
-    createSendToken(newUser, 201 , res)
-})
 
 // Controller for user login
 exports.login = asyncHandler(async (req, res, next) => {
@@ -104,18 +95,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 
 
 
-// Middleware to protect routes
-exports.protect = asyncHandler(async(req,res, next)=>{
-    const token = req.headers.cookie.split('=')[1]
-    if(!token) return next(new AppError(403, 'Please login '))
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
-    if(!decoded) return next(new AppError(403, 'Please login '))
-    const {id} = decoded
-    const user = await User.findById(id)
-    if(!user) return next(new AppError(400, 'Please register'))
-    req.user = user
-    next()
-})
+
 
 
 // Middleware to restrict routes to certain user roles
@@ -129,6 +109,6 @@ exports.restrictTo = (...roles) => {
   };
 };
 
-  
+
 
 
