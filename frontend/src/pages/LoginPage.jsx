@@ -77,11 +77,13 @@ const LoginPage = () => {
           </Link >
           <div className="flex justify-center">
             <div>
-              <Link to="/HomePageStudent">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">
+              <form onSubmit={handleSubmit}>
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">
                   Log In
                 </button>
-              </Link>
+              </form>
             </div>
           </div>
         </div>

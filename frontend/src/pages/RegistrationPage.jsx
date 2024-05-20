@@ -76,8 +76,8 @@ const RegistrationPage = () => {
         console.log('Registration failed:');
       }
       alert('Registration failed')
-      
-      
+
+
 
 
       // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
@@ -201,20 +201,30 @@ const RegistrationPage = () => {
               <label htmlFor="password" className="block font-bold mb-2">
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onBlur={handlePasswordBlur}
-                className={`w-full px-4 py-2 border ${passwordError ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-                required
-              />
-              {passwordError && (
-                <p className="text-red-500 text-sm">{passwordError}</p>
-              )}
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onBlur={handlePasswordBlur}
+                  className={`w-full px-4 py-2 border ${passwordError ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 px-4 flex items-center text-gray-500"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+              {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
               {!passwordError && (
-                <p className="text-gray-500 text-sm">The password should be a minimum of 8 characters long and include at least one uppercase letter, one lowercase letter, and one digit</p>
+                <p className="text-gray-500 text-sm">
+                  The password should be a minimum of 8 characters long and include at least one uppercase letter, one
+                  lowercase letter, and one digit
+                </p>
               )}
             </div>
             <div className="mb-4">
