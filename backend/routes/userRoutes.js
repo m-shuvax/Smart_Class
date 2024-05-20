@@ -12,7 +12,7 @@ router.route('/class')
     .post(userControllers.createUser)
 
 router.route('/login')  
-    .post(userControllers.login)
+     .post(userControllers.login)
 
 
 router.route('/class/file')
