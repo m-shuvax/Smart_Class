@@ -5,12 +5,15 @@ const Chat = require('./../models/chatModel');
 const Message = require('./../models/messageModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
-
+const authMiddleware = require('./../middleware/authMiddleware');
 
 
 // Function to create a new message
 exports.createMessage = asyncHandler(async (req, res, next) => {
   const { userId, chatId, messageText } = req.body;
+  if (!userId || !chat || !messageText) {
+    return next(new AppError('All fields are required', 400));
+  }
 
   try {
     // Find the chat by its ID
@@ -47,11 +50,13 @@ exports.createMessage = asyncHandler(async (req, res, next) => {
   }
 });
 
-
-
 // Function to create a new chat
 exports.createChat = asyncHandler(async (req, res, next) => {
   const { classId, studentId } = req.body;
+
+  if (!classId || !studentId) {
+    return next(new AppError('Class ID and Student ID are required', 400));
+  }
 
   const existingClass = await Class.findById(classId);
   const existingStudent = await User.findById(studentId);
@@ -74,10 +79,13 @@ exports.createChat = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 // Function to delete a message
 exports.deleteMessage = asyncHandler(async (req, res, next) => {
   const { messageId, userId } = req.body;
+
+  if (!messageId || !userId) {
+    return next(new AppError('Message ID and User ID are required', 400));
+  }
 
   const message = await Message.findById(messageId);
 
@@ -106,3 +114,8 @@ exports.deleteMessage = asyncHandler(async (req, res, next) => {
     message: 'Message deleted successfully'
   });
 });
+
+// Protect routes
+router.post('/createMessage', authMiddleware.protect, chatController.createMessage);
+router.post('/createChat', authMiddleware.protect, chatController.createChat);
+router.delete('/deleteMessage', authMiddleware.protect, chatController.deleteMessage);
