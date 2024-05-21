@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
+<<<<<<< HEAD
+=======
+FaCheck
+>>>>>>> bcb34b7286c1c0561bdb66f46f7a5d272728dbc9
 import { FaCheck } from 'react-icons/fa';
 import axios from 'axios';
 
@@ -89,8 +93,12 @@ const HomePageInstructor = () => {
                     className="text-left cursor-pointer text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md flex justify-between items-center"
                     onClick={() => handleStudentClick(student)}
                   >
-                    {student.firstName} {student.lastName}<br /> class id {student.id}<button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                      <FaCheck className="h-14 w-5 mr-2" />
+                    <button>
+                      <XCircleIcon className="h-6 w-6 hover:text-red-700" />
+                    </button>
+                    {student.firstName} {student.lastName}<br /> class id {student.id}
+                    <button className="bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center">
+                      <FaCheck className="h-14 w-4 mr-2" />
                     </button>
                   </li>
                 ))}
