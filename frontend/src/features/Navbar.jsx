@@ -9,10 +9,7 @@ function Navbar() {
 
   return (
     <nav className="fixed top-0 w-screen bg-gray-800 py-4 flex justify-between items-center">
-      <div className="text-white font-bold ml-3">My App</div>
-      <div className="text-neutral-50 flex items-center text-4xl">
-        <h1>Smart Class</h1>
-      </div>
+      <div className="text-neutral-50 font-bold ml-3 text-4xl"><h1>Smart Class</h1></div>
       {!hideButtons && (
         <div className="flex space-x-4 items-center mr-3">
           <SettingsButton />

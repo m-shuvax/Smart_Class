@@ -94,6 +94,8 @@ const ClassPageInstructor = () => {
     setFilteredFiles(sortedFiles);
   };
 
+  const [selectedCategory, setSelectedCategory] = useState('Lesson Summaries');
+
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
       <div className="my-14 container mx-auto px-4 py-8">
@@ -147,6 +149,16 @@ const ClassPageInstructor = () => {
                               onChange={handleFileInputChange}
                               className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                             />
+                            <select
+                              name="category"
+                              value={selectedCategory}
+                              onChange={(e) => setSelectedCategory(e.target.value)}
+                              className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                            >
+                              <option value="Lesson Summaries">Lesson Summaries</option>
+                              <option value="Study Materials">Study Materials</option>
+                              <option value="Assignments">Assignments</option>
+                            </select>
                           </div>
                           <div className="flex justify-end">
                             <button
@@ -167,6 +179,7 @@ const ClassPageInstructor = () => {
                     </dialog>
                   </div>
                 )}
+
                 <Link
                   to="/StudentList"
                   className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md h-10"

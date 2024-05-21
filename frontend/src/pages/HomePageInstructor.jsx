@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
-FaCheck
 import { FaCheck } from 'react-icons/fa';
 const HomePageInstructor = () => {
   const [classrooms, setClassrooms] = useState([
