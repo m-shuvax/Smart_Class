@@ -3,11 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-<<<<<<< HEAD
     "start": "nodemon server.js",
-=======
-    "start": "node server.js",
->>>>>>> 2695674f6aa6c52ef498323db8f6a5e6e00443d8
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
