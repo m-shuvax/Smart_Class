@@ -7,29 +7,46 @@ const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 
 
+
 // Function to create a new message
 exports.createMessage = asyncHandler(async (req, res, next) => {
-  const { userId, chat, messageText } = req.body;
+  const { userId, chatId, messageText } = req.body;
 
-  const existingChat = await Chat.findById(chat);
+  try {
+    // Find the chat by its ID
+    const existingChat = await Chat.findById(chatId);
 
-  if (!existingChat) {
-    return next(new AppError('Chat not found', 404));
+    if (!existingChat) {
+      return next(new AppError('Chat not found', 404));
+    }
+
+    // Create a new message
+    const newMessage = new Message({
+      authorId: userId,
+      message: messageText
+    });
+
+    // Save the new message
+    await newMessage.save();
+
+    // Add the new message to the chat's array of messages
+    existingChat.messages.push(newMessage);
+    await existingChat.save();
+
+    // Populate the chat object with the messages
+    const populatedChat = await existingChat.populate('messages').execPopulate();
+
+    // Respond with success and the populated chat
+    res.status(201).json({
+      success: true,
+      chat: populatedChat
+    });
+  } catch (error) {
+    // Handle any errors
+    return next(new AppError('Something went wrong', 500));
   }
-
-  const newMessage = new Message({
-    chatId: chat,
-    authorId: userId,
-    message: messageText
-  });
-
-  await newMessage.save();
-
-  res.status(201).json({
-    success: true,
-    message: newMessage
-  });
 });
+
 
 
 // Function to create a new chat
