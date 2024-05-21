@@ -8,11 +8,12 @@ const chatSchema = new mongoose.Schema({
     }, 
     studentId: {
         type: mongoose.Schema.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
     },
     messages:[{
         type: mongoose.Schema.ObjectId,
-        ref: 'Message',
+        ref: 'Message'
     }]
 })
      
