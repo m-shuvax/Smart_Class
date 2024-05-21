@@ -1,32 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import { FaCheck } from 'react-icons/fa';
+import axios from 'axios';
+
+
 const HomePageInstructor = () => {
-  const [classrooms, setClassrooms] = useState([
-    { id: '1', name: 'Math 101' },
-    { id: '2', name: 'English 202' },
-    { id: '3', name: 'History 303' },
-    { id: '4', name: 'Science 404' }
-  ]);
+  const [classrooms, setClassrooms] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showInput, setShowInput] = useState(false);
-  const [newClassName, setNewClassName] = useState('');
+  const [newClassName, setNewClassName] = useState([]);
+  const [students, setStudents] = useState([]);
 
-  const students = [
-    { id: 1, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894' },
-    { id: 2, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
-    { id: 3, firstName: 'Michael', lastName: 'Golan', email: 'tr0526696507@gmail.com', phoneNumber: '0526696507' },
-    { id: 4, firstName: 'Beny', lastName: 'Zaiddman', email: 23, phoneNumber: '58378634789' },
-    { id: 5, firstName: 'Meir', lastName: 'Noishtut', email: 23, phoneNumber: '246346' },
-    { id: 6, firstName: 'Meny', lastName: 'Shubkas', email: 23, phoneNumber: '05265752696507' },
-  ];
+  useEffect(() => {
+    const fetchClassrooms = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/classes');
+        setClassrooms(response.data);
+      } catch (error) {
+        console.error('Error fetching classrooms:', error);
+      }
+    };
 
-  const handleStudentClick = (student) => {
-    setSelectedStudent(student);
-  };
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/pendignStudents');
+        setStudents(response.data);
+      } catch (error) {
+        console.error('Error fetching classrooms:', error);
+      }
+    };
+
+    fetchClassrooms();
+    fetchStudents()
+  }, []);
 
   const handleAddClassroom = () => {
+    if (newClassName.trim() === ('')) return
     const id = `class-${Date.now()}`;
     const newClassrooms = [...classrooms, { id, name: newClassName }];
     setClassrooms(newClassrooms);
@@ -77,6 +87,7 @@ const HomePageInstructor = () => {
                   <li
                     key={student.id}
                     className="text-left cursor-pointer text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md flex justify-between items-center"
+                    onClick={() => handleStudentClick(student)}
                   >
                     <button>
                       <XCircleIcon className="h-6 w-6 hover:text-red-700" />

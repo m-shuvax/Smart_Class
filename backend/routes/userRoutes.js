@@ -7,17 +7,20 @@ router.route('/register')
     .post(userControllers.createUser)
 
 
-router.route('/class')
-    .get(userControllers.renderStudentClass)
-    .post(userControllers.createUser)
+// router.route('/class')
+//     .get(userControllers.renderStudentClass)
+//     .post(userControllers.createUser)
 
-router.route('/login')  
-     .post(userControllers.login)
+// router.route('/login')  
+//    // .post(userControllers.login)
+//    .post((req, res)=>{
+//     res.send()
+//    })
 
 
-router.route('/class/file')
-     .post(userControllers.createFile)
-     .delete(userControllers.deleteFile)
+// router.route('/class/file')
+//      .post(userControllers.createFile)
+//      .delete(userControllers.deleteFile)
 
 
  router.route('/class/lesson')
@@ -29,6 +32,7 @@ router.route('/class/file')
      .get(userControllers.getUser)
      .put(userControllers.updateUser)
      .delete(userControllers.deleteUser)    
+
 
 
 

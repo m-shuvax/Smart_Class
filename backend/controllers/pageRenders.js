@@ -12,24 +12,15 @@ const authMiddleware = require('./../middleware/authMiddleware');
 let liveLink = liveLinkObj.value;
 
 // Function to render user classes
-exports.renderUserClasses = asyncHandler(async (req, res, next) => {
-  const user = await User.findOne({ email: req.params.email });
-  if (!user) {
-    return next(new AppError(`User not found with email of ${req.params.email}`, 404));
-  }
-
-  const classes = await Class.find({ students: user._id }).select('name instructor');
-
-  const userData = {
-    ...user._doc,
-    classes: classes.map((classObj) => ({
-      name: classObj.name,
-      instructor: classObj.instructor,
-    })),
-  };
-
-  res.status(200).json({ success: true, data: userData });
-});
+exports.x = asyncHandler(async (req, res, next) => {
+    console.log('hhhh');
+    console.log( req);
+    //const user = await User.findOne({ email: req.params.email });
+    /* */
+  
+    res.status(200).json({ success: true, data: userData });
+  });
+  
 
 // Function to render student class
 exports.renderStudentClass = asyncHandler(async (req, res, next) => {
