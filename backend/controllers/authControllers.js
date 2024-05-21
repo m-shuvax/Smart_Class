@@ -5,13 +5,11 @@ const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 
 
-
 // Function to sign a JWT token with user id
 const signToken = id => {
-  return jwt.sign({ id, iat: Date.now() }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN
-  });
+  return jwt.sign({ id, iat: Date.now() }, process.env.JWT_SECRET);
 };
+
 
 // Function to create and send a token to the client
 const createSendToken = (user, statusCode, res) => {
@@ -24,10 +22,8 @@ const createSendToken = (user, statusCode, res) => {
     secure: process.env.NODE_ENV === 'production' // Use secure cookies in production
   };
 
-  res.cookie('jwt', token, cookieOptions);
-  res.status(statusCode).json({
-    status: 'success',
-    token,
+  res.cookie('jwt', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production'});
+  res.json({
     data: {
       user
     }
@@ -100,7 +96,6 @@ exports.login = asyncHandler(async (req, res, next) => {
 
 // Middleware to restrict routes to certain user roles
 exports.restrictTo = (...roles) => {
-
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(new AppError('You do not have permission to perform this action', 403));
