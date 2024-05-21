@@ -7,29 +7,16 @@ const Chat = require('./../models/chatModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const { liveLinkObj } = require('./../utils/liveLink');
-const authMiddleware = require('./../middleware/authMiddleware');
-// Accessing liveLink
+const message = require('../models/messageModel');
 let liveLink = liveLinkObj.value;
 
 // Function to render user classes
-exports.renderUserClasses = asyncHandler(async (req, res, next) => {
-  const user = await User.findOne({ email: req.params.email });
-  if (!user) {
-    return next(new AppError(`User not found with email of ${req.params.email}`, 404));
-  }
-
-  const classes = await Class.find({ students: user._id }).select('name instructor');
-
-  const userData = {
-    ...user._doc,
-    classes: classes.map((classObj) => ({
-      name: classObj.name,
-      instructor: classObj.instructor,
-    })),
-  };
-
-  res.status(200).json({ success: true, data: userData });
-});
+exports.login = asyncHandler(async (req, res, next) => {
+    console.log('login');
+    console.log( req);
+    res.status(200).json({ success: true, message: 'Login successful'});
+  });
+  
 
 // Function to render student class
 exports.renderStudentClass = asyncHandler(async (req, res, next) => {
@@ -96,8 +83,3 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
     liveLink: liveLink
   });
 });
-
-// Protect routes
-router.get('/userClasses/:email', authMiddleware.protect, pageRenderController.renderUserClasses);
-router.post('/studentClass', authMiddleware.protect, pageRenderController.renderStudentClass);
-router.post('/instructorClass', authMiddleware.protect, pageRenderController.renderInstructorClass);
