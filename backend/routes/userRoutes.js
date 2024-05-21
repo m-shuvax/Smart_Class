@@ -7,7 +7,10 @@ router.route('/register')
     .post(userControllers.createUser)
 
 router.route('/login')  
-    .post(userControllers.login)
+   // .post(userControllers.login)
+   .post((req, res)=>{
+    res.send()
+   })
 
 // router.route('/class/file')
 //     .post(userControllers.createFile)
