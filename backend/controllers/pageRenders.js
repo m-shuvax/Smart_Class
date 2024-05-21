@@ -7,18 +7,14 @@ const Chat = require('./../models/chatModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const { liveLinkObj } = require('./../utils/liveLink');
-const authMiddleware = require('./../middleware/authMiddleware');
-// Accessing liveLink
+const message = require('../models/messageModel');
 let liveLink = liveLinkObj.value;
 
 // Function to render user classes
-exports.x = asyncHandler(async (req, res, next) => {
-    console.log('hhhh');
+exports.login = asyncHandler(async (req, res, next) => {
+    console.log('login');
     console.log( req);
-    //const user = await User.findOne({ email: req.params.email });
-    /* */
-  
-    res.status(200).json({ success: true, data: userData });
+    res.status(200).json({ success: true, message: 'Login successful'});
   });
   
 
@@ -87,8 +83,3 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
     liveLink: liveLink
   });
 });
-
-// Protect routes
-router.get('/userClasses/:email', authMiddleware.protect, pageRenderController.renderUserClasses);
-router.post('/studentClass', authMiddleware.protect, pageRenderController.renderStudentClass);
-router.post('/instructorClass', authMiddleware.protect, pageRenderController.renderInstructorClass);

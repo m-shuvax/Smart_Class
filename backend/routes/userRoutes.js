@@ -1,10 +1,14 @@
 const express = require('express')
 const authControllers = require('./../controllers/authControllers')
 const userControllers = require('./../controllers/userControllers')
+const pageRenders = require('./../controllers/pageRenders') 
 const router = express.Router()
 
 router.route('/register')
-    .post(userControllers.createUser)
+    .post(authControllers.register)
+
+router.route('/login')
+    .get(authControllers.protect, pageRenders.login)
 
 
 // router.route('/class')
