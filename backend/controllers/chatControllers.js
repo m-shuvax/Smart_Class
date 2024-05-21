@@ -11,9 +11,6 @@ const authMiddleware = require('./../middleware/authMiddleware');
 // Function to create a new message
 exports.createMessage = asyncHandler(async (req, res, next) => {
   const { userId, chatId, messageText } = req.body;
-  if (!userId || !chat || !messageText) {
-    return next(new AppError('All fields are required', 400));
-  }
 
   try {
     // Find the chat by its ID
@@ -49,6 +46,8 @@ exports.createMessage = asyncHandler(async (req, res, next) => {
     return next(new AppError('Something went wrong', 500));
   }
 });
+
+
 
 // Function to create a new chat
 exports.createChat = asyncHandler(async (req, res, next) => {
