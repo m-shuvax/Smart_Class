@@ -12,17 +12,9 @@ const authMiddleware = require('./../middleware/authMiddleware');
 exports.createMessage = asyncHandler(async (req, res, next) => {
   const { userId, chatId, messageText } = req.body;
 
-<<<<<<< HEAD
   try {
     // Find the chat by its ID
     const existingChat = await Chat.findById(chatId);
-=======
-  if (!userId || !chat || !messageText) {
-    return next(new AppError('All fields are required', 400));
-  }
-
-  const existingChat = await Chat.findById(chat);
->>>>>>> 2695674f6aa6c52ef498323db8f6a5e6e00443d8
 
     if (!existingChat) {
       return next(new AppError('Chat not found', 404));
@@ -55,11 +47,8 @@ exports.createMessage = asyncHandler(async (req, res, next) => {
   }
 });
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 2695674f6aa6c52ef498323db8f6a5e6e00443d8
 // Function to create a new chat
 exports.createChat = asyncHandler(async (req, res, next) => {
   const { classId, studentId } = req.body;
