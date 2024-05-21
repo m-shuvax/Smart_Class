@@ -7,9 +7,9 @@ const Chat = require('./../models/chatModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const { liveLinkObj } = require('./../utils/liveLink');
+const authMiddleware = require('./../middleware/authMiddleware');
 // Accessing liveLink
 let liveLink = liveLinkObj.value;
-
 
 // Function to render user classes
 exports.x = asyncHandler(async (req, res, next) => {
@@ -25,6 +25,10 @@ exports.x = asyncHandler(async (req, res, next) => {
 // Function to render student class
 exports.renderStudentClass = asyncHandler(async (req, res, next) => {
   const { userId, classId } = req.body;
+
+  if (!userId || !classId) {
+    return next(new AppError('User ID and Class ID are required', 400));
+  }
 
   // Fetching user and class data
   const user = await User.findById(userId);
@@ -50,10 +54,13 @@ exports.renderStudentClass = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 // Function to render instructor class
 exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
   const { userId, classId } = req.body;
+
+  if (!userId || !classId) {
+    return next(new AppError('User ID and Class ID are required', 400));
+  }
 
   // Fetching user and class data
   const user = await User.findById(userId);
@@ -80,3 +87,8 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
     liveLink: liveLink
   });
 });
+
+// Protect routes
+router.get('/userClasses/:email', authMiddleware.protect, pageRenderController.renderUserClasses);
+router.post('/studentClass', authMiddleware.protect, pageRenderController.renderStudentClass);
+router.post('/instructorClass', authMiddleware.protect, pageRenderController.renderInstructorClass);
