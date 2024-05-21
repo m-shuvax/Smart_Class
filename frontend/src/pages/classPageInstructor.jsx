@@ -99,7 +99,7 @@ const ClassPageInstructor = () => {
       <div className="my-14 container mx-auto px-4 py-8">
         <div className="flex flex-row justify-between">
           {!isAddingLesson && (
-           
+
             <div className="flex justify-between items-center mb-6">
               <Link
                 to="/HomePageInstructor"
@@ -327,9 +327,11 @@ const ClassPageInstructor = () => {
                       key={index}
                       className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
                     >
-                      <div>
+                      <div className="flex items-center">
                         <span className="text-base font-medium">{stream.name}</span>
-                        <span className="text-gray-500">{stream.date}</span>
+                      </div>
+                      <div style={{ textAlign: 'center', flex: 1 }}>
+                        <span className="text-gray-500">{new Date(stream.date).toLocaleDateString('en-GB')}</span>
                       </div>
                       <button onClick={() => handleDeleteLiveStream(stream.id)}>
                         <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
