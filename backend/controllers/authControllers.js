@@ -82,7 +82,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
         user
       }
     });
-};
+
 
 // Controller for user registration
 exports.register = asyncHandler(async(req, res, next)=>{
@@ -130,5 +130,5 @@ exports.restrictTo = (...roles) => {
 };
 
   
-};
+
 
