@@ -97,12 +97,12 @@ const ClassPageInstructor = () => {
   const [selectedCategory, setSelectedCategory] = useState('Lesson Summaries');
 
   return (
-    <div className="flex flex-col min-h-screen bg-blue-100">
-      <div className="my-14 container mx-auto px-4 py-8">
+    <div className="flex flex-col h-screen bg-blue-100">
+      <div className="my-14 container mx-auto px-4 pt-8">
         <div className="flex flex-row justify-between">
           {!isAddingLesson && (
 
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-4">
               <Link
                 to="/HomePageInstructor"
                 className="mr-20 bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
@@ -116,14 +116,14 @@ const ClassPageInstructor = () => {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
-                Back To Home Page
+                Back To Classrooms
               </Link>
               <div className="flex">
                 <button
                   className="mx-auto bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow-md mr-2 h-10"
                   onClick={() => setIsAddingFile(true)}
                 >
-                  <FaPlus className="w-6 h-6 inline-block mr-2" />
+                  <FaPlus className="w-4 h-4 inline-block mr-2" />
                   Add File
                 </button>
                 {isAddingFile && (
@@ -194,13 +194,15 @@ const ClassPageInstructor = () => {
 
         {!isAddingFile && (
           <div className="flex flex-row">
-            <div className="w-2/3 p-4">
-              <FilesNav
+            
+            <div className="w-2/3 p-4 pt-0 pl-0 pr-6">
+            {!isAddingLesson &&(<FilesNav
                 category={category}
                 setCategory={setCategory}
                 setFilteredFiles={setFilteredFiles}
                 filesByCategory={filesByCategory}
               />
+              )}
 
               <div className="flex flex-row">
                 <div className="fixed bottom-10 left-10">
@@ -232,7 +234,7 @@ const ClassPageInstructor = () => {
                     )}
                     {isEditingBroadcast && (
                       <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 shadow rounded-md"
                         onClick={handleEditLiveBroadcastLink}
                       >
                         Save
@@ -240,7 +242,7 @@ const ClassPageInstructor = () => {
                     )}
                     <div>
                       <button
-                        className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center"
+                        className="w-40 mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 shadow rounded-md flex items-center"
                         onClick={handleEditButtonClick}
                       >
                         <FaEdit className="mr-2" /> Edit
@@ -249,7 +251,7 @@ const ClassPageInstructor = () => {
                   </div>
                   <div>
                     <button
-                      className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md mr-2 shadow hover:bg-blue-700"
+                      className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-gray-400 text-white rounded-md mr-2 shadow hover:bg-gray-300"
                       onClick={() => setShowLiveStreams(true)}
                     >
                       <FiMenu className="h-6 w-6 mr-2" />
@@ -292,7 +294,7 @@ const ClassPageInstructor = () => {
                             <div className="flex justify-end">
                               <button
                                 className="bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
-                                onClick={handleAddLesson}
+                                onClick={() => setIsAddingLesson(false)}
                               >
                                 Add
                               </button>
@@ -313,11 +315,11 @@ const ClassPageInstructor = () => {
               </div>
 
               {!showLiveStreams && (
-                <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
+                <div className="ml-52 mt-6 grow flex flex-col h-80 overflow-y-auto">
                   {filteredFiles.map((file, index) => (
                     <div
                       key={index}
-                      className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
+                      className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex items-center mb-4 h-14"
                     >
                       <div className="flex items-center">
                         <span className="text-base font-medium">{file.name}</span>
