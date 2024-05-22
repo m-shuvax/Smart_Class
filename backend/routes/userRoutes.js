@@ -1,36 +1,40 @@
-const express = require('express')
-const authControllers = require('./../controllers/authControllers')
-const userControllers = require('./../controllers/userControllers')
-const router = express.Router()
+const express = require('express');
+const authControllers = require('./../controllers/authControllers');
+const userControllers = require('./../controllers/userControllers');
+const pageRenderController = require('./../controllers/pageRenderController');
+const authMiddleware = require('./../middleware/authMiddleware');
+const router = express.Router();
 
 router.route('/register')
-    .post(userControllers.createUser)
-
+    .post(userControllers.createUser);
 
 router.route('/class')
-    .get(userControllers.renderStudentClass)
-    .post(userControllers.createUser)
+    .get(authMiddleware.protect, userControllers.renderStudentClass)
+    .post(authMiddleware.protect, userControllers.createUser);
 
-router.route('/login')  
-     .post(userControllers.login)
-
+router.route('/login')
+    .post(userControllers.login);
 
 router.route('/class/file')
-     .post(userControllers.createFile)
-     .delete(userControllers.deleteFile)
+    .post(authMiddleware.protect, userControllers.createFile)
+    .delete(authMiddleware.protect, userControllers.deleteFile);
 
+router.route('/class/lesson')
+    .post(authMiddleware.protect, userControllers.createLesson)
+    .delete(authMiddleware.protect, userControllers.deleteLesson);
 
- router.route('/class/lesson')
-     .post(userControllers.createLesson)
-     .delete(userControllers.deleteLesson)
+router.route('/:email')
+    .get(authMiddleware.protect, userControllers.getUser)
+    .put(authMiddleware.protect, userControllers.updateUser)
+    .delete(authMiddleware.protect, userControllers.deleteUser);
 
-     
- router.route('/:email')
-     .get(userControllers.getUser)
-     .put(userControllers.updateUser)
-     .delete(userControllers.deleteUser)    
+// New routes for pending students
+router.post('/addPendingStudent', authMiddleware.protect, pageRenderController.addPendingStudent);
+router.post('/handlePendingStudent', authMiddleware.protect, pageRenderController.handlePendingStudent);
 
+// Existing routes for rendering classes
+router.get('/userClasses/:email', authMiddleware.protect, pageRenderController.renderUserClasses);
+router.post('/studentClass', authMiddleware.protect, pageRenderController.renderStudentClass);
+router.post('/instructorClass', authMiddleware.protect, pageRenderController.renderInstructorClass);
 
-
-
-module.exports = router
+module.exports = router;

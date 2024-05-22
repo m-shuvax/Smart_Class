@@ -11,24 +11,49 @@ const authMiddleware = require('./../middleware/authMiddleware');
 // Accessing liveLink
 let liveLink = liveLinkObj.value;
 
-// Function to render user classes
-exports.renderUserClasses = asyncHandler(async (req, res, next) => {
-  const user = await User.findOne({ email: req.params.email });
-  if (!user) {
-    return next(new AppError(`User not found with email of ${req.params.email}`, 404));
+// Function to render instructor classes and pending students
+exports.renderInstructorClasses = asyncHandler(async (req, res, next) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return next(new AppError('User ID is required', 400));
   }
 
-  const classes = await Class.find({ students: user._id }).select('name instructor');
+  // Fetching all classes
+  const allClasses = await Class.find({});
 
-  const userData = {
-    ...user._doc,
-    classes: classes.map((classObj) => ({
-      name: classObj.name,
-      instructor: classObj.instructor,
-    })),
-  };
+  // Filtering classes where the user is the instructor
+  const instructorClasses = allClasses.filter(classObj => classObj.instructor.equals(userId));
 
-  res.status(200).json({ success: true, data: userData });
+  // Gathering all pending students
+  const pendingStudents = instructorClasses.reduce((acc, classObj) => {
+    return acc.concat(classObj.pendingStudents);
+  }, []);
+
+  res.status(200).json({
+    success: true,
+    data: {
+      instructorClasses,
+      pendingStudents,
+    },
+  });
+});
+
+// Function to render student classes
+exports.renderStudentClasses = asyncHandler(async (req, res, next) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return next(new AppError('User ID is required', 400));
+  }
+
+  // Fetching all classes where the user is a student
+  const studentClasses = await Class.find({ students: userId }).select('name instructor');
+
+  res.status(200).json({
+    success: true,
+    data: studentClasses,
+  });
 });
 
 // Function to render student class
@@ -73,7 +98,7 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
 
   // Fetching user and class data
   const user = await User.findById(userId);
-  const classData = await Class.findById(classId);
+  const classData = await Class.findById(classId).populate('pendingStudents');
 
   // If user or class not found, throw an error
   if (!user || !classData) {
@@ -92,12 +117,62 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
     lessons: lessons,
     userDetails: user,
     students: students,
+    pendingStudents: classData.pendingStudents,
     chats: chats,
     liveLink: liveLink
   });
 });
 
-// Protect routes
-router.get('/userClasses/:email', authMiddleware.protect, pageRenderController.renderUserClasses);
-router.post('/studentClass', authMiddleware.protect, pageRenderController.renderStudentClass);
-router.post('/instructorClass', authMiddleware.protect, pageRenderController.renderInstructorClass);
+// Function to add a student to the pending list
+exports.addPendingStudent = asyncHandler(async (req, res, next) => {
+  const { userId, classId } = req.body;
+
+  if (!userId || !classId) {
+    return next(new AppError('User ID and Class ID are required', 400));
+  }
+
+  const classData = await Class.findById(classId);
+
+  if (!classData) {
+    return next(new AppError('Class not found', 404));
+  }
+
+  if (classData.pendingStudents.includes(userId)) {
+    return next(new AppError('Student already in pending list', 400));
+  }
+
+  classData.pendingStudents.push(userId);
+  await classData.save();
+
+  res.status(200).json({ success: true, message: 'Student added to pending list' });
+});
+
+// Function to approve or reject a pending student
+exports.handlePendingStudent = asyncHandler(async (req, res, next) => {
+  const { userId, classId, action } = req.body;
+
+  if (!userId || !classId || !['approve', 'reject'].includes(action)) {
+    return next(new AppError('User ID, Class ID, and valid action are required', 400));
+  }
+
+  const classData = await Class.findById(classId);
+
+  if (!classData) {
+    return next(new AppError('Class not found', 404));
+  }
+
+  const studentIndex = classData.pendingStudents.indexOf(userId);
+
+  if (studentIndex === -1) {
+    return next(new AppError('Student not in pending list', 404));
+  }
+
+  if (action === 'approve') {
+    classData.students.push(userId);
+  }
+
+  classData.pendingStudents.splice(studentIndex, 1);
+  await classData.save();
+
+  res.status(200).json({ success: true, message: `Student ${action === 'approve' ? 'approved' : 'rejected'}` });
+});
