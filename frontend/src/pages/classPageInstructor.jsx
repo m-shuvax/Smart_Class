@@ -123,7 +123,7 @@ const ClassPageInstructor = () => {
                   className="mx-auto bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow-md mr-2 h-10"
                   onClick={() => setIsAddingFile(true)}
                 >
-                  <FaPlus className="w-4 h-4 inline-block mr-2" />
+                  <FaPlus className="w-4 h-4 inline-block mr-2 mb-1" />
                   Add File
                 </button>
                 {isAddingFile && (
@@ -184,7 +184,7 @@ const ClassPageInstructor = () => {
                   to="/StudentList"
                   className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md h-10"
                 >
-                  <FaUser className="w-6 h-6 inline-block mr-2" />
+                  <FaUser className="w-4 h-4 inline-block mr-2 mb-1" />
                   Students List
                 </Link>
               </div>
@@ -205,7 +205,7 @@ const ClassPageInstructor = () => {
               )}
 
               <div className="flex flex-row">
-                <div className="fixed bottom-10 left-10">
+                <div className="fixed pt-32">
                   <div>
                     {isEditingBroadcast ? (
                       <input
@@ -245,7 +245,7 @@ const ClassPageInstructor = () => {
                         className="w-40 mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 shadow rounded-md flex items-center"
                         onClick={handleEditButtonClick}
                       >
-                        <FaEdit className="mr-2" /> Edit
+                        <FaEdit className="h-5 w-5 mr-2" /> Edit
                       </button>
                     </div>
                   </div>
@@ -260,10 +260,10 @@ const ClassPageInstructor = () => {
                   </div>
                   <div className="mt-4">
                     <button
-                      className="w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                      className="w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white py-2 px-4 rounded"
                       onClick={() => setIsAddingLesson(true)}
                     >
-                      <FaPlay className="mr-2" />
+                      <FaPlus className="mr-2" />
                       Add Lesson
                     </button>
                   </div>
@@ -272,7 +272,7 @@ const ClassPageInstructor = () => {
                       <dialog className="fixed inset-0 overflow-y-auto z-10" open={isAddingLesson}>
                         <div className="flex items-center justify-center">
                           <div className="bg-white rounded-lg shadow-lg p-8">
-                            <h2 className="text-xl font-semibold mb-4">Add Lesson</h2>
+                          <h2 className="text-xl font-semibold mb-2">Add Lesson</h2>
                             <div className="mb-4">
                               <input
                                 type="text"
