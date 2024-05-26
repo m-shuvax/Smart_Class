@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Navbar from '../features/Navbar';
 
 
 const LoginPage = () => {
@@ -50,6 +51,7 @@ const LoginPage = () => {
 
   return (
     <div className="flex h-screen bg-blue-100">
+      <Navbar />
       <div className="w-2/3 flex justify-center items-center">
         <form className="bg-white p-8 rounded-lg shadow-md" onSubmit={handleSubmit}>
           {error && <p className="text-red-500 mb-4">{error}</p>}

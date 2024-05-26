@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
+import Navbar from '../features/Navbar';
 
 
 const RegistrationPage = () => {
@@ -114,9 +115,10 @@ const RegistrationPage = () => {
 
   return (
     <div className="mt-10 min-h-screen bg-gray-100 flex flex-col">
+      <Navbar />
       <Link
         to="/"
-        className="mx-auto mt-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="mx-auto mt-12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         Back to Login
       </Link>

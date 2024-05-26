@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import { FaCheck } from 'react-icons/fa';
 import axios from 'axios';
+import Navbar from '../features/Navbar';
 
 
 const HomePageInstructor = () => {
@@ -55,8 +56,9 @@ const HomePageInstructor = () => {
   };
 
   return (
-    <div className="mt-16 min-h-screen bg-blue-100 p-6 flex">
-      <div className="w-3/4">
+    <div className="h-screen bg-blue-100 flex">
+      <Navbar />
+      <div className="w-3/4 pt-20 pl-6">
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-4 gap-4">
           {classrooms.map((classroom) => (
@@ -70,7 +72,7 @@ const HomePageInstructor = () => {
           ))}
         </div>
       </div>
-      <div className="w-1/4 pl-4">
+      <div className="w-1/4 pr-4 pt-20">
         {!showInput && (
           <div>
             <button
@@ -130,7 +132,8 @@ const HomePageInstructor = () => {
           </>
         )}
       </div>
-    </div>
+      </div>
+    
   );
 };
 

@@ -12,7 +12,6 @@ function App() {
   return (
     <Router>
       <div>
-        <Navbar />
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route path="/register" element={<RegistrationPage />} />

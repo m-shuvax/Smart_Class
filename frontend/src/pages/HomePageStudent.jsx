@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
+import Navbar from '../features/Navbar';
 
 const HomePageStudent = () => {
   const [classrooms, setClassrooms] = useState(['Math 101', 'English 202', 'History 303', 'Science 404']);
@@ -25,8 +26,9 @@ const HomePageStudent = () => {
   };
 
   return (
-    <div className="fixed top-16 w-screen bg-blue-100 min-h-screen p-6 flex">
-      <div className="w-3/4">
+    <div className="fixed top-16 w-screen bg-blue-100 min-h-screen flex">
+      <Navbar />
+      <div className="w-3/4 pt-8 pl-4">
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-4 gap-4">
           {classrooms.map((classroom, index) => (
@@ -40,11 +42,11 @@ const HomePageStudent = () => {
           ))}
         </div>
       </div>
-      <div className="w-1/4 pl-4">
+      <div className="w-1/4 pl-6">
         {!showInput && (
           <button
             onClick={handleToggleInput}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded"
           >
             <PlusCircleIcon className="h-5 w-5" />
           </button>
@@ -53,20 +55,21 @@ const HomePageStudent = () => {
           <>
             <button
               onClick={handleToggleInput}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-l"
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-3 mt-4 rounded"
             >
               <XCircleIcon className="h-5 w-5" />
             </button>
+            <br />
             <input
               type="text"
               placeholder="Enter classroom code"
               value={newClassroomCode}
               onChange={(e) => setNewClassroomCode(e.target.value)}
               onKeyPress={handleEnterKeyPress}
-              className="border border-gray-300 rounded-r px-3 py-2 my-3 w-full"
+              className="border border-gray-300 rounded px-3 py-2 my-3 w-4/5"
             />
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
               Enter
             </button>

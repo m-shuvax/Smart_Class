@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from '../features/Navbar';
 
 const ClassPageStudent = () => {
   const [category, setCategory] = useState('assignments');
@@ -61,6 +62,7 @@ const ClassPageStudent = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
+      <Navbar />
       <div className="my-24 container mx-auto px-4 py-8">
         <Link
           to="/HomePageStudent"
