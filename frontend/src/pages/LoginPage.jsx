@@ -53,7 +53,7 @@ const LoginPage = () => {
       }
     };
 
-<
+
  return (
     <div className="flex h-screen bg-blue-100">
       <Navbar />
