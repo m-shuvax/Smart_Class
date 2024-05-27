@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../features/Navbar';
+import Chat from '../components/chat';
 
 const StudentList = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -91,8 +92,7 @@ const StudentList = () => {
         </div>
         <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
           <h2 className="text-lg font-bold mb-4 text-white">Chat With Students</h2>
-          {/* Implement your chat component or placeholder here */}
-          {/* ... Chat content or placeholder */}
+          <Chat />
         </div>
       </div>
     </div>

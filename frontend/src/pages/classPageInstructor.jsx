@@ -4,6 +4,7 @@ import { FaPlay, FaEdit, FaPlus, FaTrash, FaUser } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
+import Chat from '../components/chat';
 
 const ClassPageInstructor = () => {
   const [category, setCategory] = useState('assignments');
@@ -363,8 +364,7 @@ const ClassPageInstructor = () => {
             {!isAddingLesson && (
               <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
                 <h2 className="text-lg font-bold mb-4 text-white">Chat with Students</h2>
-                {/* Implement your chat component or placeholder here */}
-                {/* ... Chat content or placeholder */}
+                <Chat />
               </div>
             )}
           </div>
