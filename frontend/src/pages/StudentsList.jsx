@@ -5,9 +5,9 @@ const StudentList = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const students = [
-    { id: 1, firstName: 'Abigail', lastName: 'Cohen', email: 25, phoneNumber: '0552759894'},
-    { id: 2, firstName: 'Uri', lastName: 'Levy', email: 22, phoneNumber: '0627657776' },
-    { id: 3, firstName: 'Michael', lastName: 'Golan', email: 23, phoneNumber: '0526696507' },
+    { id: 1, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894'},
+    { id: 2, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
+    { id: 3, firstName: 'Michael', lastName: 'Golan', email: 'tr0526696507@gmail.com', phoneNumber: '0526696507' },
     { id: 3, firstName: 'Binyomin', lastName: 'Zaiddman', email: 23, phoneNumber: '58378634789' },
     { id: 3, firstName: 'Meir', lastName: 'Noishtut', email: 23, phoneNumber: '246346' },
     { id: 3, firstName: 'Menachem', lastName: 'Shubkas', email: 23, phoneNumber: '05265752696507' },
@@ -19,9 +19,9 @@ const StudentList = () => {
   };
 
   return (
-    <div className="flex mt-20 bg-blue-100 h-1/1">
+    <div className="flex mt-16 bg-blue-100 h-screen">
       
-      <div className="w-1/3 bg-blue-200 p-4">
+      <div className="w-1/3 bg-blue-200 p-4 h-full">
         <Link
           to="/classPageInstructor" // הוספתי קישור לדף המתאים
           className="mr-20 flex items-center bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shadow-md w-1/2"
@@ -46,12 +46,12 @@ const StudentList = () => {
           ))}
         </ul>
       </div>
-      <div className="w-1/3 p-4 h-1/1">
+      <div className="w-1/3 p-4 h-full">
         {selectedStudent && (
           <div className="p-4 mt-4">
             <h2 className="text-xl font-bold">{selectedStudent.firstName} {selectedStudent.lastName}</h2>
-            <p>email: {selectedStudent.email}</p>
-            <p>phoneNumber: {selectedStudent.phoneNumber}</p>
+            <p><strong>email</strong>: {selectedStudent.email}</p>
+            <p><strong>phoneNumber</strong>: {selectedStudent.phoneNumber}</p>
             {/* Additional details about the student can be added here */}
           </div>
         )}
