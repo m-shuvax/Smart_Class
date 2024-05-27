@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { FaPlay, FaEdit, FaPlus, FaTrash, FaUser } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
+import Navbar from '../features/Navbar';
+
 
 const ClassPageInstructor = () => {
   const [category, setCategory] = useState('assignments');
@@ -97,16 +99,15 @@ const ClassPageInstructor = () => {
   const [selectedCategory, setSelectedCategory] = useState('Lesson Summaries');
 
   return (
-    <div className="flex flex-col min-h-screen bg-blue-100">
-      <div className="my-14 container mx-auto px-4 py-8">
+    <div className="flex flex-col h-screen bg-blue-100">
+      <Navbar />
+      <div className="my-14 container mx-auto px-4 pt-8">
         <div className="flex flex-row justify-between">
-          {!isAddingLesson && (
-
-            <div className="flex justify-between items-center mb-6">
-              <Link
-                to="/HomePageInstructor"
-                className="mr-20 bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
-              >
+          <div className="flex justify-between items-center mb-4">
+          {!isAddingFile && (<Link
+              to="/HomePageInstructor"
+              className="mr-20 bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
+            >
                 <svg
                   className="w-6 h-6 inline-block mr-2"
                   fill="none"
@@ -340,11 +341,13 @@ const ClassPageInstructor = () => {
                       key={index}
                       className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
                     >
+
                       <div className="flex items-center">
                         <span className="text-base font-medium">{stream.name}</span>
                       </div>
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(stream.date).toLocaleDateString('en-GB')}</span>
+n
                       </div>
                       <button onClick={() => handleDeleteLiveStream(stream.id)}>
                         <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />

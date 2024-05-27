@@ -158,3 +158,9 @@ exports.updateLiveLink = asyncHandler(async (req, res, next) => {
     message: 'Live link updated successfully',
   });
 });
+
+exports.aaa = asyncHandler(async (req, res, next) => {
+  console.log('hhhh');
+  console.log(req);}
+  );
+  //const user
