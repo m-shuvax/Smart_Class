@@ -12,7 +12,7 @@ const StudentList = () => {
     { id: 3, firstName: 'Binyomin', lastName: 'Zaiddman', email: '4140276@gmail.com', phoneNumber: '0555613314' },
     { id: 3, firstName: 'Meir', lastName: 'Noishtut', email: 'msn.binah.1@gmail.com', phoneNumber: '0527124197' },
     { id: 3, firstName: 'Menachem', lastName: 'Shubkas', email: 'mc1212479@gmail.com', phoneNumber: '0533121279' },
-=
+
     // and so on...
   ];
 
@@ -68,7 +68,7 @@ const StudentList = () => {
         {/* Implement your chat component or placeholder here */}
         {/* ... Chat content or placeholder */}
       </div>
-    </div>
+    
   );
 };
 
