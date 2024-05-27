@@ -6,7 +6,7 @@ import Chat from '../components/chat';
 const StudentList = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-  const students = [
+  const students = [ 
     { id: 1, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894' },
     { id: 2, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
     { id: 3, firstName: 'Michael', lastName: 'Golan', email: 'tr0526696507@gmail.com', phoneNumber: '0526696507' },
