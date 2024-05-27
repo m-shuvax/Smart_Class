@@ -3,52 +3,47 @@ import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import { FaCheck } from 'react-icons/fa';
 import axios from 'axios';
-import Navbar from '../features/Navbar'
+import Navbar from '../features/Navbar';
+
 
 const HomePageInstructor = () => {
   const [classrooms, setClassrooms] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showInput, setShowInput] = useState(false);
   const [newClassName, setNewClassName] = useState([]);
-  const [pendingStudents, setpendingStudents] = useState([]);
-
+  const [students, setStudents] = useState([]);
 
   useEffect(() => {
     const fetchClassrooms = async () => {
-     try {
-        const [classroomsResponse, pendingStudentsResponse] = await Promise.all([
-          axios.get('http://localhost:5000/api/users/classes'),
-          axios.get('http://localhost:5000/api/users/pendingStudents'),
-        ]);
-        setClassrooms(classroomsResponse.data);
-        setpendingStudents(pendingStudentsResponse.data);
-      }
-      catch (error) {
-        console.error('Error fetching data: ', error);
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/classes');
+        setClassrooms(response.data);
+      } catch (error) {
+        console.error('Error fetching classrooms:', error);
       }
     };
-    fetchData();
-  }, []);
-  
-  
 
-  const handleAddClassroom = async () => {
-    if (newClassName.trim() === ('')) return;
-    const id = `class-${Date.now()}`;
-    const newClassrooms = { id, name: newClassName };
-    try {
-      const res = await axios.post('http://localhost:5000/api/users/classes', { id, name: newClassName });
-      if (res.status === 201) {
-        setClassrooms(newClassrooms);
-        setNewClassName('');
-        setShowInput(false);
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/pendignStudents');
+        setStudents(response.data);
+      } catch (error) {
+        console.error('Error fetching classrooms:', error);
       }
-    }
-    catch (error) {
-      console.error('Error adding classroom: ', error);
-    }
+    };
+
+    fetchClassrooms();
+    fetchStudents()
+  }, []);
+
+  const handleAddClassroom = () => {
+    if (newClassName.trim() === ('')) return
+    const id = `class-${Date.now()}`;
+    const newClassrooms = [...classrooms, { id, name: newClassName }];
+    setClassrooms(newClassrooms);
+    setNewClassName('');
+    setShowInput(false);
   };
-  
 
   const handleToggleInput = () => {
     setShowInput(!showInput);
@@ -61,8 +56,9 @@ const HomePageInstructor = () => {
   };
 
   return (
-    <div className="mt-16 min-h-screen bg-blue-100 p-6 flex">
-      <div className="w-3/4">
+    <div className="h-screen bg-blue-100 flex">
+      <Navbar />
+      <div className="w-3/4 pt-20 pl-6">
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-4 gap-4">
           {classrooms.map((classroom) => (
@@ -76,7 +72,7 @@ const HomePageInstructor = () => {
           ))}
         </div>
       </div>
-      <div className="w-1/4 pl-4">
+      <div className="w-1/4 pr-4 pt-20">
         {!showInput && (
           <div>
             <button
@@ -93,7 +89,6 @@ const HomePageInstructor = () => {
                   <li
                     key={student.id}
                     className="text-left cursor-pointer text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md flex justify-between items-center"
-
                     onClick={() => handleStudentClick(student)}
                   >
                     <button>
@@ -102,7 +97,6 @@ const HomePageInstructor = () => {
                     {student.firstName} {student.lastName}<br /> class id {student.id}
                     <button className="bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center">
                       <FaCheck className="h-14 w-4 mr-2" />
-
                     </button>
                   </li>
                 ))}
@@ -138,7 +132,8 @@ const HomePageInstructor = () => {
           </>
         )}
       </div>
-    </div>
+      </div>
+    
   );
 };
 
