@@ -28,6 +28,7 @@ router.route('/:email')
     .put(authMiddleware.protect, userControllers.updateUser)
     .delete(authMiddleware.protect, userControllers.deleteUser);
 
+
 // New routes for pending students
 router.post('/addPendingStudent', authMiddleware.protect, pageRenderController.addPendingStudent);
 router.post('/handlePendingStudent', authMiddleware.protect, pageRenderController.handlePendingStudent);

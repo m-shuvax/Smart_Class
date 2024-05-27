@@ -7,8 +7,7 @@ const Chat = require('./../models/chatModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const { liveLinkObj } = require('./../utils/liveLink');
-const authMiddleware = require('./../middleware/authMiddleware');
-// Accessing liveLink
+const message = require('../models/messageModel');
 let liveLink = liveLinkObj.value;
 
 // Function to render instructor classes and pending students
@@ -55,6 +54,7 @@ exports.renderStudentClasses = asyncHandler(async (req, res, next) => {
     data: studentClasses,
   });
 });
+
 
 // Function to render student class
 exports.renderStudentClass = asyncHandler(async (req, res, next) => {
