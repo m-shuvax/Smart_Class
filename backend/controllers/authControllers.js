@@ -45,7 +45,6 @@ exports.register = asyncHandler(async (req, res, next) => {
 
 // Middleware to protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
-  console.log(11);
   let token;
   if (req.headers.cookie) {
     token = req.headers.cookie.split('=')[1];
@@ -66,7 +65,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 // Controller for user login
 exports.login = asyncHandler(async (req, res, next) => {
-  console.log(22);
   const { email, password } = req.body;
   if (!email || !password) return next(new AppError('Email or password is missing', 400));
   const user = await User.findOne({ email }).select('+password');
