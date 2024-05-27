@@ -7,7 +7,6 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Navbar from '../features/Navbar';
 
 
-
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -15,46 +14,42 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(username, password);
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      console.log(username, password);
-
-      // send username and password to server to authenticate user
-      try {
-        const response = await axios.post('/api/auth/login', { username, password });
-        // Store the token in state or other storage
-        localStorage.setItem('token', response.data.token);
-
+    // send username and password to server to authenticate user
+    try {
+      const response = await axios.post('/api/auth/login', { username, password });
+      // Store the token in state or other storage
+      localStorage.setItem('token', response.data.token);
 
       // Save the token in cookies
       Cookies.set('token', response.data.token, { expires: 7 });
       // The token will be saved for 7 days
 
+      // Check if the user is a student or a teacher
+      const isStudent = response.data.role === 'student';
 
-        // Check if the user is a student or a teacher
-        const isStudent = response.data.role === 'student';
-
-        // Redirect based on user role
-        if (isStudent) {
-          navigate('/HomePageStudent');
-        }
-        else {
-          navigate('/HomePageInstructor');
-        }
+      // Redirect based on user role
+      if (isStudent) {
+        navigate('/HomePageStudent');
       }
-      catch (error) {
-        // if not authenticated, show error message
-        setError('Authentication failed. Please check your credentials.');
-        console.error('Authentication error:', error);
-        // if not authenticated, clear username and password
-        setUsername('');
-        setPassword('');
+      else {
+        navigate('/HomePageInstructor');
       }
-    };
+    }
+    catch (error) {
+      // if not authenticated, show error message
+      setError('Authentication failed. Please check your credentials.');
+      console.error('Authentication error:', error);
+      // if not authenticated, clear username and password
+      setUsername('');
+      setPassword('');
+    }
+  };
 
-
- return (
+  return (
     <div className="flex h-screen bg-blue-100">
       <Navbar />
       <div className="w-2/3 flex justify-center items-center">
@@ -118,4 +113,4 @@ const LoginPage = () => {
   );
 };
 
-  export default LoginPage;
+export default LoginPage;
