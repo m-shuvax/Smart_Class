@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
+import Navbar from '../features/Navbar';
+
 
 
 const RegistrationPage = () => {
@@ -216,7 +219,7 @@ const RegistrationPage = () => {
                   className="absolute inset-y-0 right-0 px-4 flex items-center text-gray-500"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? 'Hide' : 'Show'}
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
               {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}

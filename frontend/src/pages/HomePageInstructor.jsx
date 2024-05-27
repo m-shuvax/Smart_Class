@@ -1,39 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
-FaCheck 
 import { FaCheck } from 'react-icons/fa';
+import axios from 'axios';
+import Navbar from '../features/Navbar'
+
 const HomePageInstructor = () => {
-  const [classrooms, setClassrooms] = useState([
-    { id: '1', name: 'Math 101' },
-    { id: '2', name: 'English 202' },
-    { id: '3', name: 'History 303' },
-    { id: '4', name: 'Science 404' }
-  ]);
+  const [classrooms, setClassrooms] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showInput, setShowInput] = useState(false);
-  const [newClassName, setNewClassName] = useState('');
+  const [newClassName, setNewClassName] = useState([]);
+  const [pendingStudents, setpendingStudents] = useState([]);
 
-  const students = [
-    { id: 1, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894' },
-    { id: 2, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
-    { id: 3, firstName: 'Michael', lastName: 'Golan', email: 'tr0526696507@gmail.com', phoneNumber: '0526696507' },
-    { id: 4, firstName: 'Beny', lastName: 'Zaiddman', email: 23, phoneNumber: '58378634789' },
-    { id: 5, firstName: 'Meir', lastName: 'Noishtut', email: 23, phoneNumber: '246346' },
-    { id: 6, firstName: 'Meny', lastName: 'Shubkas', email: 23, phoneNumber: '05265752696507' },
-  ];
 
-  const handleStudentClick = (student) => {
-    setSelectedStudent(student);
-  };
+  useEffect(() => {
+    const fetchClassrooms = async () => {
+     try {
+        const [classroomsResponse, pendingStudentsResponse] = await Promise.all([
+          axios.get('http://localhost:5000/api/users/classes'),
+          axios.get('http://localhost:5000/api/users/pendingStudents'),
+        ]);
+        setClassrooms(classroomsResponse.data);
+        setpendingStudents(pendingStudentsResponse.data);
+      }
+      catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+    fetchData();
+  }, []);
+  
+  
 
-  const handleAddClassroom = () => {
+  const handleAddClassroom = async () => {
+    if (newClassName.trim() === ('')) return;
     const id = `class-${Date.now()}`;
-    const newClassrooms = [...classrooms, { id, name: newClassName }];
-    setClassrooms(newClassrooms);
-    setNewClassName('');
-    setShowInput(false);
+    const newClassrooms = { id, name: newClassName };
+    try {
+      const res = await axios.post('http://localhost:5000/api/users/classes', { id, name: newClassName });
+      if (res.status === 201) {
+        setClassrooms(newClassrooms);
+        setNewClassName('');
+        setShowInput(false);
+      }
+    }
+    catch (error) {
+      console.error('Error adding classroom: ', error);
+    }
   };
+  
 
   const handleToggleInput = () => {
     setShowInput(!showInput);
@@ -78,9 +93,16 @@ const HomePageInstructor = () => {
                   <li
                     key={student.id}
                     className="text-left cursor-pointer text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md flex justify-between items-center"
+
+                    onClick={() => handleStudentClick(student)}
                   >
-                    {student.firstName} {student.lastName}<br /> class id {student.id}<button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                      <FaCheck className="h-14 w-5 mr-2" />
+                    <button>
+                      <XCircleIcon className="h-6 w-6 hover:text-red-700" />
+                    </button>
+                    {student.firstName} {student.lastName}<br /> class id {student.id}
+                    <button className="bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center">
+                      <FaCheck className="h-14 w-4 mr-2" />
+
                     </button>
                   </li>
                 ))}
