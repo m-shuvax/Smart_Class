@@ -29,9 +29,7 @@ const handleError = (next, message, statusCode) => {
 // User Controllers
 exports.createUser = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
-
   const hashedPassword = await bcrypt.hash(password, 12);
-
   const user = await User.create({
     firstName,
     lastName,
@@ -40,11 +38,9 @@ exports.createUser = asyncHandler(async (req, res, next) => {
     phoneNumber,
     role,
   });
-
   if (!user) {
     return handleError(next, 'Failed to create user', 500);
   }
-
   handleResponse(res, user, 201);
   
   console.log('hhhh');

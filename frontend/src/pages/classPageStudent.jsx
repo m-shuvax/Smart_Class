@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaTrash, FaPlay} from 'react-icons/fa';
+import { FiMenu } from 'react-icons/fi';
+import FilesNav from '../components/filesNav';
+import Navbar from '../features/Navbar';
+import Chat from '../components/chat';
 
 const ClassPageStudent = () => {
   const [category, setCategory] = useState('assignments');
@@ -32,6 +37,17 @@ const ClassPageStudent = () => {
     { name: 'Lesson 3', date: '2024-05-14' },
   ]);
   const [showLiveStreams, setShowLiveStreams] = useState(false);
+  const [isAddingLesson, setIsAddingLesson] = useState(false);
+
+  const handleFileInputChange = (event) => {
+    if (event.target.name === 'newFileName') {
+      setNewFileName(event.target.value);
+    } else if (event.target.name === 'newFileDate') {
+      setNewFileDate(event.target.value);
+    } else if (event.target.name === 'editLiveBroadcastLink') {
+      setEditLiveBroadcastLink(event.target.value);
+    }
+  };
 
   const handleCategoryChange = (newCategory) => {
     setCategory(newCategory);
@@ -46,7 +62,6 @@ const ClassPageStudent = () => {
     const sortedFiles = allFilesArray.sort((a, b) => new Date(a.date) - new Date(b.date));
     setCategory('allFiles');
     setFilteredFiles(sortedFiles);
-    setShowLiveStreams(false);
   };
 
   const handleLiveStreamsClick = () => {
@@ -59,12 +74,15 @@ const ClassPageStudent = () => {
     setCategory(null);
   };
 
+  const [selectedCategory, setSelectedCategory] = useState('Lesson Summaries');
+
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
-      <div className="my-24 container mx-auto px-4 py-8">
+      <Navbar />
+      <div className="container mx-auto pt-24 pl-4">
         <Link
-          to="/HomePageStudent"
-          className="fixed top-12 my-10 mx-auto mb-8 bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
+          to="/HomePageInstructor"
+          className="mr-20 bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
         >
           <svg
             className="w-6 h-6 inline-block mr-2"
@@ -73,100 +91,63 @@ const ClassPageStudent = () => {
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            ></path>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
           </svg>
-          Back To Home Page
+          Back To Classrooms
         </Link>
 
         <div className="flex flex-row">
-          <div className="w-2/3 p-4">
-            <div className="flex flex-row justify-between mb-4">
-              <button
-                className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${
-                  category === 'allFiles' ? 'bg-indigo-700' : ''
-                }`}
-                onClick={handleAllFilesClick}
-              >
-                All Files
-              </button>
-              <button
-                className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${
-                  category === 'lessonSummaries' ? 'bg-indigo-700' : ''
-                }`}
-                onClick={() => handleCategoryChange('lessonSummaries')}
-              >
-                Lesson Summaries
-              </button>
-              <button
-                className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${
-                  category === 'studyMaterials' ? 'bg-indigo-700' : ''
-                }`}
-                onClick={() => handleCategoryChange('studyMaterials')}
-              >
-                Study Materials
-              </button>
-              <button
-                className={`w-1/4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md mr-2 shadow ${
-                  category === 'assignments' ? 'bg-indigo-700' : ''
-                }`}
-                onClick={() => handleCategoryChange('assignments')}
-              >
-                Assignments
-              </button>
-            </div>
+          <div className="w-2/3 p-4 pt-6 pl-0 pr-9">
+            {!isAddingLesson && (<FilesNav
+              category={category}
+              setCategory={setCategory}
+              setShowLiveStreams={setShowLiveStreams}
+              setFilteredFiles={setFilteredFiles}
+              filesByCategory={filesByCategory}
+            />
+            )}
             <div className="flex flex-row">
-              <div className="fixed bottom-10 left-10">
+              <div className="fixed bottom-9">
                 <div>
                   <button
-                    className="w-40 inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-md mr-2 shadow hover:bg-red-700"
+                    className="w-40 inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-md mr-2 shadow hover:bg-red-700 relative"
                     onClick={() =>
                       window.open(
+                        editLiveBroadcastLink ||
                         'https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success'
                       )
                     }
                   >
-                    <svg className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 8a3 3 0 0 0-3-3v-.5a.5.5 0 0 0-1-1H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-.5a.5.5 0 0 0-1-1zm5 2v8a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <FaPlay className="h-4 w-4 mr-2" />
                     Live Broadcast
                   </button>
                 </div>
-                <div className="mt-4">
-                  <button
-                    className="w-40 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700"
-                    onClick={handleReplayClick}
-                  >
-                    <svg className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 8a3 3 0 0 0-3-3v-.5a.5.5 0 0 0-1-1H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-.5a.5.5 0 0 0-1-1zm5 2v8a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Replay
-                  </button>
+                <div className="mt-0.5">
+                <button
+                        className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-gray-400 text-white rounded-md mr-2 shadow hover:bg-gray-300"
+                        onClick={() => setShowLiveStreams(!showLiveStreams)}
+                      >
+                        <FiMenu className="h-6 w-6 mr-2" />
+                        <span>Recordings</span>
+                      </button>
                 </div>
               </div>
               {!showLiveStreams && (
-                <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
+                <div className="ml-52 mt-6 grow flex flex-col h-80 overflow-y-auto">
                   {filteredFiles.map((file, index) => (
                     <div
                       key={index}
-                      className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300"
+                      className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex items-center mb-4 h-14"
                     >
-                      <div className="flex justify-between">
+                      <div className="flex items-center">
                         <span className="text-base font-medium">{file.name}</span>
-                        <span className="text-gray-500">{file.date}</span>
                       </div>
+                      <div style={{ textAlign: 'center', flex: 1 }}>
+                        <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
+                      </div>
+                      <button onClick={() => handleDeleteFile(file.id)}>
+                        <FaTrash className="w-4 h-4 inline-block" style={{ verticalAlign: 'middle' }} />
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -176,12 +157,17 @@ const ClassPageStudent = () => {
                   {liveStreams.map((stream, index) => (
                     <div
                       key={index}
-                      className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300"
+                      className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
                     >
-                      <div className="flex justify-between">
+                      <div className="flex items-center">
                         <span className="text-base font-medium">{stream.name}</span>
-                        <span className="text-gray-500">{stream.date}</span>
                       </div>
+                      <div style={{ textAlign: 'center', flex: 1 }}>
+                        <span className="text-gray-500">{new Date(stream.date).toLocaleDateString('en-GB')}</span>
+                      </div>
+                      <button onClick={() => handleDeleteLiveStream(stream.id)}>
+                        <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -190,8 +176,7 @@ const ClassPageStudent = () => {
           </div>
           <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
             <h2 className="text-lg font-bold mb-4 text-white">Chat with Teacher</h2>
-            {/* Implement your chat component or placeholder here */}
-            {/* ... Chat content or placeholder */}
+            <Chat />
           </div>
         </div>
       </div>

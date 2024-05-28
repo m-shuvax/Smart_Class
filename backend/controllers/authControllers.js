@@ -9,14 +9,14 @@ const bcrypt = require('bcryptjs');
 
 // Function to sign a JWT token with user id
 const signToken = id => {
-    return jwt.sign({ id, iat: Date.now() }, process.env.JWT_SECRET);
+  return jwt.sign({ id, iat: Date.now() }, process.env.JWT_SECRET);
 };
 
 
 // Function to create and send a token to the client
 const createSendToken = (user, statusCode, res) => {
 
-const token = signToken(user._id);
+  const token = signToken(user._id);
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -63,27 +63,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
   next();
 });
 
-const token = signToken(user._id);
-const cookieOptions = {
-  expires: new Date(
-    Date.now() + process.env.JWT_EXPIRES_IN
-  ),
-  httpOnly: true,
-  secure: true
-}
-
-// Setting the JWT token as a cookie
-res.cookie('jwt', token, cookieOptions);
-// Sending the response with the token and user data
-res.status(statusCode).json({
-  status: 'success',
-  token,
-  data: {
-    user
-  }
-});
-
-
 // Controller for user login
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
@@ -97,72 +76,55 @@ exports.login = asyncHandler(async (req, res, next) => {
 // Logout function
 exports.logout = asyncHandler(async (req, res, next) => {
   res.cookie('jwt', 'loggedout', {
-    expires: new Date(Date.now() + 10 * 1000), 
+    expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true
   });
   res.status(200).json({ status: 'success' });
 });
 
-    console.log('token');
-    const token = signToken(user._id);
-    const cookieOptions = {
-        expires: new Date(
-            Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-        ),
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production' // Use secure cookies in production
-    };
-
-    res.cookie('jwt', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-    res.json({
-        data: {
-            user
-        }
-    });
-};
 
 
 exports.register = asyncHandler(async (req, res, next) => {
-    console.log('register');
-    const { firstName, lastName, email, password, phoneNumber, role} = req.body;
-    if (!email || !firstName || !lastName || !password || !phoneNumber || !role) return next(new AppError('Request details are missing', 400));
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const newUser = await User.create({
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        phoneNumber,
-        role,
-      });
-    createSendToken(newUser, 201, res);
+  console.log('register');
+  const { firstName, lastName, email, password, phoneNumber, role } = req.body;
+  if (!email || !firstName || !lastName || !password || !phoneNumber || !role) return next(new AppError('Request details are missing', 400));
+  const hashedPassword = await bcrypt.hash(password, 12);
+  const newUser = await User.create({
+    firstName,
+    lastName,
+    email,
+    password: hashedPassword,
+    phoneNumber,
+    role,
+  });
+  createSendToken(newUser, 201, res);
 });
 
 
 // Middleware to protect routes
 exports.protect1 = asyncHandler(async (req, res, next) => {
-    //if (!req.headers.cookie) return next(new AppError(403, 'Please login'))     
-    if (!req.headers.cookie) return next()
-    const token = req.headers.cookie.split('=')[1]
-    if (!token) return next(new AppError(403, 'Please login'))
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
-    if (!decoded) return next(new AppError(403, 'Please login'))
-    const { id } = decoded
-    const user = await User.findById(id)
-    if (!user) return next(new AppError(400, 'Please register'))
-    req.user = user
-    console.log('protect');
-    next()
+  //if (!req.headers.cookie) return next(new AppError(403, 'Please login'))     
+  if (!req.headers.cookie) return next()
+  const token = req.headers.cookie.split('=')[1]
+  if (!token) return next(new AppError(403, 'Please login'))
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+  if (!decoded) return next(new AppError(403, 'Please login'))
+  const { id } = decoded
+  const user = await User.findById(id)
+  if (!user) return next(new AppError(400, 'Please register'))
+  req.user = user
+  console.log('protect');
+  next()
 })
 
 
 
 // Middleware to restrict routes to certain user roles
 exports.restrictTo = (...roles) => {
-    return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return next(new AppError('You do not have permission to perform this action', 403));
-        }
-        next();
-    };
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('You do not have permission to perform this action', 403));
+    }
+    next();
+  };
 };
