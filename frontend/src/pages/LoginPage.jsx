@@ -20,7 +20,7 @@ const LoginPage = () => {
 
     // send username and password to server to authenticate user
     try {
-      const response = await axios.post('/api/auth/login', { username, password });
+      const response = await axios.post('/api/users/login', { username, password });
       // Store the token in state or other storage
       localStorage.setItem('token', response.data.token);
 
@@ -41,7 +41,7 @@ const LoginPage = () => {
     }
     catch (error) {
       // if not authenticated, show error message
-      setError('Authentication failed. Please check your credentials.');
+      setError('Please enter a valid email and password');
       console.error('Authentication error:', error);
       // if not authenticated, clear username and password
       setUsername('');
@@ -54,7 +54,6 @@ const LoginPage = () => {
       <Navbar />
       <div className="w-2/3 flex justify-center items-center">
         <form className="bg-white p-8 rounded-lg shadow-md" onSubmit={handleSubmit}>
-          {error && <p className="text-red-500 mb-4">{error}</p>}
           <div className="mb-6">
             <input
               value={username}
@@ -64,7 +63,7 @@ const LoginPage = () => {
               className="px-4 py-2 border border-gray-300 rounded-md w-80"
             />
           </div>
-          <div className="mb-6 relative">
+          <div className="mb-4 relative">
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -80,9 +79,10 @@ const LoginPage = () => {
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
+          {error ? <p className="text-red-500">{error}</p> : <br />}
           <Link
             to="/HomePageInstructor"
-            className="text-sm text-gray-600 hover:text-gray-800 mb-6 inline-block"
+            className="text-sm text-gray-600 hover:text-gray-800 hover:font-bold mt-2 mb-6 inline-block"
           >
             Forgot Password?
           </Link >
@@ -99,7 +99,7 @@ const LoginPage = () => {
           </div>
         </form>
       </div>
-      <div className="w-1/3 bg-blue-200 flex justify-center items-center">
+      <div className="w-1/3 bg-blue-200 flex justify-center items-center text-center">
         <div>
           <p className="text-gray-800 mb-4">Not registered yet?</p>
           <Link to="/register">
