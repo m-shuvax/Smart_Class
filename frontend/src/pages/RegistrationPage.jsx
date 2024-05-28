@@ -116,9 +116,10 @@ const RegistrationPage = () => {
 
   return (
     <div className="mt-10 min-h-screen bg-gray-100 flex flex-col">
+      <Navbar />
       <Link
         to="/"
-        className="mx-auto mt-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="mx-auto mt-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         Back to Login
       </Link>
@@ -245,7 +246,7 @@ const RegistrationPage = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className={`w-full font-bold py-2 px-4 rounded ${!isPasswordValid() || !isEmailValid() ? 'bg-blue-300 hover:bg-blue-300' : 'bg-blue-500 hover:bg-blue-700'} text-white ${!isPasswordValid() || !isEmailValid() ? 'cursor-not-allowed' : ''}`}
               disabled={!isPasswordValid() || !isEmailValid()}
             >
               Register

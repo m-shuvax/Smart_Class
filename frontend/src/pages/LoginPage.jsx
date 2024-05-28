@@ -6,7 +6,6 @@ import Cookies from 'js-cookie';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Navbar from '../features/Navbar';
 
-
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -20,7 +19,7 @@ const LoginPage = () => {
 
     // send username and password to server to authenticate user
     try {
-      const response = await axios.post('/api/users/login', { username, password });
+      const response = await axios.post('http://localhost:5000/*/login', { username, password });
       // Store the token in state or other storage
       localStorage.setItem('token', response.data.token);
 
@@ -34,12 +33,10 @@ const LoginPage = () => {
       // Redirect based on user role
       if (isStudent) {
         navigate('/HomePageStudent');
-      }
-      else {
+      } else {
         navigate('/HomePageInstructor');
       }
-    }
-    catch (error) {
+    } catch (error) {
       // if not authenticated, show error message
       setError('Please enter a valid email and password');
       console.error('Authentication error:', error);
@@ -57,7 +54,7 @@ const LoginPage = () => {
           <div className="mb-6">
             <input
               value={username}
-              onChange={e => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               type="text"
               placeholder="Username"
               className="px-4 py-2 border border-gray-300 rounded-md w-80"
@@ -91,7 +88,9 @@ const LoginPage = () => {
               <div>
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">
+                  className={`font-bold py-3 px-6 rounded ${!username || !password ? 'bg-blue-300 text-white' : 'bg-blue-500 hover:bg-blue-700 text-white'}`}
+                  disabled={!username || !password}
+                >
                   Log In
                 </button>
               </div>
