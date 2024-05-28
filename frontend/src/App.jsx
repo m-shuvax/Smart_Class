@@ -7,6 +7,7 @@ import HomePageInstructor  from './pages/HomePageInstructor';
 import ClassPageStudent from './pages/classPageStudent'
 import ClassPageInstructor from './pages/classPageInstructor'
 import StudentList from './pages/StudentsList'
+import UpdateDetails from './pages/UpdateDetails'
 function App() {
   return (
     <Router>
@@ -19,6 +20,7 @@ function App() {
           <Route path="/ClassPageStudent" element={<ClassPageStudent />} />
           <Route path="/ClassPageInstructor" element={<ClassPageInstructor />} />
           <Route path="/StudentList" element={<StudentList />} />
+          <Route path="/UpdateDetails" element={<UpdateDetails />} />
         </Routes>
       </div>
     </Router>

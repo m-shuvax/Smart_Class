@@ -121,7 +121,7 @@ const RegistrationPage = () => {
         to="/"
         className="mx-auto mt-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
-        Back to Login
+        Back
       </Link>
       <div className="mt-4 min-h-screen bg-gray-100 flex flex-col">
         <div className="w-full max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
@@ -252,7 +252,7 @@ const RegistrationPage = () => {
               className={`mt-4 w-full font-bold py-2 px-4 rounded ${!isPasswordValid() || !isEmailValid() ? 'bg-blue-300 hover:bg-blue-300' : 'bg-blue-500 hover:bg-blue-700'} text-white ${!isPasswordValid() || !isEmailValid() ? 'cursor-not-allowed' : ''}`}
               disabled={!isPasswordValid() || !isEmailValid()}
             >
-              Register
+              Update
             </button>
           </form>
         </div>
