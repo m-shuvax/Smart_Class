@@ -1,68 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { FaTrash, FaPlay} from 'react-icons/fa';
+import { FaTrash, FaPlay } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
 import Chat from '../components/chat';
 
-const ClassPageStudent = () => {
-  const [category, setCategory] = useState('assignments');
-  const [filesByCategory] = useState({
-    lessonSummaries: [
-      { name: 'Summary1.pdf', date: '2024-05-15', category: 'lessonSummaries' },
-      { name: 'Summary2.docx', date: '2024-05-17', category: 'lessonSummaries' },
-      { name: 'Summary3.jpg', date: '2024-05-19', category: 'lessonSummaries' },
-    ],
-    studyMaterials: [
-      { name: 'Material1.pdf', date: '2024-05-20', category: 'studyMaterials' },
-      { name: 'Material2.docx', date: '2024-05-22', category: 'studyMaterials' },
-      { name: 'Material3.jpg', date: '2024-05-24', category: 'studyMaterials' },
-    ],
-    assignments: [
-      { name: 'Assignment1.pdf', date: '2024-05-25', category: 'assignments' },
-      { name: 'Assignment2.docx', date: '2024-05-27', category: 'assignments' },
-      { name: 'Assignment3.jpg', date: '2024-05-29', category: 'assignments' },
-    ],
-    liveStreams: [
-      { name: 'Lesson 1', date: '2024-05-25', category: 'liveStreams' },
-      { name: 'Lesson 2', date: '2024-05-27', category: 'liveStreams' },
-      { name: 'Lesson 3', date: '2024-05-29', category: 'liveStreams' },
-    ],
+
+const StudentClassPage = ({ match }) => {
+  const [data, setData] = useState({
+    files: [],
+    lessons: [],
+    userDetails: null,
+    chat: null,
+    liveLink: null
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [category, setCategory] = useState('assignments');
+  const [filesByCategory] = useState([]);
   const [filteredFiles, setFilteredFiles] = useState([]);
-  const [liveStreams] = useState([
-    { name: 'Lesson 1', date: '2024-05-10' },
-    { name: 'Lesson 2', date: '2024-05-12' },
-    { name: 'Lesson 3', date: '2024-05-14' },
-  ]);
+  const [liveStreams, setLiveStreams] = useState([]);
   const [showLiveStreams, setShowLiveStreams] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
 
-  const handleFileInputChange = (event) => {
-    if (event.target.name === 'newFileName') {
-      setNewFileName(event.target.value);
-    } else if (event.target.name === 'newFileDate') {
-      setNewFileDate(event.target.value);
-    } else if (event.target.name === 'editLiveBroadcastLink') {
-      setEditLiveBroadcastLink(event.target.value);
-    }
-  };
+  useEffect(() => {
+    const fetchClassData = async () => {
+      try {
+        const userId = 'b?????'
+        const classId = match.params.classId;
 
-  const handleCategoryChange = (newCategory) => {
-    setCategory(newCategory);
-    setFilteredFiles(filesByCategory[newCategory] || []);
-    setShowLiveStreams(false);
-  };
+        const response = await axios.post('/api/student-class-page', { userId, classId });
+        const { files, lessons, userDetails, chat, liveLink } = response.data;
+        setData({ files, lessons, userDetails, chat, liveLink });
+        setLoading(false);
+        setFilteredFiles(files);
+        setLiveStreams(lessons);
+      } catch (error) {
+        console.error(error);
+        setError('Error fetching class data');
+        setLoading(false);
+      }
+    };
 
-  const handleAllFilesClick = () => {
-    const allFilesArray = Object.values(filesByCategory)
-      .filter(category => category !== filesByCategory.liveStreams)
-      .flat();
-    const sortedFiles = allFilesArray.sort((a, b) => new Date(a.date) - new Date(b.date));
-    setCategory('allFiles');
-    setFilteredFiles(sortedFiles);
-  };
+    fetchClassData();
+  }, [match.params.classId]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  const { files, lessons, userDetails, chat, liveLink } = data;
 
   const handleLiveStreamsClick = () => {
     setShowLiveStreams(true);
@@ -73,8 +66,6 @@ const ClassPageStudent = () => {
     setShowLiveStreams(true);
     setCategory(null);
   };
-
-  const [selectedCategory, setSelectedCategory] = useState('Lesson Summaries');
 
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
@@ -112,10 +103,7 @@ const ClassPageStudent = () => {
                   <button
                     className="w-40 inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-md mr-2 shadow hover:bg-red-700 relative"
                     onClick={() =>
-                      window.open(
-                        editLiveBroadcastLink ||
-                        'https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success'
-                      )
+                      window.open(liveLink)
                     }
                   >
                     <FaPlay className="h-4 w-4 mr-2" />
@@ -123,13 +111,13 @@ const ClassPageStudent = () => {
                   </button>
                 </div>
                 <div className="mt-0.5">
-                <button
-                        className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-gray-400 text-white rounded-md mr-2 shadow hover:bg-gray-300"
-                        onClick={() => setShowLiveStreams(!showLiveStreams)}
-                      >
-                        <FiMenu className="h-6 w-6 mr-2" />
-                        <span>Recordings</span>
-                      </button>
+                  <button
+                    className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-gray-400 text-white rounded-md mr-2 shadow hover:bg-gray-300"
+                    onClick={() => setShowLiveStreams(!showLiveStreams)}
+                  >
+                    <FiMenu className="h-6 w-6 mr-2" />
+                    <span>Recordings</span>
+                  </button>
                 </div>
               </div>
               {!showLiveStreams && (

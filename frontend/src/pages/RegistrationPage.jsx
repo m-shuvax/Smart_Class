@@ -5,7 +5,6 @@ import axios from 'axios';
 import Navbar from '../features/Navbar';
 
 
-
 const RegistrationPage = () => {
 
   const [accountType, setAccountType] = useState('');
@@ -79,8 +78,6 @@ const RegistrationPage = () => {
         console.log('Registration failed:');
       }
       alert('Registration failed')
-
-
 
 
       // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
