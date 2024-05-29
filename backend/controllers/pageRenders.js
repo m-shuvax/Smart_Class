@@ -8,6 +8,7 @@ const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const { liveLinkObj } = require('./../utils/liveLink');
 const message = require('../models/messageModel');
+const categorizeFiles = require('./../utils/categorize');
 let liveLink = liveLinkObj.value;
 
 // Function to render instructor classes and pending students
@@ -67,19 +68,20 @@ exports.renderStudentClass = asyncHandler(async (req, res, next) => {
   // Fetching user and class data
   const user = await User.findById(userId);
   const classData = await Class.findById(classId);
-
   // If user or class not found, throw an error
   if (!user || !classData) {
     return next(new AppError('User or class not found', 404));
   }
-
   // Fetching files, lessons and chat related to the class
   const files = await File.find({ classId: classId });
   const lessons = await Lesson.find({ classId: classId });
   const chat = await Chat.findOne({ studentId: userId, classId: classId }).populate('messages');
 
+  // Categorize files
+  const categorizedFiles = categorizeFiles(files);
+
   // Sending response
-  res.status(200).json({ 
+  res.status(200).json({
     files: files,
     lessons: lessons,
     userDetails: user,
@@ -112,7 +114,7 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
   const chats = await Chat.find({ classId: classId }).populate('messages');
 
   // Sending response
-  res.status(200).json({ 
+  res.status(200).json({
     files: files,
     lessons: lessons,
     userDetails: user,
