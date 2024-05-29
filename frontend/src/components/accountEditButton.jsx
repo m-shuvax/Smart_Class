@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const SettingsButton = () => {
+const accountEditButton = () => {
   const navigate = useNavigate();
 
   const handlesettings = () => {
@@ -15,15 +15,15 @@ const SettingsButton = () => {
 
   return (
         <button
-          className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded flex items-center"
+          className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded flex items-center mr-6"
           onClick={handlesettings}
         >
-          Settings
+          Account
         </button>
   );
 };
 
-export default SettingsButton;
+export default accountEditButton;
 
 
 
