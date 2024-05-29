@@ -6,9 +6,10 @@ import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
 import Chat from '../components/chat';
+import { useParams } from 'react-router-dom';
 
-
-const StudentClassPage = ({ match }) => {
+const StudentClassPage = () => {
+  const { classId } = useParams();
   const [data, setData] = useState({
     files: [],
     lessons: [],
@@ -21,31 +22,25 @@ const StudentClassPage = ({ match }) => {
   const [category, setCategory] = useState('assignments');
   const [filesByCategory] = useState([]);
   const [filteredFiles, setFilteredFiles] = useState([]);
-  const [liveStreams, setLiveStreams] = useState([]);
-  const [showLiveStreams, setShowLiveStreams] = useState(false);
+  const [showLessons, setShowLessons] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
 
   useEffect(() => {
     const fetchClassData = async () => {
       try {
-        const userId = 'b?????'
-        const classId = match.params.classId;
-
-        const response = await axios.post('/api/student-class-page', { userId, classId });
-        const { files, lessons, userDetails, chat, liveLink } = response.data;
-        setData({ files, lessons, userDetails, chat, liveLink });
+        const response = await axios.post('/api/student-class-page', { classId }, { withCredentials: true });
+        const { user, files, lessons, userDetails, chat, liveLink } = response.data;
+        setData({ user, files, lessons, userDetails, chat, liveLink });
         setLoading(false);
         setFilteredFiles(files);
-        setLiveStreams(lessons);
       } catch (error) {
         console.error(error);
         setError('Error fetching class data');
         setLoading(false);
       }
     };
-
     fetchClassData();
-  }, [match.params.classId]);
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -56,16 +51,6 @@ const StudentClassPage = ({ match }) => {
   }
 
   const { files, lessons, userDetails, chat, liveLink } = data;
-
-  const handleLiveStreamsClick = () => {
-    setShowLiveStreams(true);
-    setCategory(null);
-  };
-
-  const handleReplayClick = () => {
-    setShowLiveStreams(true);
-    setCategory(null);
-  };
 
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
@@ -89,13 +74,14 @@ const StudentClassPage = ({ match }) => {
 
         <div className="flex flex-row">
           <div className="w-2/3 p-4 pt-6 pl-0 pr-9">
-            {!isAddingLesson && (<FilesNav
-              category={category}
-              setCategory={setCategory}
-              setShowLiveStreams={setShowLiveStreams}
-              setFilteredFiles={setFilteredFiles}
-              filesByCategory={filesByCategory}
-            />
+            {!isAddingLesson && (
+              <FilesNav
+                category={category}
+                setCategory={setCategory}
+                setShowLessons={setShowLessons}
+                setFilteredFiles={setFilteredFiles}
+                filesByCategory={filesByCategory}
+              />
             )}
             <div className="flex flex-row">
               <div className="fixed bottom-9">
@@ -113,14 +99,14 @@ const StudentClassPage = ({ match }) => {
                 <div className="mt-0.5">
                   <button
                     className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-gray-400 text-white rounded-md mr-2 shadow hover:bg-gray-300"
-                    onClick={() => setShowLiveStreams(!showLiveStreams)}
+                    onClick={() => setShowLessons(!showLessons)}
                   >
                     <FiMenu className="h-6 w-6 mr-2" />
                     <span>Recordings</span>
                   </button>
                 </div>
               </div>
-              {!showLiveStreams && (
+              {!showLessons && (
                 <div className="ml-52 mt-6 grow flex flex-col h-80 overflow-y-auto">
                   {filteredFiles.map((file, index) => (
                     <div
@@ -140,20 +126,20 @@ const StudentClassPage = ({ match }) => {
                   ))}
                 </div>
               )}
-              {showLiveStreams && (
+              {showLessons && (
                 <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
-                  {liveStreams.map((stream, index) => (
+                  {lessons.map((lesson, index) => (
                     <div
                       key={index}
                       className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
                     >
                       <div className="flex items-center">
-                        <span className="text-base font-medium">{stream.name}</span>
+                        <span className="text-base font-medium">{lesson.name}</span>
                       </div>
                       <div style={{ textAlign: 'center', flex: 1 }}>
-                        <span className="text-gray-500">{new Date(stream.date).toLocaleDateString('en-GB')}</span>
+                        <span className="text-gray-500">{new Date(lesson.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteLiveStream(stream.id)}>
+                      <button onClick={() => handleDeleteLiveStream(lesson.id)}>
                         <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>
