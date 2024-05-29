@@ -13,11 +13,17 @@ const classSchema = new mongoose.Schema({
   students: [{
     type: mongoose.Schema.ObjectId,
     ref: 'User',
+    default: []  // Default value to an empty array
   }],
   pendingStudents: [{
     type: mongoose.Schema.ObjectId,
     ref: 'User',
+    default: []  // Default value to an empty array
   }],
+  liveLink: {
+    type: String,
+    default: null  // Default value to null
+  }
 });
 
 const Class = mongoose.model('Class', classSchema);
