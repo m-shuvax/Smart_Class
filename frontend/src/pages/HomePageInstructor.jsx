@@ -11,7 +11,7 @@ const HomePageInstructor = () => {
   const [showInput, setShowInput] = useState(false);
   const [newClassName, setNewClassName] = useState('');
   const [students, setStudents] = useState([]);
-  const [instructor, setInstructor] = useState(''); // משתנה למרצה המחובר
+  const [instructor, setInstructor] = useState('');
 
   useEffect(() => {
     const fetchClassrooms = async () => {
@@ -32,11 +32,11 @@ const HomePageInstructor = () => {
       }
     };
 
-    // נקודת קצה לקבלת שם המרצה המחובר
+
     const fetchInstructor = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/users/currentInstructor');
-        setInstructor(response.data.name); // מניחים שהתגובה כוללת את שם המרצה
+        setInstructor(response.data.name);
       } catch (error) {
         console.error('Error fetching instructor:', error);
       }
@@ -52,7 +52,7 @@ const HomePageInstructor = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/classes', {
         name: newClassName,
-        instructor: instructor, // שימוש בשם המרצה מהמצב
+        instructor: instructor,
       });
       setClassrooms([...classrooms, response.data]);
       setNewClassName('');

@@ -6,7 +6,7 @@ import Navbar from '../features/Navbar';
 
 
 
-const RegistrationPage = () => {
+const UpdateDetails = () => {
 
   const [accountType, setAccountType] = useState('');
   const [email, setEmail] = useState('');
@@ -62,9 +62,6 @@ const RegistrationPage = () => {
       // Navigate to the login page
       window.location.href = '/';
 
-      // TO DO: to  
-
-      // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
     }
 
 
@@ -81,9 +78,6 @@ const RegistrationPage = () => {
       alert('Registration failed')
 
 
-
-
-      // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
     }
   };
 
@@ -125,7 +119,7 @@ const RegistrationPage = () => {
       </Link>
       <div className="mt-4 min-h-screen bg-gray-100 flex flex-col">
         <div className="w-full max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-6">Registration</h2>
+          <h2 className="text-2xl font-bold mb-6">Update Details</h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label htmlFor="accountType" className="block font-bold mb-2">
@@ -261,4 +255,4 @@ const RegistrationPage = () => {
   );
 };
 
-export default RegistrationPage;
+export default UpdateDetails;
