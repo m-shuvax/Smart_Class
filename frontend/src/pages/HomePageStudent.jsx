@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import Navbar from '../features/Navbar';
+import { useEffect } from 'react';
 
 const HomePageStudent = () => {
   const [classrooms, setClassrooms] = useState(['Math 101', 'English 202', 'History 303', 'Science 404']);
   const [showInput, setShowInput] = useState(false);
   const [newClassroomCode, setNewClassroomCode] = useState('');
 
-
+useEffect(
+  
+)
 
   const handleAddClassroom = () => {
     const newClassrooms = [...classrooms, newClassroomCode];
