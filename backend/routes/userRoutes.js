@@ -9,7 +9,11 @@ router.route('/register')
     .post(userControllers.createUser);
 
 router.route('/login')
-    .post(authControllers.protect, authControllers.login);
+    .post(authControllers.login);
+    // .post((req, res) => {
+    //     console.log(req.body);
+    //     res.send('Login data received');
+    // });
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
 //     .post(authMiddleware.protect, userControllers.createUser);
