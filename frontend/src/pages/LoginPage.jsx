@@ -7,7 +7,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Navbar from '../features/Navbar';
 
 const LoginPage = () => {
-  const [username, setUsername] = useState('');
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -15,33 +15,33 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(username, password);
+    console.log('Submitted:', userName, password);
 
-    // send username and password to server to authenticate user
+    // send userName and password to server to authenticate user
     try {
-      const response = await axios.post('http://localhost:5000/*/login', { username, password });
+      const response = await axios.post('http://localhost:5000/api/users/login', { email:userName, password },{withCredentials: true});
+
       // Store the token in state or other storage
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userInfo', JSON.stringify(response.data));
+      console.log('Response:', response);
 
-      // Save the token in cookies
-      Cookies.set('token', response.data.token, { expires: 7 });
-      // The token will be saved for 7 days
-
-      // Check if the user is a student or a teacher
-      const isStudent = response.data.role === 'student';
-
-      // Redirect based on user role
-      if (isStudent) {
-        navigate('/HomePageStudent');
-      } else {
-        navigate('/HomePageInstructor');
+      if (response.data.status === 'success') {
+        // Check if the user is a student or a teacher
+        const isStudent = response.data.role === 'student';
+        // Redirect based on user role
+        if (isStudent) {
+          navigate('/HomePageStudent');
+        } else {
+          navigate('/HomePageInstructor');
+        }
       }
-    } catch (error) {
+    }
+    catch (error) {
       // if not authenticated, show error message
       setError('Please enter a valid email and password');
       console.error('Authentication error:', error);
-      // if not authenticated, clear username and password
-      setUsername('');
+      // if not authenticated, clear userName and password
+      setUserName('');
       setPassword('');
     }
   };
@@ -53,10 +53,10 @@ const LoginPage = () => {
         <form className="bg-white p-8 rounded-lg shadow-md" onSubmit={handleSubmit}>
           <div className="mb-6">
             <input
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
               type="text"
-              placeholder="Username"
+              placeholder="userName"
               className="px-4 py-2 border border-gray-300 rounded-md w-80"
             />
           </div>
@@ -88,8 +88,8 @@ const LoginPage = () => {
               <div>
                 <button
                   type="submit"
-                  className={`font-bold py-3 px-6 rounded ${!username || !password ? 'bg-blue-300 text-white' : 'bg-blue-500 hover:bg-blue-700 text-white'}`}
-                  disabled={!username || !password}
+                  className={`font-bold py-3 px-6 rounded ${!userName || !password ? 'bg-blue-300 text-white' : 'bg-blue-500 hover:bg-blue-700 text-white'}`}
+                  disabled={!userName || !password}
                 >
                   Log In
                 </button>
