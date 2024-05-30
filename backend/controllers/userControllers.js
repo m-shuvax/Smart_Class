@@ -152,25 +152,6 @@ exports.updateLiveLink = asyncHandler(async (req, res, next) => {
     message: 'Live link updated successfully',
   });
 });
-
-exports.aaa = asyncHandler(async (req, res, next) => {
-  console.log('hhhh');
-  console.log(req);}
-  );
-  //const user
-
-
-
-
-
-
-
-
-
-  const Class = require('./../models/classModel');
-const asyncHandler = require('express-async-handler');
-const AppError = require('./../utils/AppError');
-
 // Function to create a new class
 exports.createClass = asyncHandler(async (req, res, next) => {
   const { name, instructor, description } = req.body;
