@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
 
-
-
 const UpdateDetails = () => {
-
   const [accountType, setAccountType] = useState('');
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -18,28 +15,44 @@ const UpdateDetails = () => {
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
+  // Fetch user details on component mount
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/me');
+        const { role, email, firstName, lastName, phoneNumber } = response.data;
+        setAccountType(role);
+        setEmail(email);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setPhoneNumber(phoneNumber);
+      } catch (error) {
+        console.error('Failed to fetch user details:', error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate email and password before submission
-    if (!isEmailValid) {
+    if (!isEmailValid()) {
       setEmailError('Please enter a valid email address.');
       return;
-    }
-    else {
+    } else {
       setEmailError('');
     }
-    if (!isPasswordValid) {
+    if (!isPasswordValid()) {
       setPasswordError('Please enter a valid password.');
       return;
-
-    }
-    else {
+    } else {
       setPasswordError('');
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/users/register', {
+      const response = await axios.put('http://localhost:5000/api/users/update', {
         role: accountType,
         email,
         password,
@@ -49,38 +62,27 @@ const UpdateDetails = () => {
       });
 
       if (response.data) {
-        console.log('Registration successful:', response.data);
-      }
-      else if (response) {
-        console.error('Registration successful but response is not as expected:', response);
-      }
-      else {
-        console.error('Registration successful but response is not as expected.');
+        console.log('Update successful:', response.data);
+      } else if (response) {
+        console.error('Update successful but response is not as expected:', response);
+      } else {
+        console.error('Update successful but response is not as expected.');
       }
 
-      alert('Registration successful')
-      // Navigate to the login page
-      window.location.href = '/';
-
-    }
-
-
-    catch (error) {
+      alert('Update successful');
+      // Navigate to the user profile or another page
+      window.location.href = '/profile';
+    } catch (error) {
       if (error.response && error.response.data) {
-        console.log('Registration failed:', error.response.data);
+        console.log('Update failed:', error.response.data);
+      } else if (error.response) {
+        console.log('Update failed with response but no data:', error.response);
+      } else {
+        console.log('Update failed:', error);
       }
-      else if (error.response) {
-        console.log('Registration failed with response but no data:', error.response);
-      }
-      else {
-        console.log('Registration failed:');
-      }
-      alert('Registration failed')
-
-
+      alert('Update failed');
     }
   };
-
 
   const isPasswordValid = () => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
@@ -135,7 +137,7 @@ const UpdateDetails = () => {
                     checked={accountType === 'student'}
                     onChange={() => setAccountType('student')}
                     className="mr-2"
-                    required // הוספת קריאה לערך חובה
+                    required
                   />
                   <label htmlFor="student">Student</label>
                 </div>
@@ -148,7 +150,7 @@ const UpdateDetails = () => {
                     checked={accountType === 'instructor'}
                     onChange={() => setAccountType('instructor')}
                     className="mr-2"
-                    required // הוספת קריאה לערך חובה
+                    required
                   />
                   <label htmlFor="instructor">Instructor</label>
                 </div>
