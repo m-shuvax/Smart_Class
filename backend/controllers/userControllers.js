@@ -6,11 +6,9 @@ const Chat = require('./../models/chatModel');
 const Message = require('./../models/messageModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
-const { liveLinkObj } = require('./../utils/liveLink');
 const bcrypt = require('bcryptjs');
 
 
-let liveLink = liveLinkObj.value;
 
 // Utility function to handle response
 const handleResponse = (res, data, statusCode = 200) => {
@@ -160,3 +158,54 @@ exports.aaa = asyncHandler(async (req, res, next) => {
   console.log(req);}
   );
   //const user
+
+
+
+
+
+
+
+
+
+  const Class = require('./../models/classModel');
+const asyncHandler = require('express-async-handler');
+const AppError = require('./../utils/AppError');
+
+// Function to create a new class
+exports.createClass = asyncHandler(async (req, res, next) => {
+  const { name, instructor, description } = req.body;
+
+  try {
+    const newClass = await Class.create({
+      name,
+      instructor,
+      description,
+      students: [], 
+      pendingStudents: [], 
+    });
+
+    res.status(201).json(newClass);
+  } catch (error) {
+    next(new AppError('Failed to create class', 400));
+  }
+});
+
+// New controller to update class liveLink
+exports.updateClassLiveLink = asyncHandler(async (req, res, next) => {
+  const { classId, newLink } = req.body;
+
+  const classData = await Class.findById(classId);
+
+  if (!classData) {
+    return next(new AppError('Class not found', 404));
+  }
+
+  classData.liveLink = newLink || null;  // Set to null if not provided
+  await classData.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Class live link updated successfully',
+  });
+});
+

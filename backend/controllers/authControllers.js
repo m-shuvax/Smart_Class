@@ -4,17 +4,18 @@ const User = require('./../models/userModel');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-
-
+const customDate = require('./../features/dates');
 
 // Function to sign a JWT token with user id
 const signToken = id => {
+  console.log('signToken');
   return jwt.sign({ id, iat: Date.now() }, process.env.JWT_SECRET);
 };
 
 
 // Function to create and send a token to the client
 const createSendToken = (user, statusCode, res) => {
+  console.log(customDate.getFormatDate());
 
   const token = signToken(user._id);
   const cookieOptions = {
@@ -24,8 +25,9 @@ const createSendToken = (user, statusCode, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production' // Use secure cookies in production
   };
-
+  console.log('createSendToken', token, '\n', cookieOptions );
   res.cookie('jwt', token, cookieOptions);
+  console.log('createSendToken2');
   res.status(statusCode).json({
     status: 'success',
     token,
@@ -45,6 +47,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 
 // Middleware to protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
+  console.log(345);
   let token;
   if (req.headers.cookie) {
     token = req.headers.cookie.split('=')[1];
