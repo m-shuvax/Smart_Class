@@ -7,9 +7,12 @@ import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
 import Chat from '../components/chat';
 import { useParams } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
+
 
 const StudentClassPage = () => {
   const { classId } = useParams();
+  const { user } = useAppContext();
   const [data, setData] = useState({
     files: [],
     lessons: [],
@@ -29,8 +32,8 @@ const StudentClassPage = () => {
     const fetchClassData = async () => {
       try {
         const response = await axios.post('/api/student-class-page', { classId }, { withCredentials: true });
-        const { user, files, lessons, userDetails, chat, liveLink } = response.data;
-        setData({ user, files, lessons, userDetails, chat, liveLink });
+        const { files, lessons, userDetails, chat, liveLink } = response.data;
+        setData({ files, lessons, userDetails, chat, liveLink });
         setLoading(false);
         setFilteredFiles(files);
       } catch (error) {
