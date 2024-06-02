@@ -13,16 +13,19 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { user, setUser } = useAppContext();
 
+
   useEffect(() => {
     const fetchData = async () => {
       console.log(33333);
       console.log(user);
       try {
         const response = await axios.get('http://localhost:5000/api/users/', { withCredentials: true });
+
         const newUser = response.data.data.user;
         setUser(newUser);
         console.log('User:', newUser);
         const isStudent = newUser.role === 'student';
+
         // Redirect based on user role
         if (isStudent) {
           navigate('/HomePageStudent');
@@ -39,6 +42,7 @@ const LoginPage = () => {
     }
   }, [navigate, setUser, user]); // Dependency array includes navigate, setUser, and user
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Submitted:', userName, password);
@@ -54,6 +58,7 @@ const LoginPage = () => {
         navigate('/HomePageStudent');
       } else {
         navigate('/HomePageInstructor');
+
       }
     } catch (error) {
       // if not authenticated, show error message
