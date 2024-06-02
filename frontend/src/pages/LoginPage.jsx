@@ -27,7 +27,7 @@ const LoginPage = () => {
 
       if (response.data.status === 'success') {
         // Check if the user is a student or a teacher
-        const isStudent = response.data.role === 'student';
+        const isStudent = response.data.data.user.role === 'student';
         // Redirect based on user role
         if (isStudent) {
           navigate('/HomePageStudent');

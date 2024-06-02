@@ -10,10 +10,10 @@ router.route('/register')
 
 router.route('/login')
     .post(authControllers.login);
-    // .post((req, res) => {
-    //     console.log(req.body);
-    //     res.send('Login data received');
-    // });
+
+router.route('/account')
+    .put(authControllers.protect, userControllers.updateUser);
+   
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
 //     .post(authMiddleware.protect, userControllers.createUser);
