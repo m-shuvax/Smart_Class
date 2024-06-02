@@ -71,6 +71,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) return next(new AppError('Email or password is missing', 400));
   const user = await User.findOne({ email }).select('+password');
+  console.log({email, password, user});
   if (!user || !await user.checkPassword(password, user.password)) return next(new AppError('Email or password is incorrect', 401));
   createSendToken(user, 200, res);
 });

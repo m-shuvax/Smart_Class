@@ -152,6 +152,8 @@ exports.updateLiveLink = asyncHandler(async (req, res, next) => {
     message: 'Live link updated successfully',
   });
 });
+
+
 // Function to create a new class
 exports.createClass = asyncHandler(async (req, res, next) => {
   const { name, instructor, description } = req.body;
