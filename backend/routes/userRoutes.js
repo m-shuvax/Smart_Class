@@ -10,14 +10,6 @@ router.route('/register')
 
 router.route('/login')
     .post(authControllers.login);
-
-router.route('/')
-    .post(authControllers.protect, pageRenderController.renderStudentClasses);
-
-
-router.route('/account')
-    .put(authControllers.protect, userControllers.updateUser);
-   
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
 //     .post(authMiddleware.protect, userControllers.createUser);
