@@ -17,34 +17,14 @@ const HomePageInstructor = () => {
     const fetchClassrooms = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/users/classes');
-        setClassrooms(response.data);
+        setClassrooms(response.data.classrooms);
+        setStudents(response.data.students);
+        setInstructor(response.data.user);
       } catch (error) {
         console.error('Error fetching classrooms:', error);
       }
     };
-
-    const fetchStudents = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/users/pendignStudents');
-        setStudents(response.data);
-      } catch (error) {
-        console.error('Error fetching students:', error);
-      }
-    };
-
-
-    const fetchInstructor = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/users/currentInstructor');
-        setInstructor(response.data.name);
-      } catch (error) {
-        console.error('Error fetching instructor:', error);
-      }
-    };
-
     fetchClassrooms();
-    fetchStudents();
-    fetchInstructor();
   }, []);
 
   const handleAddClassroom = async () => {
@@ -54,7 +34,7 @@ const HomePageInstructor = () => {
         name: newClassName,
         instructor: instructor,
       });
-      setClassrooms([...classrooms, response.data]);
+      setClassrooms([...classrooms, response.data.class]);
       setNewClassName('');
       setShowInput(false);
     } catch (error) {
