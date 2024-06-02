@@ -14,6 +14,9 @@ router.route('/')
 router.route('/login')  
     .post(authControllers.login);
 
+router.route('/classes')
+    .get(authControllers.protect, pageRenderController.renderStudentClasses)
+
     // .post((req, res) => {
     //     console.log(req.body);
     //     res.send('Login data received');
