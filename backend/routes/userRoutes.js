@@ -2,18 +2,27 @@ const express = require('express');
 const authControllers = require('./../controllers/authControllers');
 const userControllers = require('./../controllers/userControllers');
 const pageRenderController = require('./../controllers/pageRenders');
-//const authMiddleware = require('./../middleware/authMiddleware');
 const router = express.Router();
 
 router.route('/register')
-    .post(userControllers.createUser);
+    .post(authControllers.register);
 
-router.route('/login')
+router.route('/')
+    .post(authControllers.protect, pageRenderController.renderStudentClasses);
+
+router.route('/login')  
     .post(authControllers.login);
 
+<<<<<<< HEAD
 router.route('/account')
     .put(authControllers.protect, userControllers.updateUser);
    
+=======
+    // .post((req, res) => {
+    //     console.log(req.body);
+    //     res.send('Login data received');
+    // });
+>>>>>>> 3a22bdc592c735fe152da8e2e23a86300b77174d
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
 //     .post(authMiddleware.protect, userControllers.createUser);
