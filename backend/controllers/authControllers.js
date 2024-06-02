@@ -87,13 +87,12 @@ exports.register = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
   if (!email || !firstName || !lastName || !password || !phoneNumber || !role) return next(new AppError('Request details are missing', 400));
   console.log('register2');
-  const hashedPassword = await bcrypt.hash(password, 12);
   console.log('register3');
   const newUser = await User.create({
     firstName,
     lastName,
     email,
-    password: hashedPassword,
+    password,
     phoneNumber,
     role,
   });
