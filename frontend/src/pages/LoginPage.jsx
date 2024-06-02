@@ -13,7 +13,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const { user, setUserInfo } = useAppContext();
+  const { user, setUser } = useAppContext();
 
 
   useEffect(() => {
@@ -22,13 +22,20 @@ const LoginPage = () => {
       try {
         const response = await axios.get('http://localhost:5000/api/users/', { withCredentials: true });
         console.log('User:', response.data);
-        setUserInfo(response.data.user);
+        setUser(response.data.data.user);
+        const isStudent = user.role === 'student';
+        // Redirect based on user role
+        if (isStudent) {
+          navigate('/HomePageStudent');
+        } else {
+          navigate('/HomePageInstructor');
+        }
       } catch (error) {
         console.error('Error fetching user:', error);
       }
     };
     fetchData();
-  }, [setUserInfo]);
+  }, [setUser]);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,6 +48,7 @@ const LoginPage = () => {
       // Store the token in state or other storage
       localStorage.setItem('userInfo', JSON.stringify(response.data));
       console.log('Response:', response);
+      setUser(data.user)
 
       if (response.data.status === 'success') {
         // Check if the user is a student or a teacher
