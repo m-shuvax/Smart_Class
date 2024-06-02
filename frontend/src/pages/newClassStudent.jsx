@@ -7,7 +7,7 @@ import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
 import Chat from '../components/chat';
 import { useParams } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '../Context';
 
 
 const StudentClassPage = () => {

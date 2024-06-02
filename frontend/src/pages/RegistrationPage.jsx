@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
-
+import Loader from '../components/Loader';
 
 const RegistrationPage = () => {
-
+  const [loading, setLoading] = useState(false);
   const [accountType, setAccountType] = useState('');
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -16,25 +16,33 @@ const RegistrationPage = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumberError, setPhoneNumberError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     // Validate email and password before submission
-    if (!isEmailValid) {
+    if (!isEmailValid()) {
       setEmailError('Please enter a valid email address.');
+      setLoading(false);
       return;
-    }
-    else {
+    } else {
       setEmailError('');
     }
-    if (!isPasswordValid) {
+    if (!isPasswordValid()) {
       setPasswordError('Please enter a valid password.');
+      setLoading(false);
       return;
-
-    }
-    else {
+    } else {
       setPasswordError('');
+    }
+    if (!isPhoneNumberValid()) {
+      setPhoneNumberError('Please enter a valid phone number.');
+      setLoading(false);
+      return;
+    } else {
+      setPhoneNumberError('');
     }
 
     try {
@@ -49,41 +57,29 @@ const RegistrationPage = () => {
 
       if (response.data) {
         console.log('Registration successful:', response.data);
-      }
-      else if (response) {
+        // Stop loading animation
+        setLoading(false);
+        alert('Registration successful');
+        // Navigate to the login page
+        window.location.href = '/';
+      } else if (response) {
         console.error('Registration successful but response is not as expected:', response);
-      }
-      else {
+      } else {
         console.error('Registration successful but response is not as expected.');
       }
-
-      alert('Registration successful')
-      // Navigate to the login page
-      window.location.href = '/';
-
-      // TO DO: to  
-
-      // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
-    }
-
-
-    catch (error) {
+    } catch (error) {
       if (error.response && error.response.data) {
         console.log('Registration failed:', error.response.data);
-      }
-      else if (error.response) {
+      } else if (error.response) {
         console.log('Registration failed with response but no data:', error.response);
-      }
-      else {
+      } else {
         console.log('Registration failed:');
       }
-      alert('Registration failed')
-
-
-      // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
+      // Stop loading animation
+      setLoading(false);
+      alert('Registration failed');
     }
   };
-
 
   const isPasswordValid = () => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
@@ -93,6 +89,11 @@ const RegistrationPage = () => {
   const isEmailValid = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  };
+
+  const isPhoneNumberValid = () => {
+    const phoneRegex = /^\d+$/;
+    return phoneRegex.test(phoneNumber);
   };
 
   const handleEmailBlur = () => {
@@ -108,6 +109,16 @@ const RegistrationPage = () => {
       setPasswordError('Password must contain at least one uppercase letter, one lowercase letter, and one digit.');
     } else {
       setPasswordError('');
+    }
+  };
+
+  const handlePhoneNumberChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setPhoneNumber(value);
+      setPhoneNumberError('');
+    } else {
+      setPhoneNumberError('Phone number can contain digits only.');
     }
   };
 
@@ -129,7 +140,7 @@ const RegistrationPage = () => {
                 <span className="text-red-500">*</span> Account Type
               </label>
               <div className="flex">
-                <div className="mr-4">
+                <div className="mr-4 flex items-center">
                   <input
                     type="radio"
                     id="student"
@@ -137,12 +148,12 @@ const RegistrationPage = () => {
                     value="student"
                     checked={accountType === 'student'}
                     onChange={() => setAccountType('student')}
-                    className="mr-2"
-                    required // הוספת קריאה לערך חובה
+                    className="radio-lg form-radio h-5 w-5 text-blue-600"
+                    required
                   />
-                  <label htmlFor="student">Student</label>
+                  <label htmlFor="student" className="ml-2">Student</label>
                 </div>
-                <div>
+                <div className="flex items-center">
                   <input
                     type="radio"
                     id="instructor"
@@ -150,10 +161,10 @@ const RegistrationPage = () => {
                     value="instructor"
                     checked={accountType === 'instructor'}
                     onChange={() => setAccountType('instructor')}
-                    className="mr-2"
-                    required // הוספת קריאה לערך חובה
+                    className="radio-lg form-radio h-5 w-5 text-blue-600"
+                    required
                   />
-                  <label htmlFor="instructor">Instructor</label>
+                  <label htmlFor="instructor" className="ml-2">Instructor</label>
                 </div>
               </div>
             </div>
@@ -238,22 +249,26 @@ const RegistrationPage = () => {
                 type="tel"
                 id="phoneNumber"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                onChange={handlePhoneNumberChange}
+                className={`w-full px-4 py-2 border ${phoneNumberError ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                 required
               />
+              {phoneNumberError && (
+                <p className="text-red-500 text-sm">{phoneNumberError}</p>
+              )}
             </div>
             <span className="text-red-500 text-sm font-bold">* All fields are required</span>
             <button
               type="submit"
-              className={`mt-4 w-full font-bold py-2 px-4 rounded ${!isPasswordValid() || !isEmailValid() ? 'bg-blue-300 hover:bg-blue-300' : 'bg-blue-500 hover:bg-blue-700'} text-white ${!isPasswordValid() || !isEmailValid() ? 'cursor-not-allowed' : ''}`}
-              disabled={!isPasswordValid() || !isEmailValid()}
+              className={`mt-4 w-full font-bold py-2 px-4 rounded ${!isPasswordValid() || !isEmailValid() || !isPhoneNumberValid() ? 'bg-blue-300 hover:bg-blue-300' : 'bg-blue-500 hover:bg-blue-700'} text-white ${!isPasswordValid() || !isEmailValid() || !isPhoneNumberValid() ? 'cursor-not-allowed' : ''}`}
+              disabled={!isPasswordValid() || !isEmailValid() || !isPhoneNumberValid()}
             >
               Register
             </button>
           </form>
         </div>
       </div>
+      {loading && <Loader />}
     </div>
   );
 };

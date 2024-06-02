@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Navbar from '../features/Navbar';
+import { useAppContext } from '../Context';
 
 const LoginPage = () => {
   const [userName, setUserName] = useState('');
@@ -12,31 +11,56 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const { user, setUser } = useAppContext();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Submitted:', userName, password);
 
-    // send userName and password to server to authenticate user
-    try {
-      const response = await axios.post('http://localhost:5000/api/users/login', { email:userName, password },{withCredentials: true});
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log(33333);
+      console.log(user);
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/', { withCredentials: true });
 
-      // Store the token in state or other storage
-      localStorage.setItem('userInfo', JSON.stringify(response.data));
-      console.log('Response:', response);
+        const newUser = response.data.data.user;
+        setUser(newUser);
+        console.log('User:', newUser);
+        const isStudent = newUser.role === 'student';
 
-      if (response.data.status === 'success') {
-        // Check if the user is a student or a teacher
-        const isStudent = response.data.role === 'student';
         // Redirect based on user role
         if (isStudent) {
           navigate('/HomePageStudent');
         } else {
           navigate('/HomePageInstructor');
         }
+      } catch (error) {
+        console.error('Error fetching user:', error);
       }
+    };
+
+    if (!user) {
+      fetchData();
     }
-    catch (error) {
+  }, [navigate, setUser, user]); // Dependency array includes navigate, setUser, and user
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log('Submitted:', userName, password);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/users/login', { email: userName, password }, { withCredentials: true });
+      console.log('Response:', response.data);
+      setUser(response.data.user);
+
+      const isStudent = response.data.data.user.role === 'student';
+      // Redirect based on user role
+      if (isStudent) {
+        navigate('/HomePageStudent');
+      } else {
+        navigate('/HomePageInstructor');
+
+      }
+    } catch (error) {
       // if not authenticated, show error message
       setError('Please enter a valid email and password');
       console.error('Authentication error:', error);

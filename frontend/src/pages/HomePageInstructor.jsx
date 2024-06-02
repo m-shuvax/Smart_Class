@@ -15,18 +15,35 @@ const HomePageInstructor = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users/instructorHomePage')
-
-        setInstructor(response.data.instructor);
-        setClassrooms(response.data.classes);
-        setStudents(response.data.students);
-      }
-      catch (error) {
-        console.error('Error fetching data:', error);
+        const response = await axios.get('http://localhost:5000/api/users/classes');
+        setClassrooms(response.data);
+      } catch (error) {
+        console.error('Error fetching classrooms:', error);
       }
     };
 
-    fetchData();
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/pendignStudents');
+        setStudents(response.data);
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      }
+    };
+
+
+    const fetchInstructor = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/currentInstructor');
+        setInstructor(response.data.name);
+      } catch (error) {
+        console.error('Error fetching instructor:', error);
+      }
+    };
+
+    fetchClassrooms();
+    fetchStudents();
+    fetchInstructor();
   }, []);
 
 
@@ -36,7 +53,7 @@ const HomePageInstructor = () => {
       const response = await axios.post('http://localhost:5000/api/users/classes', {
         name: newClassName,
       });
-      setClassrooms([...classrooms, response.data]);
+      setClassrooms([...classrooms, response.data.class]);
       setNewClassName('');
       setShowInput(false);
     } catch (error) {

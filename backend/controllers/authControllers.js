@@ -5,13 +5,13 @@ const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const customDate = require('./../features/dates');
+const { log } = require('console');
 
 // Function to sign a JWT token with user id
 const signToken = id => {
   console.log('signToken');
   return jwt.sign({ id, iat: Date.now() }, process.env.JWT_SECRET);
 };
-
 
 // Function to create and send a token to the client
 const createSendToken = (user, statusCode, res) => {
@@ -25,7 +25,7 @@ const createSendToken = (user, statusCode, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production' // Use secure cookies in production
   };
-  console.log('createSendToken', token, '\n', cookieOptions );
+  console.log('createSendToken' , token, '\n', cookieOptions );
   res.cookie('jwt', token, cookieOptions);
   console.log('createSendToken2');
   res.status(statusCode).json({
@@ -37,13 +37,7 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-// Controller for user registration
-exports.register = asyncHandler(async (req, res, next) => {
-  const { email, password, confirmPassword, name } = req.body
-  if (!email || !password || !confirmPassword) return next(new AppError(403, 'Request details are missing'))
-  const newUser = await User.create({ email, password, confirmPassword, name })
-  createSendToken(newUser, 201, res)
-})
+
 
 // Middleware to protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
@@ -68,9 +62,11 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 // Controller for user login
 exports.login = asyncHandler(async (req, res, next) => {
+  console.log('login');
   const { email, password } = req.body;
   if (!email || !password) return next(new AppError('Email or password is missing', 400));
   const user = await User.findOne({ email }).select('+password');
+  console.log(user);
   if (!user || !await user.checkPassword(password, user.password)) return next(new AppError('Email or password is incorrect', 401));
   createSendToken(user, 200, res);
 });
@@ -86,20 +82,21 @@ exports.logout = asyncHandler(async (req, res, next) => {
 });
 
 
-
 exports.register = asyncHandler(async (req, res, next) => {
-  console.log('register');
+  console.log('register1');
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
   if (!email || !firstName || !lastName || !password || !phoneNumber || !role) return next(new AppError('Request details are missing', 400));
-  const hashedPassword = await bcrypt.hash(password, 12);
+  console.log('register2');
+  console.log('register3');
   const newUser = await User.create({
     firstName,
     lastName,
     email,
-    password: hashedPassword,
+    password,
     phoneNumber,
     role,
   });
+  console.log('register4');
   createSendToken(newUser, 201, res);
 });
 
@@ -119,7 +116,6 @@ exports.protect1 = asyncHandler(async (req, res, next) => {
   console.log('protect');
   next()
 })
-
 
 
 // Middleware to restrict routes to certain user roles
