@@ -9,9 +9,7 @@ const HomePageStudent = () => {
   const [showInput, setShowInput] = useState(false);
   const [newClassroomCode, setNewClassroomCode] = useState('');
 
-useEffect(
-  
-)
+
 
   const handleAddClassroom = () => {
     const newClassrooms = [...classrooms, newClassroomCode];

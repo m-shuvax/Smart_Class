@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, act } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import { FaCheck } from 'react-icons/fa';
@@ -7,58 +7,68 @@ import Navbar from '../features/Navbar';
 
 const HomePageInstructor = () => {
   const [classrooms, setClassrooms] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
   const [showInput, setShowInput] = useState(false);
   const [newClassName, setNewClassName] = useState('');
   const [students, setStudents] = useState([]);
   const [instructor, setInstructor] = useState('');
 
   useEffect(() => {
-    const fetchClassrooms = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users/classes');
-        setClassrooms(response.data);
-      } catch (error) {
-        console.error('Error fetching classrooms:', error);
+        const response = await axios.get('http://localhost:5000/api/users/instructorHomePage')
+
+        setInstructor(response.data.instructor);
+        setClassrooms(response.data.classes);
+        setStudents(response.data.students);
+      }
+      catch (error) {
+        console.error('Error fetching data:', error);
       }
     };
 
-    const fetchStudents = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/users/pendignStudents');
-        setStudents(response.data);
-      } catch (error) {
-        console.error('Error fetching students:', error);
-      }
-    };
-
-
-    const fetchInstructor = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/users/currentInstructor');
-        setInstructor(response.data.name);
-      } catch (error) {
-        console.error('Error fetching instructor:', error);
-      }
-    };
-
-    fetchClassrooms();
-    fetchStudents();
-    fetchInstructor();
+    fetchData();
   }, []);
+
 
   const handleAddClassroom = async () => {
     if (newClassName.trim() === '') return;
     try {
-      const response = await axios.post('http://localhost:5000/api/classes', {
+      const response = await axios.post('http://localhost:5000/api/users/classes', {
         name: newClassName,
-        instructor: instructor,
       });
       setClassrooms([...classrooms, response.data]);
       setNewClassName('');
       setShowInput(false);
     } catch (error) {
       console.error('Error adding classroom:', error);
+    }
+  };
+
+  const handleApproveStudent = async (studentId, classId) => {
+    try {
+      await axios.post('http://localhost:5000/api/users/students', {
+        studentId: studentId,
+        classId: classId,
+        action: 'approve',
+      });
+      // Remove the approved student from the pending students list
+      setStudents(students.filter((student) => student.id !== studentId));
+    } catch (error) {
+      console.error('Error approving student:', error);
+    }
+  };
+
+  const handleRejectStudent = async (studentId) => {
+    try {
+      await axios.post('http://localhost:5000/api/users/students', {
+        studentId,
+        classId,
+        action: 'reject',
+      });
+      // Remove the rejected student from the pending students list
+      setStudents(students.filter((student) => student.id !== studentId));
+    } catch (error) {
+      console.error('Error rejecting student:', error);
     }
   };
 
@@ -110,7 +120,9 @@ const HomePageInstructor = () => {
                   >
                     <button>
                       <XCircleIcon className="h-6 w-6 hover:text-red-700" />
-                    </button>
+                      onClick={() => handleRejectStudent(student.id)}
+                    </button >
+                    onClick={() => handleApproveStudent(student.id, /* Add the appropriate classId here */)}
                     {student.firstName} {student.lastName}<br /> class id {student.id}
                     <button className="bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center">
                       <FaCheck className="h-14 w-4 mr-2" />
