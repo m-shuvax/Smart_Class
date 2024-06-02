@@ -1,6 +1,7 @@
 // Importing required modules and models
 const User = require('./../models/userModel');
 const Class = require('./../models/classModel');
+const {log } = require('console');
 const File = require('./../models/fileModel');
 const Lesson = require('./../models/lessonModel');
 const Chat = require('./../models/chatModel');
@@ -39,18 +40,20 @@ exports.renderInstructorClasses = asyncHandler(async (req, res, next) => {
 
 // Function to render student classes
 exports.renderStudentClasses = asyncHandler(async (req, res, next) => {
-  const { userId } = req.params;
-
-  if (!userId) {
+  log('renderStudentClasses1');
+  const { user } = req;
+  log('renderStudentClasses2');
+  if (!user._id) {
     return next(new AppError('User ID is required', 400));
   }
-
+  log('renderStudentClasses3');
   // Fetching all classes where the user is a student
-  const studentClasses = await Class.find({ students: userId }).select('name instructor');
-
+  const studentClasses = await Class.find({ students: user._id }).select('name instructor');
+  log('renderStudentClasses4');
   res.status(200).json({
     success: true,
-    data: studentClasses,
+    data: {studentClasses,
+      user}
   });
 });
 

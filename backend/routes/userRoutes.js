@@ -10,6 +10,23 @@ router.route('/register')
 
 router.route('/login')
     .post(authControllers.login);
+
+router.route('/')
+    .get(authControllers.protect, pageRenderController.renderStudentClasses)
+    .post(authControllers.protect, pageRenderController.renderStudentClasses);
+
+router.route('/classes')
+    .get(authControllers.protect, pageRenderController.renderStudentClasses)
+
+    // .post((req, res) => {
+    //     console.log(req.body);
+    //     res.send('Login data received');
+    // });
+
+
+router.route('/account')
+    .put(authControllers.protect, userControllers.updateUser);
+   
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
 //     .post(authMiddleware.protect, userControllers.createUser);

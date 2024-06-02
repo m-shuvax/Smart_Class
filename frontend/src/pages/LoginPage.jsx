@@ -2,7 +2,6 @@ import { useState } from 'react';
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Navbar from '../features/Navbar';
 
@@ -17,7 +16,6 @@ const LoginPage = () => {
     e.preventDefault();
     console.log('Submitted:', userName, password);
 
-    // send userName and password to server to authenticate user
     try {
       const response = await axios.post('http://localhost:5000/api/users/login', { email:userName, password },{withCredentials: true});
 
@@ -35,8 +33,7 @@ const LoginPage = () => {
           navigate('/HomePageInstructor');
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       // if not authenticated, show error message
       setError('Please enter a valid email and password');
       console.error('Authentication error:', error);
