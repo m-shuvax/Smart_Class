@@ -155,15 +155,12 @@ exports.updateLiveLink = asyncHandler(async (req, res, next) => {
 
 // Function to create a new class
 exports.createClass = asyncHandler(async (req, res, next) => {
-  const { name, instructor, description } = req.body;
+  const { name } = req.body;
 
   try {
     const newClass = await Class.create({
       name,
-      instructor,
-      description,
-      students: [], 
-      pendingStudents: [], 
+      user: req.user._id,
     });
 
     res.status(201).json(newClass);

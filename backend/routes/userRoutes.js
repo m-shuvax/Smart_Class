@@ -8,6 +8,7 @@ router.route('/register')
     .post(authControllers.register);
 
 router.route('/')
+    .get(authControllers.protect, pageRenderController.renderStudentClasses)
     .post(authControllers.protect, pageRenderController.renderStudentClasses);
 
 router.route('/login')  
