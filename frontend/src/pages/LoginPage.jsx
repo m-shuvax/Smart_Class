@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Navbar from '../features/Navbar';
+import { useAppContext } from '../Context';
 
 const LoginPage = () => {
   const [userName, setUserName] = useState('');
@@ -12,14 +13,30 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const { user, setUserInfo } = useAppContext();
 
+
+  useEffect(() => {
+    // Check if the user is already logged in
+    const fetchData = async () => { 
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/', { withCredentials: true });
+        console.log('User:', response.data);
+        setUserInfo(response.data.user);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+    fetchData();
+  }, [setUserInfo]);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Submitted:', userName, password);
 
     // send userName and password to server to authenticate user
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', { email:userName, password },{withCredentials: true});
+      const response = await axios.post('http://localhost:5000/api/users/login', { email: userName, password },{withCredentials: true});
 
       // Store the token in state or other storage
       localStorage.setItem('userInfo', JSON.stringify(response.data));
