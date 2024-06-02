@@ -12,7 +12,16 @@ router.route('/login')
     .post(authControllers.login);
 
 router.route('/')
+    .get(authControllers.protect, pageRenderController.renderStudentClasses)
     .post(authControllers.protect, pageRenderController.renderStudentClasses);
+
+router.route('/classes')
+    .get(authControllers.protect, pageRenderController.renderStudentClasses)
+
+    // .post((req, res) => {
+    //     console.log(req.body);
+    //     res.send('Login data received');
+    // });
 
 
 router.route('/account')
