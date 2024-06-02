@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
+import Loader from '../components/Loader';
 
 const RegistrationPage = () => {
+  const [loading, setLoading] = useState(false);
   const [accountType, setAccountType] = useState('');
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -18,22 +20,26 @@ const RegistrationPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     // Validate email and password before submission
     if (!isEmailValid()) {
       setEmailError('Please enter a valid email address.');
+      setLoading(false);
       return;
     } else {
       setEmailError('');
     }
     if (!isPasswordValid()) {
       setPasswordError('Please enter a valid password.');
+      setLoading(false);
       return;
     } else {
       setPasswordError('');
     }
     if (!isPhoneNumberValid()) {
       setPhoneNumberError('Please enter a valid phone number.');
+      setLoading(false);
       return;
     } else {
       setPhoneNumberError('');
@@ -51,17 +57,16 @@ const RegistrationPage = () => {
 
       if (response.data) {
         console.log('Registration successful:', response.data);
+        // Stop loading animation
+        setLoading(false);
+        alert('Registration successful');
+        // Navigate to the login page
+        window.location.href = '/';
       } else if (response) {
         console.error('Registration successful but response is not as expected:', response);
       } else {
         console.error('Registration successful but response is not as expected.');
       }
-
-      alert('Registration successful');
-      // Navigate to the login page
-      window.location.href = '/';
-
-      // כאן אתה יכול להוסיף פעולות נוספות כגון הצגת הודעת הצלחה למשתמש או ניתוב לדף אחר
     } catch (error) {
       if (error.response && error.response.data) {
         console.log('Registration failed:', error.response.data);
@@ -70,9 +75,9 @@ const RegistrationPage = () => {
       } else {
         console.log('Registration failed:');
       }
+      // Stop loading animation
+      setLoading(false);
       alert('Registration failed');
-
-      // כאן אתה יכול להוסיף טיפול בשגיאה, לדוגמה הצגת הודעת שגיאה למשתמש
     }
   };
 
@@ -135,7 +140,7 @@ const RegistrationPage = () => {
                 <span className="text-red-500">*</span> Account Type
               </label>
               <div className="flex">
-                <div className="mr-4">
+                <div className="mr-4 flex items-center">
                   <input
                     type="radio"
                     id="student"
@@ -143,12 +148,12 @@ const RegistrationPage = () => {
                     value="student"
                     checked={accountType === 'student'}
                     onChange={() => setAccountType('student')}
-                    className="mr-2"
-                    required // הוספת קריאה לערך חובה
+                    className="radio-lg form-radio h-5 w-5 text-blue-600"
+                    required
                   />
-                  <label htmlFor="student">Student</label>
+                  <label htmlFor="student" className="ml-2">Student</label>
                 </div>
-                <div>
+                <div className="flex items-center">
                   <input
                     type="radio"
                     id="instructor"
@@ -156,10 +161,10 @@ const RegistrationPage = () => {
                     value="instructor"
                     checked={accountType === 'instructor'}
                     onChange={() => setAccountType('instructor')}
-                    className="mr-2"
-                    required // הוספת קריאה לערך חובה
+                    className="radio-lg form-radio h-5 w-5 text-blue-600"
+                    required
                   />
-                  <label htmlFor="instructor">Instructor</label>
+                  <label htmlFor="instructor" className="ml-2">Instructor</label>
                 </div>
               </div>
             </div>
@@ -263,6 +268,7 @@ const RegistrationPage = () => {
           </form>
         </div>
       </div>
+      {loading && <Loader />}
     </div>
   );
 };
