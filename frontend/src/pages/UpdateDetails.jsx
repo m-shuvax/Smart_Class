@@ -3,27 +3,41 @@ import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
-import { useAppContext } from '../Context';
 
 const UpdateDetails = () => {
-  const { user, setUser } = useAppContext();
-  const [newEmail, setEmail] = useState('');
+  const [accountType, setAccountType] = useState('');
+  const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [newPassword, setPassword] = useState('');
+  const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [newFirstName, setFirstName] = useState('');
-  const [newLastName, setLastName] = useState('');
-  const [newPhoneNumber, setPhoneNumber] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [phoneNumberError, setPhoneNumberError] = useState('');
 
+  useEffect(() => {
+    document.title = "Update Details";
+  }, []);
 
-  const { email, firstName, lastName, phoneNumber } = user;
-  setEmail(email);
-  setFirstName(firstName);
-  setLastName(lastName);
-  setPhoneNumber(phoneNumber);
+  // Fetch user details on component mount
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/me');
+        const { role, email, firstName, lastName, phoneNumber } = response.data;
+        setAccountType(role);
+        setEmail(email);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setPhoneNumber(phoneNumber);
+      } catch (error) {
+        console.error('Failed to fetch user details:', error);
+      }
+    };
 
+    fetchUserDetails();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,16 +64,16 @@ const UpdateDetails = () => {
 
     try {
       const response = await axios.put('http://localhost:5000/api/users/account', {
-        newEmail,
-        newPassword,
-        newFirstName,
-        newLastName,
-        newPhoneNumber,
+        role: accountType,
+        email,
+        password,
+        firstName,
+        lastName,
+        phoneNumber,
       });
 
       if (response.data) {
         console.log('Update successful:', response.data);
-        setUser(response.data.data.user)
       } else if (response) {
         console.error('Update successful but response is not as expected:', response);
       } else {
@@ -68,7 +82,7 @@ const UpdateDetails = () => {
 
       alert('Update successful');
       // Navigate to the user profile or another page
-      window.location.href = '/';//$$$$$$$$$$$$$$$$$$$$$$$$
+      window.location.href = '/profile';
     } catch (error) {
       if (error.response && error.response.data) {
         console.log('Update failed:', error.response.data);

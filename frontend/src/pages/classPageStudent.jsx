@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaTrash, FaPlay} from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
@@ -38,6 +39,10 @@ const ClassPageStudent = () => {
   ]);
   const [showLiveStreams, setShowLiveStreams] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
+
+  useEffect(() => {
+    document.title = "Class Page";
+  }, []);
 
   const handleFileInputChange = (event) => {
     if (event.target.name === 'newFileName') {
@@ -81,7 +86,7 @@ const ClassPageStudent = () => {
       <Navbar />
       <div className="container mx-auto pt-24 pl-4">
         <Link
-          to="/HomePageInstructor"
+          to="/HomePageStudent"
           className="mr-20 bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
         >
           <svg

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlay, FaEdit, FaPlus, FaTrash, FaUser } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
@@ -40,6 +40,10 @@ const ClassPageInstructor = () => {
   const [isEditingBroadcast, setIsEditingBroadcast] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
   const [isAddingFile, setIsAddingFile] = useState(false);
+
+  useEffect(() => {
+    document.title = "Class Page";
+  }, []);
 
   const handleFileInputChange = (event) => {
     if (event.target.name === 'newFileName') {
