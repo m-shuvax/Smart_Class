@@ -1,17 +1,18 @@
-// LogoutButton.jsx
 import React from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const LogoutButton = () => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    // Perform logout logic here
-    // For example, remove the authentication token from localStorage
-    // localStorage.removeItem('authToken');
-
-    // Redirect to the login page
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/users/logout', { withCredentials: true });
+      console.log('Response:', response.data);
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (

@@ -4,59 +4,47 @@ import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import { FaCheck } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
+import { useAppContext } from '../Context';
 
 const HomePageInstructor = () => {
-  const [classrooms, setClassrooms] = useState([]);
+  const { user, setUser } = useAppContext();
+  const [classes, setClasses] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showInput, setShowInput] = useState(false);
   const [newClassName, setNewClassName] = useState('');
   const [students, setStudents] = useState([]);
-  const [instructor, setInstructor] = useState(''); // משתנה למרצה המחובר
+
 
   useEffect(() => {
+    console.log(user);
     const fetchClassrooms = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users/classes');
-        setClassrooms(response.data);
+        console.log('Fetching classrooms');
+        const response = await axios.get('http://localhost:5000/api/users/classes', { withCredentials: true });
+        console.log('Response:', response.data);
+        setClasses(response.data.classes);
+        setStudents(response.data.pendingStudents);
+        setUser(response.data.user);
+        console.log('User:', user);
       } catch (error) {
         console.error('Error fetching classrooms:', error);
       }
     };
-
-    const fetchStudents = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/users/pendignStudents');
-        setStudents(response.data);
-      } catch (error) {
-        console.error('Error fetching students:', error);
-      }
-    };
-
-    // נקודת קצה לקבלת שם המרצה המחובר
-    const fetchInstructor = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/users/currentInstructor');
-        setInstructor(response.data.name); // מניחים שהתגובה כוללת את שם המרצה
-      } catch (error) {
-        console.error('Error fetching instructor:', error);
-      }
-    };
-
     fetchClassrooms();
-    fetchStudents();
-    fetchInstructor();
   }, []);
 
   const handleAddClassroom = async () => {
     if (newClassName.trim() === '') return;
     try {
-      const response = await axios.post('http://localhost:5000/api/classes', {
+      const response = await axios.post('http://localhost:5000/api/users/classes', {
         name: newClassName,
-        instructor: instructor, // שימוש בשם המרצה מהמצב
-      });
-      setClassrooms([...classrooms, response.data]);
+      }, { withCredentials: true });
+      console.log('Response:', response.data);
+      alert('the ID of the class is ' + response.data._id)
+      setClasses([...classes, response.data]);
       setNewClassName('');
       setShowInput(false);
+      alert('the ID of the class is ' + response.data._id)
     } catch (error) {
       console.error('Error adding classroom:', error);
     }
@@ -78,13 +66,13 @@ const HomePageInstructor = () => {
       <div className="w-3/4 pt-20 pl-6">
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-4 gap-4">
-          {classrooms.map((classroom) => (
+          {classes.map((classroom) => (
             <Link
-              key={classroom.id}
+              key={classroom._id}
               to={`/classPageInstructor`}
               className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
-              {classroom.name} (ID: {classroom.id})
+              {classroom.name} (ID: {classroom._id})
             </Link>
           ))}
         </div>

@@ -2,24 +2,32 @@ const express = require('express');
 const authControllers = require('./../controllers/authControllers');
 const userControllers = require('./../controllers/userControllers');
 const pageRenderController = require('./../controllers/pageRenders');
-//const authMiddleware = require('./../middleware/authMiddleware');
 const router = express.Router();
 
 router.route('/register')
     .post(userControllers.createUser);
-
-router.route('/login')
-    .post(authControllers.protect, authControllers.login);
-
-
 
 router.route('/forgotPassword')
     .post(authControllers.forgetPassword);
 
 router.route('/resetPassword/:token')
     .patch(authControllers.resetPassword);
+    .post(authControllers.login);
 
+router.route('/')
+    .get(authControllers.protect, pageRenderController.renderStudentClasses)
+    .post(authControllers.protect, pageRenderController.renderStudentClasses);
 
+router.route('/classes')
+    .get(authControllers.protect, pageRenderController.renderInstructorClasses)
+    .post(authControllers.protect, userControllers.createClass);
+
+router.route('/logout')
+    .get(authControllers.logout);
+
+router.route('/account')
+    .put(authControllers.protect, userControllers.updateUser);
+   
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
 //     .post(authMiddleware.protect, userControllers.createUser);

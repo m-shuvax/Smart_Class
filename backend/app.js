@@ -8,8 +8,19 @@ const cors = require('cors');
 const globalErrorHandler = require('./utils/errorHandler');
 const AppError = require('./utils/AppError');
 
-app.use(cors());
-app.use(express.json());
+
+app.use(cors({
+  origin:['http://localhost:5173'],
+  credentials:true
+}))
+app.use(express.json())
+app.use('/api/users', userRouter )
+//app.use('/api/classes', classRouter)
+ 
+app.all('*', (req, res, next)=>{
+  return next(new AppError (404, 'This route is not exist'))
+})
+app.use(globalErrorHandler)
 
 // Routes
 app.use('/api/v1/users', userRouter); 

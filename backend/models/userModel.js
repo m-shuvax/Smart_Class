@@ -33,17 +33,21 @@ const userSchema = new mongoose.Schema({
   resetPasswordExpires: Date
 });
 
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  const salt = await bcrypt.genSalt(12);
-  this.password = await bcrypt.hash(this.password, salt);
-  this.confirmPassword = undefined;
-  next();
+
+// Hash password before saving
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) {
+    }
+
+    this.password = await bcrypt.hash(this.password, 12);
+    next();
 });
 
-userSchema.methods.checkPassword = async function(password, hashedPassword) {
-  return await bcrypt.compare(password, hashedPassword);
+
+userSchema.methods.checkPassword = async function (plainTextPassword) {
+    return await bcrypt.compare(plainTextPassword, this.password);
 };
+
 
 const User = mongoose.model('User', userSchema);
 

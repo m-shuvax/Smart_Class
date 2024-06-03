@@ -27,12 +27,11 @@ const handleError = (next, message, statusCode) => {
 // User Controllers
 exports.createUser = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 12);
   const user = await User.create({
     firstName,
     lastName,
     email,
-    password: hashedPassword,
+    password,
     phoneNumber,
     role,
   });
@@ -155,17 +154,15 @@ exports.updateLiveLink = asyncHandler(async (req, res, next) => {
 
 // Function to create a new class
 exports.createClass = asyncHandler(async (req, res, next) => {
-  const { name, instructor, description } = req.body;
-
+  console.log('createClass');
+  const { name } = req.body;
+  const { user } = req;
+  console.log('createClass2');
   try {
     const newClass = await Class.create({
       name,
-      instructor,
-      description,
-      students: [], 
-      pendingStudents: [], 
+      instructor: user
     });
-
     res.status(201).json(newClass);
   } catch (error) {
     next(new AppError('Failed to create class', 400));
@@ -190,3 +187,5 @@ exports.updateClassLiveLink = asyncHandler(async (req, res, next) => {
     message: 'Class live link updated successfully',
   });
 });
+
+
