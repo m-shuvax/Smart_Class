@@ -8,6 +8,25 @@ const HomePageStudent = () => {
   const [classrooms, setClassrooms] = useState(['Math 101', 'English 202', 'History 303', 'Science 404']);
   const [showInput, setShowInput] = useState(false);
   const [newClassroomCode, setNewClassroomCode] = useState('');
+  const {user, setUser} = useAppContext();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try{
+        /* setName(user.firstName, user.lastName); */
+        console.log(2222222222222222);
+        const response = await axios.get('http://localhost:5000/api/users/studentHomePage', { withCredentials: true })
+        console.log(response);
+        setUser(response.data.user);    
+        setClassrooms(response.data.classes);
+    }
+    catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  fetchData();
+  }, []);
 
   useEffect(() => {
     document.title = "Home Page";
