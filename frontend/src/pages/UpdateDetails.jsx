@@ -14,6 +14,7 @@ const UpdateDetails = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumberError, setPhoneNumberError] = useState('');
 
   // Fetch user details on component mount
   useEffect(() => {
@@ -50,9 +51,15 @@ const UpdateDetails = () => {
     } else {
       setPasswordError('');
     }
+    if (!isPhoneNumberValid()) {
+      setPhoneNumberError('Please enter a valid phone number.');
+      return;
+    } else {
+      setPhoneNumberError('');
+    }
 
     try {
-      const response = await axios.put('http://localhost:5000/api/users/update', {
+      const response = await axios.put('http://localhost:5000/api/users/account', {
         role: accountType,
         email,
         password,
@@ -110,6 +117,17 @@ const UpdateDetails = () => {
     }
   };
 
+  const handlePhoneNumberChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setPhoneNumber(value);
+      setPhoneNumberError('');
+    } else {
+      setPhoneNumberError('Phone number can contain digits only.');
+    }
+  };
+
+
   return (
     <div className="mt-10 min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
@@ -123,39 +141,6 @@ const UpdateDetails = () => {
         <div className="w-full max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold mb-6">Update Details</h2>
           <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label htmlFor="accountType" className="block font-bold mb-2">
-                <span className="text-red-500">*</span> Account Type
-              </label>
-              <div className="flex">
-                <div className="mr-4">
-                  <input
-                    type="radio"
-                    id="student"
-                    name="accountType"
-                    value="student"
-                    checked={accountType === 'student'}
-                    onChange={() => setAccountType('student')}
-                    className="mr-2"
-                    required
-                  />
-                  <label htmlFor="student">Student</label>
-                </div>
-                <div>
-                  <input
-                    type="radio"
-                    id="instructor"
-                    name="accountType"
-                    value="instructor"
-                    checked={accountType === 'instructor'}
-                    onChange={() => setAccountType('instructor')}
-                    className="mr-2"
-                    required
-                  />
-                  <label htmlFor="instructor">Instructor</label>
-                </div>
-              </div>
-            </div>
             <div className="mb-4">
               <label htmlFor="firstName" className="block font-bold mb-2">
                 <span className="text-red-500">*</span> First Name
@@ -237,10 +222,13 @@ const UpdateDetails = () => {
                 type="tel"
                 id="phoneNumber"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                onChange={handlePhoneNumberChange}
+                className={`w-full px-4 py-2 border ${phoneNumberError ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                 required
               />
+              {phoneNumberError && (
+                <p className="text-red-500 text-sm">{phoneNumberError}</p>
+              )}
             </div>
             <span className="text-red-500 text-sm font-bold">* All fields are required</span>
             <button
