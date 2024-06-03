@@ -28,18 +28,27 @@ exports.renderInstructorClasses = asyncHandler(async (req, res, next) => {
   log('renderInstructorClasses3');
 
   // Gathering all pending students
-  const pendingStudents = classes.reduce((acc, classObj) => {
-    return acc.concat(classObj.pendingStudents);
-  }, []);
-  log('renderInstructorClasses4');
+  const pendingStudents = await Promise.all(
+    classes.reduce((acc, classObj) => {
+      const classPendingStudents = classObj.pendingStudents.map(async (studentId) => {
+        const student = await User.findById(studentId).select('firstName lastName email'); // Select the fields you need
+        return {
+          ...student._doc,
+          classId: classObj._id,
+          className: classObj.name
+        };
+      });
+      return acc.concat(classPendingStudents);
+    }, [])
+  );
+console.log('renderInstructorClasses4', pendingStudents);
+
 
   res.status(200).json({
     success: true,
-
     user,
     classes,
     pendingStudents
-
   });
 });
 
@@ -176,30 +185,35 @@ exports.addPendingStudent = asyncHandler(async (req, res, next) => {
 
 // Function to approve or reject a pending student
 exports.handlePendingStudent = asyncHandler(async (req, res, next) => {
-  const { userId, classId, action } = req.body;
+  log('handlePendingStudent0', req.body);
+  const { studentId, classId, action } = req.body;
+  log('handlePendingStudent1');
 
-  if (!userId || !classId || !['approve', 'reject'].includes(action)) {
+if (!studentId || !classId || !['approve', 'reject'].includes(action)) {
     return next(new AppError('User ID, Class ID, and valid action are required', 400));
   }
-
+log('handlePendingStudent22');
   const classData = await Class.findById(classId);
-
+  log('handlePendingStudent2');
   if (!classData) {
     return next(new AppError('Class not found', 404));
   }
+  log('handlePendingStudent3');
 
-  const studentIndex = classData.pendingStudents.indexOf(userId);
+  const studentIndex = classData.pendingStudents.indexOf(studentId);
+  log('handlePendingStudent4', studentIndex);
 
   if (studentIndex === -1) {
     return next(new AppError('Student not in pending list', 404));
   }
 
   if (action === 'approve') {
-    classData.students.push(userId);
+    classData.students.push(studentId);
   }
 
   classData.pendingStudents.splice(studentIndex, 1);
   await classData.save();
+  log('handlePendingStudent5');
 
   res.status(200).json({ success: true, message: `Student ${action === 'approve' ? 'approved' : 'rejected'}` });
 });

@@ -10,7 +10,7 @@ const HomePageStudent = () => {
   const [classrooms, setClassrooms] = useState([]);
   const [showInput, setShowInput] = useState(false);
   const [newClassroomCode, setNewClassroomCode] = useState('');
-  const [Name, setName] = useState('');
+  const {user, setUser} = useAppContext();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,6 +19,7 @@ const HomePageStudent = () => {
         console.log(2222222222222222);
         const response = await axios.get('http://localhost:5000/api/users/studentHomePage', { withCredentials: true })
         console.log(response);
+        setUser(response.data.user);    
         setClassrooms(response.data.classes);
     }
     catch (error) {

@@ -14,7 +14,6 @@ const HomePageInstructor = () => {
   const [newClassName, setNewClassName] = useState('');
   const [students, setStudents] = useState([]);
 
-
   useEffect(() => {
     console.log(user);
     const fetchClassrooms = async () => {
@@ -23,6 +22,8 @@ const HomePageInstructor = () => {
         const response = await axios.get('http://localhost:5000/api/users/classes', { withCredentials: true });
         console.log('Response:', response.data);
         setClasses(response.data.classes);
+
+        // Assuming response.data.pendingStudents is an array of student objects with class information
         setStudents(response.data.pendingStudents);
         setUser(response.data.user);
         console.log('User:', user);
@@ -40,11 +41,10 @@ const HomePageInstructor = () => {
         name: newClassName,
       }, { withCredentials: true });
       console.log('Response:', response.data);
-      alert('the ID of the class is ' + response.data._id)
+      alert('The ID of the class is ' + response.data._id);
       setClasses([...classes, response.data]);
       setNewClassName('');
       setShowInput(false);
-      alert('the ID of the class is ' + response.data._id)
     } catch (error) {
       console.error('Error adding classroom:', error);
     }
@@ -52,27 +52,31 @@ const HomePageInstructor = () => {
 
   const handleApproveStudent = async (studentId, classId) => {
     try {
-      await axios.post('http://localhost:5000/api/users/students', {
-        studentId: studentId,
-        classId: classId,
+      console.log('Approving student:', studentId, classId);
+      await axios.post('http://localhost:5000/api/users/pendingStudents', {
+        studentId,
+        classId,
         action: 'approve',
-      });
+      }, { withCredentials: true });
+
       // Remove the approved student from the pending students list
-      setStudents(students.filter((student) => student.id !== studentId));
+      setStudents(students.filter(student => !(student._id === studentId && student.classId === classId)));
     } catch (error) {
       console.error('Error approving student:', error);
     }
   };
 
-  const handleRejectStudent = async (studentId) => {
+  const handleRejectStudent = async (studentId, classId) => {
     try {
-      await axios.post('http://localhost:5000/api/users/students', {
+      response=await axios.post('http://localhost:5000/api/users/pendingStudents', {
         studentId,
         classId,
         action: 'reject',
-      });
+      }, { withCredentials: true });
+console.log(response);
       // Remove the rejected student from the pending students list
-      setStudents(students.filter((student) => student.id !== studentId));
+      setStudents(students.filter(student => !(student._id === studentId && student.classId === classId)));
+
     } catch (error) {
       console.error('Error rejecting student:', error);
     }
@@ -120,16 +124,16 @@ const HomePageInstructor = () => {
               <ul>
                 {students.map((student) => (
                   <li
-                    key={student.id}
+                    key={student._id}
                     className="text-left cursor-pointer text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md flex justify-between items-center"
-                    onClick={() => handleStudentClick(student)}
                   >
-                    <button onClick={handleRejectStudent} >
+                    <button onClick={() => handleRejectStudent(student._id, student.classId)}>
                       <XCircleIcon className="h-6 w-6 hover:text-red-700" />
                     </button>
-                    {student.firstName} {student.lastName}<br /> class id {student.id}
-                    <button className="bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center"
-                    onClick={() => handleApproveStudent(student.id, student.classId)}
+                    {student.firstName} {student.lastName}<br /> {student.className}
+                    <button
+                      className="bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center"
+                      onClick={() => handleApproveStudent(student._id, student.classId)}
                     >
                       <FaCheck className="h-14 w-4 mr-2" />
                     </button>

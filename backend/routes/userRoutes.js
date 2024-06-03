@@ -36,6 +36,9 @@ router.route('/logout')
 
 router.route('/account')
     .put(authControllers.protect, userControllers.updateUser);
+
+router.route('/pendingStudents')
+    .post(authControllers.protect, pageRenderController.handlePendingStudent);   
    
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)

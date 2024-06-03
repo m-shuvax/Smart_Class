@@ -43,7 +43,7 @@ const createSendToken = (user, statusCode, res) => {
 
 // Middleware to protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
-  console.log(345);
+  console.log('protect',customDate.getFormatDate());
   let token;
   if (req.headers.cookie) {
     log('protect0');
