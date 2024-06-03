@@ -23,7 +23,7 @@ const LoginPage = () => {
 
         const newUser = response.data.data.user;
         setUser(newUser);
-        console.log('User:', newUser);
+        console.log('User:', user);
         const isStudent = newUser.role === 'student';
 
         // Redirect based on user role
@@ -50,7 +50,7 @@ const LoginPage = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/users/login', { email: userName, password }, { withCredentials: true });
       console.log('Response:', response.data);
-      setUser(response.data.user);
+      setUser(response.data.data.user);
 
       const isStudent = response.data.data.user.role === 'student';
       // Redirect based on user role
