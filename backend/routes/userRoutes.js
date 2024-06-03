@@ -15,7 +15,8 @@ router.route('/')
     .post(authControllers.protect, pageRenderController.renderStudentClasses);
 
 router.route('/classes')
-    .get(authControllers.protect, pageRenderController.renderStudentClasses);
+    .get(authControllers.protect, pageRenderController.renderInstructorClasses)
+    .post(authControllers.protect, userControllers.createClass);
 
 router.route('/logout')
     .get(authControllers.logout);
