@@ -8,6 +8,7 @@ import ClassPageStudent from './pages/classPageStudent'
 import ClassPageInstructor from './pages/classPageInstructor'
 import StudentList from './pages/StudentsList'
 import UpdateDetails from './pages/UpdateDetails'
+import ResetPassword from './pages/ResetPassword';
 import { AppProvider } from './Context';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path="/ClassPageInstructor" element={<ClassPageInstructor />} />
             <Route path="/StudentList" element={<StudentList />} />
             <Route path="/UpdateDetails" element={<UpdateDetails />} />
+            <Route path="/ResetPassword/:token" element={<ResetPassword />} />
           </Routes>
         </div>
       </AppProvider>
