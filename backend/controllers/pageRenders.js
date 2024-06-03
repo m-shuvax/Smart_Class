@@ -12,48 +12,72 @@ const categorizeFiles = require('./../utils/categorize');
 
 // Function to render instructor classes and pending students
 exports.renderInstructorClasses = asyncHandler(async (req, res, next) => {
-  const { userId } = req.params;
+  log('renderInstructorClasses1');
+  const { user } = req;
 
-  if (!userId) {
+  if (!user) {
     return next(new AppError('User ID is required', 400));
   }
 
   // Fetching all classes
   const allClasses = await Class.find({});
+  log('renderInstructorClasses2');
 
   // Filtering classes where the user is the instructor
-  const instructorClasses = allClasses.filter(classObj => classObj.instructor.equals(userId));
+  const classes = allClasses.filter(classObj => classObj.instructor.equals(user._id));
+  log('renderInstructorClasses3');
 
   // Gathering all pending students
-  const pendingStudents = instructorClasses.reduce((acc, classObj) => {
+  const pendingStudents = classes.reduce((acc, classObj) => {
     return acc.concat(classObj.pendingStudents);
   }, []);
+  log('renderInstructorClasses4');
 
   res.status(200).json({
     success: true,
-    data: {
-      instructorClasses,
-      pendingStudents,
-    },
+
+    user,
+    classes,
+    pendingStudents
+
   });
 });
 
-// Function to render student classes
+
 exports.renderStudentClasses = asyncHandler(async (req, res, next) => {
-  log('renderStudentClasses1');
+  console.log('renderStudentClasses1');
   const { user } = req;
-  log('renderStudentClasses2');
+  console.log('renderStudentClasses2');
+
   if (!user._id) {
     return next(new AppError('User ID is required', 400));
   }
-  log('renderStudentClasses3');
+
+  console.log('renderStudentClasses3');
+
   // Fetching all classes where the user is a student
   const studentClasses = await Class.find({ students: user._id }).select('name instructor');
-  log('renderStudentClasses4');
+
+  // Map through the classes to fetch instructor details
+  const classesWithInstructors = await Promise.all(studentClasses.map(async (classObj) => {
+    const instructor = await User.findById(classObj.instructor).select('name');
+    return {
+      ...classObj._doc,
+      instructor: {
+        name: instructor.name,
+        id: classObj.instructor
+      }
+    };
+  }));
+
+  console.log('renderStudentClasses4');
+
   res.status(200).json({
     success: true,
-    data: {studentClasses,
-      user}
+    
+      classes: classesWithInstructors,
+      user
+    
   });
 });
 

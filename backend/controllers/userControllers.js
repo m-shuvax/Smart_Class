@@ -7,6 +7,7 @@ const Message = require('./../models/messageModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const bcrypt = require('bcryptjs');
+const { log } = require('console');
 
 
 
@@ -14,7 +15,7 @@ const bcrypt = require('bcryptjs');
 const handleResponse = (res, data, statusCode = 200) => {
   res.status(statusCode).json({
     success: true,
-    data,
+    ...data,
   });
 };
 
@@ -76,6 +77,21 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
   }
 
   res.status(204).json({ success: true, data: null });
+});
+
+exports.addToPending = asyncHandler(async (req, res, next) => {
+  log('addToPending');
+  const { user } = req;
+  const classId  = req.body.classroomCode;
+  log('addToPending2');
+  const classData = await Class.findById(classId);
+  log('addToPending3');
+  log(classData);
+  classData.pendingStudents.push(user);
+  log('addToPending4');
+  await classData.save();
+  log('addToPending5');
+  handleResponse(res, classData);
 });
 
 // File Controllers
@@ -154,14 +170,15 @@ exports.updateLiveLink = asyncHandler(async (req, res, next) => {
 
 // Function to create a new class
 exports.createClass = asyncHandler(async (req, res, next) => {
+  console.log('createClass');
   const { name } = req.body;
-
+  const { user } = req;
+  console.log('createClass2');
   try {
     const newClass = await Class.create({
       name,
-      user: req.user._id,
+      instructor: user
     });
-
     res.status(201).json(newClass);
   } catch (error) {
     next(new AppError('Failed to create class', 400));
@@ -186,4 +203,5 @@ exports.updateClassLiveLink = asyncHandler(async (req, res, next) => {
     message: 'Class live link updated successfully',
   });
 });
+
 

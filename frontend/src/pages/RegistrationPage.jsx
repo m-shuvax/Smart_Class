@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
@@ -17,6 +17,10 @@ const RegistrationPage = () => {
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [phoneNumberError, setPhoneNumberError] = useState('');
+
+  useEffect(() => {
+    document.title = "Registration";
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

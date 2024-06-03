@@ -5,18 +5,20 @@ import Navbar from '../features/Navbar';
 import { useAppContext } from '../Context';
 import axios from 'axios';
 
+
 const HomePageStudent = () => {
   const [classrooms, setClassrooms] = useState([]);
   const [showInput, setShowInput] = useState(false);
   const [newClassroomCode, setNewClassroomCode] = useState('');
-  const {Name, setName} = useAppContext();
+  const [Name, setName] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try{
-        setName(user.firstName, user.lastName);
-        const response = await axios.get('http://localhost:5000/api/users/studentHomePage')
-
+        /* setName(user.firstName, user.lastName); */
+        console.log(2222222222222222);
+        const response = await axios.get('http://localhost:5000/api/users/studentHomePage', { withCredentials: true })
+        console.log(response);
         setClassrooms(response.data.classes);
     }
     catch (error) {
@@ -27,8 +29,13 @@ const HomePageStudent = () => {
   fetchData();
   }, []);
 
+  useEffect(() => {
+    document.title = "Home Page";
+  }, []);
+
   const handleAddClassroom = () => {
-    const newClassrooms = [...classrooms, newClassroomCode];
+    const responst = axios.post('http://localhost:5000/api/users/studentHomePage', { classroomCode: newClassroomCode }, { withCredentials: true });
+    const newClassrooms = [...classrooms, response.data.classes];
     setClassrooms(newClassrooms);
     setNewClassroomCode('');
     setShowInput(false);

@@ -1,35 +1,38 @@
-const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    firstName: {
-        type: String,
-        required: [true, 'The user must have a name']
+  firstName: {
+    type: String,
+    required: [true, 'The user must have a name']
+  },
+  lastName: {
+    type: String,
+    required: [true, 'The user must have a name']
+  },
+  email: {
+    type: String,
+    required: [true, 'Please provide email'],
+    unique: true
+  },
+  password: {
+    type: String,
+    required: [true, 'Must be a password'],
+    minLength: 8,
+    select: false
+  },
+  role: {
+    type: String,
+    enum: {
+      required: [true, 'Must be a role'],
+      values: ['admin', 'instructor', 'student'],
+      message: 'The role must be either "admin", "instructor" or "student"'
     },
-    lastName: {
-        type: String,
-        required: [true, 'The user must have a name']
-    },
-    email: {
-        type: String,
-        required: [true, 'Please provide email'],
-        unique: true
-    },
-    password: {
-        type: String,
-        required: [true, 'Must be a password'],
-        minLength: 8,
-        select: false
-    },
-    role: {
-        type: String,
-        enum: {
-            required: [true, 'Must be a role'],
-            values: ['admin', 'instructor', 'student'],
-            message: 'The role must be either "admin", "instructor" or "student"'
-        },
-    }
-})
+  },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
+});
+
 
 // Hash password before saving
 userSchema.pre('save', async function (next) {
@@ -42,10 +45,11 @@ userSchema.pre('save', async function (next) {
 
 
 userSchema.methods.checkPassword = async function (plainTextPassword) {
+  console.log(1111111111111);
     return await bcrypt.compare(plainTextPassword, this.password);
 };
 
 
-const User = mongoose.model('User', userSchema)
+const User = mongoose.model('User', userSchema);
 
-module.exports = User
+module.exports = User;
