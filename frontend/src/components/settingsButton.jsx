@@ -10,7 +10,7 @@ const SettingsButton = () => {
     // localStorage.removeItem('authToken');
 
     // Redirect to the login page
-    navigate('/register');
+    navigate('/UpdateDetails');
   };
 
   return (

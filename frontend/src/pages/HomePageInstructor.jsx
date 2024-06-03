@@ -5,13 +5,13 @@ import { FaCheck } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
 
-
 const HomePageInstructor = () => {
   const [classrooms, setClassrooms] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showInput, setShowInput] = useState(false);
-  const [newClassName, setNewClassName] = useState([]);
+  const [newClassName, setNewClassName] = useState('');
   const [students, setStudents] = useState([]);
+  const [instructor, setInstructor] = useState(''); // משתנה למרצה המחובר
 
   useEffect(() => {
     const fetchClassrooms = async () => {
@@ -28,21 +28,38 @@ const HomePageInstructor = () => {
         const response = await axios.get('http://localhost:5000/api/users/pendignStudents');
         setStudents(response.data);
       } catch (error) {
-        console.error('Error fetching classrooms:', error);
+        console.error('Error fetching students:', error);
+      }
+    };
+
+    // נקודת קצה לקבלת שם המרצה המחובר
+    const fetchInstructor = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/currentInstructor');
+        setInstructor(response.data.name); // מניחים שהתגובה כוללת את שם המרצה
+      } catch (error) {
+        console.error('Error fetching instructor:', error);
       }
     };
 
     fetchClassrooms();
-    fetchStudents()
+    fetchStudents();
+    fetchInstructor();
   }, []);
 
-  const handleAddClassroom = () => {
-    if (newClassName.trim() === ('')) return
-    const id = `class-${Date.now()}`;
-    const newClassrooms = [...classrooms, { id, name: newClassName }];
-    setClassrooms(newClassrooms);
-    setNewClassName('');
-    setShowInput(false);
+  const handleAddClassroom = async () => {
+    if (newClassName.trim() === '') return;
+    try {
+      const response = await axios.post('http://localhost:5000/api/classes', {
+        name: newClassName,
+        instructor: instructor, // שימוש בשם המרצה מהמצב
+      });
+      setClassrooms([...classrooms, response.data]);
+      setNewClassName('');
+      setShowInput(false);
+    } catch (error) {
+      console.error('Error adding classroom:', error);
+    }
   };
 
   const handleToggleInput = () => {
@@ -64,7 +81,7 @@ const HomePageInstructor = () => {
           {classrooms.map((classroom) => (
             <Link
               key={classroom.id}
-              to={`/classPageInstructor`} // Changed to `/classPageInstructor`
+              to={`/classPageInstructor`}
               className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
               {classroom.name} (ID: {classroom.id})
@@ -101,7 +118,6 @@ const HomePageInstructor = () => {
                   </li>
                 ))}
               </ul>
-
             </div>
           </div>
         )}
@@ -132,8 +148,7 @@ const HomePageInstructor = () => {
           </>
         )}
       </div>
-      </div>
-    
+    </div>
   );
 };
 
