@@ -6,7 +6,6 @@ import Navbar from '../features/Navbar';
 import { useAppContext } from '../Context';
 import ForgotPasswordForm from '../components/ForgotPassword';
 
-
 const LoginPage = () => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
@@ -15,9 +14,17 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const { user, setUser } = useAppContext();
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     document.title = "Smart Class";
+
+    // Check for message in localStorage
+    const registrationMessage = localStorage.getItem('registrationMessage');
+    if (registrationMessage) {
+      setMessage(registrationMessage);
+      localStorage.removeItem('registrationMessage');
+    }
   }, []);
 
   useEffect(() => {
@@ -28,7 +35,6 @@ const LoginPage = () => {
         setUser(newUser);
         const isStudent = newUser.role === 'student';
 
-        // Redirect based on user role
         if (isStudent) {
           navigate('/HomePageStudent');
         } else {
@@ -70,6 +76,7 @@ const LoginPage = () => {
           <ForgotPasswordForm onBackToLogin={() => setShowForgotPassword(false)} />
         ) : (
           <form className="bg-white p-8 rounded-lg shadow-md" onSubmit={handleSubmit}>
+             {message && <div className="mb-4 text-green-500">{message}</div>}
             <div className="mb-6">
               <input
                 value={userName}
@@ -95,7 +102,7 @@ const LoginPage = () => {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-            {error ? <p className="text-red-500">{error}</p> : <br />}
+            {error && <p className="text-red-500">{error}</p>}
             <button 
               type="button" 
               className="text-blue-500 mt-2 mb-6 inline-block"

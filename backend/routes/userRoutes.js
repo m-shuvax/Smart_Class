@@ -7,7 +7,7 @@ const router = express.Router();
 router.route('/register')
     .post(userControllers.createUser);
 
-router.route('/forgotPassword')
+router.route('/forgetPassword')
     .post(authControllers.forgetPassword);
 
 router.route('/resetPassword/:token')
