@@ -15,7 +15,10 @@ router.route('/login')
     .post(authControllers.login);
 
 router.route('/classes')
-    .get(authControllers.protect, pageRenderController.renderStudentClasses)
+    .get(authControllers.protect, pageRenderController.renderStudentClasses);
+
+router.route('/logout')
+    .get(authControllers.logout);
 
     // .post((req, res) => {
     //     console.log(req.body);
