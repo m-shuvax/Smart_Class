@@ -27,12 +27,11 @@ const handleError = (next, message, statusCode) => {
 // User Controllers
 exports.createUser = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 12);
   const user = await User.create({
     firstName,
     lastName,
     email,
-    password: hashedPassword,
+    password,
     phoneNumber,
     role,
   });

@@ -1,7 +1,7 @@
 // Importing required modules and models
 const User = require('./../models/userModel');
 const Class = require('./../models/classModel');
-const {log } = require('console');
+const { log } = require('console');
 const File = require('./../models/fileModel');
 const Lesson = require('./../models/lessonModel');
 const Chat = require('./../models/chatModel');
