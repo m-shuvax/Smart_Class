@@ -7,7 +7,11 @@ const router = express.Router();
 router.route('/register')
     .post(userControllers.createUser);
 
-router.route('/login')
+router.route('/forgotPassword')
+    .post(authControllers.forgetPassword);
+
+router.route('/resetPassword/:token')
+    .patch(authControllers.resetPassword);
     .post(authControllers.login);
 
 router.route('/')
@@ -53,5 +57,10 @@ router.route('/account')
 // router.get('/userClasses/:email', authMiddleware.protect, pageRenderController.renderUserClasses);
 // router.post('/studentClass', authMiddleware.protect, pageRenderController.renderStudentClass);
 // router.post('/instructorClass', authMiddleware.protect, pageRenderController.renderInstructorClass);
+
+
+
+
+
 
 module.exports = router;
