@@ -45,6 +45,7 @@ userSchema.pre('save', async function (next) {
 
 
 userSchema.methods.checkPassword = async function (plainTextPassword) {
+  console.log(1111111111111);
     return await bcrypt.compare(plainTextPassword, this.password);
 };
 

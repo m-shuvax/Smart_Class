@@ -50,6 +50,34 @@ const HomePageInstructor = () => {
     }
   };
 
+  const handleApproveStudent = async (studentId, classId) => {
+    try {
+      await axios.post('http://localhost:5000/api/users/students', {
+        studentId: studentId,
+        classId: classId,
+        action: 'approve',
+      });
+      // Remove the approved student from the pending students list
+      setStudents(students.filter((student) => student.id !== studentId));
+    } catch (error) {
+      console.error('Error approving student:', error);
+    }
+  };
+
+  const handleRejectStudent = async (studentId) => {
+    try {
+      await axios.post('http://localhost:5000/api/users/students', {
+        studentId,
+        classId,
+        action: 'reject',
+      });
+      // Remove the rejected student from the pending students list
+      setStudents(students.filter((student) => student.id !== studentId));
+    } catch (error) {
+      console.error('Error rejecting student:', error);
+    }
+  };
+
   const handleToggleInput = () => {
     setShowInput(!showInput);
   };

@@ -11,7 +11,7 @@ router.route('/forgotPassword')
     .post(authControllers.forgetPassword);
 
 router.route('/resetPassword/:token')
-    .patch(authControllers.resetPassword);
+    .patch(authControllers.resetPassword)
     .post(authControllers.login);
 
 router.route('/')
@@ -21,6 +21,9 @@ router.route('/')
 router.route('/classes')
     .get(authControllers.protect, pageRenderController.renderInstructorClasses)
     .post(authControllers.protect, userControllers.createClass);
+
+router.route('/login')
+    .post(authControllers.login);
 
 router.route('/logout')
     .get(authControllers.logout);
@@ -32,8 +35,7 @@ router.route('/account')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
 //     .post(authMiddleware.protect, userControllers.createUser);
 
-// router.route('/login')
-//     .post(userControllers.login);
+
 
 // router.route('/class/file')
 //     .post(authMiddleware.protect, userControllers.createFile)
