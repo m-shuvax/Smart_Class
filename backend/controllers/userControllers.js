@@ -7,7 +7,6 @@ const Message = require('./../models/messageModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const bcrypt = require('bcryptjs');
-const { log } = require('console');
 
 
 
@@ -97,6 +96,7 @@ exports.addToPending = asyncHandler(async (req, res, next) => {
     message: 'Request sent successfully',
   });
 });
+
 
 // File Controllers
 exports.createFile = asyncHandler(async (req, res, next) => {

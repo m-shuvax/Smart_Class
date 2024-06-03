@@ -14,12 +14,6 @@ router.route('/resetPassword/:token')
     .patch(authControllers.resetPassword)
     .post(authControllers.login);
 
-router.route('/studentHomePage')
-    .get(authControllers.protect, pageRenderController.renderStudentClasses)
-    .post(authControllers.protect, userControllers.addToPending);
-
-
-
 router.route('/')
     .get(authControllers.protect, pageRenderController.renderStudentClasses)
     .post(authControllers.protect, pageRenderController.renderStudentClasses);

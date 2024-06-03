@@ -46,18 +46,16 @@ exports.protect = asyncHandler(async (req, res, next) => {
   console.log('protect',customDate.getFormatDate());
   let token;
   if (req.headers.cookie) {
-    log('protect0');
     token = req.headers.cookie.split('=')[1];
   }
   if (!token) return next(new AppError('Please login', 401));
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  log('protect1');
 
   if (!decoded) return next(new AppError('Token is invalid or has expired', 401));
-log('protect2');
+
   const user = await User.findById(decoded.id);
-  log('protect3');
+
   if (!user) return next(new AppError('The user belonging to this token does no longer exist', 401));
 
   req.user = user;
