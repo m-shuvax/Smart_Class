@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import Navbar from '../features/Navbar';
+import { useAppContext } from '../Context';
+import axios from 'axios';
 
 const HomePageStudent = () => {
-  const [classrooms, setClassrooms] = useState(['Math 101', 'English 202', 'History 303', 'Science 404']);
+  const [classrooms, setClassrooms] = useState([]);
   const [showInput, setShowInput] = useState(false);
   const [newClassroomCode, setNewClassroomCode] = useState('');
+  const {Name, setName} = useAppContext();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try{
+        setName(user.firstName, user.lastName);
+        const response = await axios.get('http://localhost:5000/api/users/studentHomePage')
+
+        setClassrooms(response.data.classes);
+    }
+    catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  fetchData();
+  }, []);
 
   const handleAddClassroom = () => {
     const newClassrooms = [...classrooms, newClassroomCode];

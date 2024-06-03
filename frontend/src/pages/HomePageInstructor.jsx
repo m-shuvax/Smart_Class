@@ -1,44 +1,50 @@
-import React, { useState, useEffect, act } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import { FaCheck } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
+import { useAppContext } from '../Context';
 
 const HomePageInstructor = () => {
-  const [classrooms, setClassrooms] = useState([]);
+  const { user, setUser } = useAppContext();
+  const [classes, setClasses] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState(null);
   const [showInput, setShowInput] = useState(false);
   const [newClassName, setNewClassName] = useState('');
   const [students, setStudents] = useState([]);
-  const [instructor, setInstructor] = useState('');
+
 
   useEffect(() => {
-    const fetchData = async () => {
+    console.log(user);
+    const fetchClassrooms = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users/instructorHomePage')
-
-        setInstructor(response.data.instructor);
-        setClassrooms(response.data.classes);
-        setStudents(response.data.students);
-      }
-      catch (error) {
-        console.error('Error fetching data:', error);
+        console.log('Fetching classrooms');
+        const response = await axios.get('http://localhost:5000/api/users/classes', { withCredentials: true });
+        console.log('Response:', response.data);
+        setClasses(response.data.classes);
+        setStudents(response.data.pendingStudents);
+        setUser(response.data.user);
+        console.log('User:', user);
+      } catch (error) {
+        console.error('Error fetching classrooms:', error);
       }
     };
-
-    fetchData();
+    fetchClassrooms();
   }, []);
-
 
   const handleAddClassroom = async () => {
     if (newClassName.trim() === '') return;
     try {
       const response = await axios.post('http://localhost:5000/api/users/classes', {
         name: newClassName,
-      });
-      setClassrooms([...classrooms, response.data.class]);
+      }, { withCredentials: true });
+      console.log('Response:', response.data);
+      alert('the ID of the class is ' + response.data._id)
+      setClasses([...classes, response.data]);
       setNewClassName('');
       setShowInput(false);
+      alert('the ID of the class is ' + response.data._id)
     } catch (error) {
       console.error('Error adding classroom:', error);
     }
@@ -88,13 +94,13 @@ const HomePageInstructor = () => {
       <div className="w-3/4 pt-20 pl-6">
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-4 gap-4">
-          {classrooms.map((classroom) => (
+          {classes.map((classroom) => (
             <Link
-              key={classroom.id}
+              key={classroom._id}
               to={`/classPageInstructor`}
               className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
-              {classroom.name} (ID: {classroom.id})
+              {classroom.name} (ID: {classroom._id})
             </Link>
           ))}
         </div>
@@ -120,9 +126,7 @@ const HomePageInstructor = () => {
                   >
                     <button>
                       <XCircleIcon className="h-6 w-6 hover:text-red-700" />
-                      onClick={() => handleRejectStudent(student.id)}
-                    </button >
-                    onClick={() => handleApproveStudent(student.id, /* Add the appropriate classId here */)}
+                    </button>
                     {student.firstName} {student.lastName}<br /> class id {student.id}
                     <button className="bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center">
                       <FaCheck className="h-14 w-4 mr-2" />
