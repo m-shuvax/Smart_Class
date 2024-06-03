@@ -154,14 +154,15 @@ exports.updateLiveLink = asyncHandler(async (req, res, next) => {
 
 // Function to create a new class
 exports.createClass = asyncHandler(async (req, res, next) => {
+  console.log('createClass');
   const { name } = req.body;
-
+  const { user } = req;
+  console.log('createClass2');
   try {
     const newClass = await Class.create({
       name,
-      user: req.user._id,
+      instructor: user
     });
-
     res.status(201).json(newClass);
   } catch (error) {
     next(new AppError('Failed to create class', 400));
@@ -186,4 +187,5 @@ exports.updateClassLiveLink = asyncHandler(async (req, res, next) => {
     message: 'Class live link updated successfully',
   });
 });
+
 

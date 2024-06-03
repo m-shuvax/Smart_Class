@@ -7,7 +7,11 @@ const router = express.Router();
 router.route('/register')
     .post(userControllers.createUser);
 
-router.route('/login')
+router.route('/forgotPassword')
+    .post(authControllers.forgetPassword);
+
+router.route('/resetPassword/:token')
+    .patch(authControllers.resetPassword)
     .post(authControllers.login);
 
 router.route('/')
@@ -15,7 +19,11 @@ router.route('/')
     .post(authControllers.protect, pageRenderController.renderStudentClasses);
 
 router.route('/classes')
-    .get(authControllers.protect, pageRenderController.renderStudentClasses);
+    .get(authControllers.protect, pageRenderController.renderInstructorClasses)
+    .post(authControllers.protect, userControllers.createClass);
+
+router.route('/login')
+    .post(authControllers.login);
 
 router.route('/logout')
     .get(authControllers.logout);
@@ -27,8 +35,7 @@ router.route('/account')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
 //     .post(authMiddleware.protect, userControllers.createUser);
 
-// router.route('/login')
-//     .post(userControllers.login);
+
 
 // router.route('/class/file')
 //     .post(authMiddleware.protect, userControllers.createFile)
@@ -52,5 +59,10 @@ router.route('/account')
 // router.get('/userClasses/:email', authMiddleware.protect, pageRenderController.renderUserClasses);
 // router.post('/studentClass', authMiddleware.protect, pageRenderController.renderStudentClass);
 // router.post('/instructorClass', authMiddleware.protect, pageRenderController.renderInstructorClass);
+
+
+
+
+
 
 module.exports = router;
