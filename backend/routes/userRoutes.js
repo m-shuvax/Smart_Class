@@ -10,6 +10,16 @@ router.route('/register')
 
 router.route('/login')
     .post(authControllers.protect, authControllers.login);
+
+
+
+router.route('/forgotPassword')
+    .post(authControllers.forgetPassword);
+
+router.route('/resetPassword/:token')
+    .patch(authControllers.resetPassword);
+
+
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
 //     .post(authMiddleware.protect, userControllers.createUser);
@@ -39,5 +49,10 @@ router.route('/login')
 // router.get('/userClasses/:email', authMiddleware.protect, pageRenderController.renderUserClasses);
 // router.post('/studentClass', authMiddleware.protect, pageRenderController.renderStudentClass);
 // router.post('/instructorClass', authMiddleware.protect, pageRenderController.renderInstructorClass);
+
+
+
+
+
 
 module.exports = router;

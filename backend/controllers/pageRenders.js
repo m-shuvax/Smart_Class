@@ -6,10 +6,8 @@ const Lesson = require('./../models/lessonModel');
 const Chat = require('./../models/chatModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
-const { liveLinkObj } = require('./../utils/liveLink');
 const message = require('../models/messageModel');
 const categorizeFiles = require('./../utils/categorize');
-let liveLink = liveLinkObj.value;
 
 // Function to render instructor classes and pending students
 exports.renderInstructorClasses = asyncHandler(async (req, res, next) => {

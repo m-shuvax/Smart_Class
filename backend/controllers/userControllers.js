@@ -50,7 +50,7 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateUser = asyncHandler(async (req, res, next) => {
-  const { firstName, lastName, email, password, phoneNumber, role } = req.body;
+  const { firstName, lastName, email, password, phoneNumber } = req.body;
 
   const user = await User.findById(req.params.id);
   if (!user) {
@@ -64,7 +64,6 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     user.password = await bcrypt.hash(password, 12);
   }
   user.phoneNumber = phoneNumber;
-  user.role = role;
   await user.save();
 
   handleResponse(res, user);
@@ -153,23 +152,6 @@ exports.updateLiveLink = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.aaa = asyncHandler(async (req, res, next) => {
-  console.log('hhhh');
-  console.log(req);}
-  );
-  //const user
-
-
-
-
-
-
-
-
-
-  const Class = require('./../models/classModel');
-const asyncHandler = require('express-async-handler');
-const AppError = require('./../utils/AppError');
 
 // Function to create a new class
 exports.createClass = asyncHandler(async (req, res, next) => {
@@ -208,4 +190,3 @@ exports.updateClassLiveLink = asyncHandler(async (req, res, next) => {
     message: 'Class live link updated successfully',
   });
 });
-
