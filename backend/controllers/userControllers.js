@@ -7,7 +7,6 @@ const Message = require('./../models/messageModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const bcrypt = require('bcryptjs');
-const { log } = require('console');
 
 
 
@@ -15,7 +14,7 @@ const { log } = require('console');
 const handleResponse = (res, data, statusCode = 200) => {
   res.status(statusCode).json({
     success: true,
-    ...data,
+    data,
   });
 };
 
@@ -77,21 +76,6 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
   }
 
   res.status(204).json({ success: true, data: null });
-});
-
-exports.addToPending = asyncHandler(async (req, res, next) => {
-  log('addToPending');
-  const { user } = req;
-  const classId  = req.body.classroomCode;
-  log('addToPending2');
-  const classData = await Class.findById(classId);
-  log('addToPending3');
-  log(classData);
-  classData.pendingStudents.push(user);
-  log('addToPending4');
-  await classData.save();
-  log('addToPending5');
-  handleResponse(res, classData);
 });
 
 // File Controllers
