@@ -2,7 +2,6 @@ const express = require('express');
 const authControllers = require('./../controllers/authControllers');
 const userControllers = require('./../controllers/userControllers');
 const pageRenderController = require('./../controllers/pageRenders');
-//const authMiddleware = require('./../middleware/authMiddleware');
 const router = express.Router();
 
 router.route('/register')
@@ -20,12 +19,6 @@ router.route('/classes')
 
 router.route('/logout')
     .get(authControllers.logout);
-
-    // .post((req, res) => {
-    //     console.log(req.body);
-    //     res.send('Login data received');
-    // });
-
 
 router.route('/account')
     .put(authControllers.protect, userControllers.updateUser);
