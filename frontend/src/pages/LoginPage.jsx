@@ -13,6 +13,9 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { user, setUser } = useAppContext();
 
+  useEffect(() => {
+    document.title = "Smart Class";
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
