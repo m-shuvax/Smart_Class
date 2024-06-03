@@ -78,6 +78,26 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
   res.status(204).json({ success: true, data: null });
 });
 
+exports.addToPending = asyncHandler(async (req, res, next) => {
+  log('addToPending');
+  const { user } = req;
+  const classId  = req.body.classroomCode;
+  log('addToPending2');
+  const classData = await Class.findById(classId);
+  log('addToPending3');
+  log(classData);
+  classData.pendingStudents.push(user);
+  log('addToPending4');
+  await classData.save();
+  log('addToPending5');
+  res.status(200).json({
+    success: true,
+    classData,
+    message: 'Request sent successfully',
+  });
+});
+
+
 // File Controllers
 exports.createFile = asyncHandler(async (req, res, next) => {
   const { fileName, classId, category, fileLink } = req.body;
