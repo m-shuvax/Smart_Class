@@ -43,31 +43,41 @@ exports.renderInstructorClasses = asyncHandler(async (req, res, next) => {
   });
 });
 
-// Function to render student classes
+
 exports.renderStudentClasses = asyncHandler(async (req, res, next) => {
-  log('renderStudentClasses1');
+  console.log('renderStudentClasses1');
   const { user } = req;
-  log('renderStudentClasses2');
+  console.log('renderStudentClasses2');
+
   if (!user._id) {
     return next(new AppError('User ID is required', 400));
   }
-  log('renderStudentClasses3');
+
+  console.log('renderStudentClasses3');
+
   // Fetching all classes where the user is a student
   const studentClasses = await Class.find({ students: user._id }).select('name instructor');
-      // Map through the classes to fetch instructor details
-      const classesWithInstructors = await Promise.all(studentClasses.map(async (classObj) => {
-        const instructorName = await User.findById(classObj.instructor).select('name');
-      const instructor = { instructorName, instructorId: classObj.instructor };
-      return { ...classObj._doc, instructor
-        };
-      }));
-  log('renderStudentClasses4');
+
+  // Map through the classes to fetch instructor details
+  const classesWithInstructors = await Promise.all(studentClasses.map(async (classObj) => {
+    const instructor = await User.findById(classObj.instructor).select('name');
+    return {
+      ...classObj._doc,
+      instructor: {
+        name: instructor.name,
+        id: classObj.instructor
+      }
+    };
+  }));
+
+  console.log('renderStudentClasses4');
+
   res.status(200).json({
     success: true,
-    data: {
+    
       classes: classesWithInstructors,
       user
-    }
+    
   });
 });
 

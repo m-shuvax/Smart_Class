@@ -124,11 +124,13 @@ const HomePageInstructor = () => {
                     className="text-left cursor-pointer text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md flex justify-between items-center"
                     onClick={() => handleStudentClick(student)}
                   >
-                    <button>
+                    <button onClick={handleRejectStudent} >
                       <XCircleIcon className="h-6 w-6 hover:text-red-700" />
                     </button>
                     {student.firstName} {student.lastName}<br /> class id {student.id}
-                    <button className="bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center">
+                    <button className="bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center"
+                    onClick={() => handleApproveStudent(student.id, student.classId)}
+                    >
                       <FaCheck className="h-14 w-4 mr-2" />
                     </button>
                   </li>
