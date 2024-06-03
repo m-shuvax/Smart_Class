@@ -1,33 +1,13 @@
-import React, { useState, useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import Navbar from '../features/Navbar';
-import { useAppContext } from '../Context';
-import axios from 'axios';
 
 
 const HomePageStudent = () => {
-  const [classrooms, setClassrooms] = useState([]);
+  const [classrooms, setClassrooms] = useState(['Math 101', 'English 202', 'History 303', 'Science 404']);
   const [showInput, setShowInput] = useState(false);
   const [newClassroomCode, setNewClassroomCode] = useState('');
-  const [Name, setName] = useState('');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try{
-        /* setName(user.firstName, user.lastName); */
-        console.log(2222222222222222);
-        const response = await axios.get('http://localhost:5000/api/users/studentHomePage', { withCredentials: true })
-        console.log(response);
-        setClassrooms(response.data.classes);
-    }
-    catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }
-
-  fetchData();
-  }, []);
 
   useEffect(() => {
     document.title = "Home Page";
@@ -36,6 +16,7 @@ const HomePageStudent = () => {
   const handleAddClassroom = () => {
     const response = axios.post('http://localhost:5000/api/users/studentHomePage', { classroomCode: newClassroomCode }, { withCredentials: true });
     console.log(response);
+
     setNewClassroomCode('');
     setShowInput(false);
   };
