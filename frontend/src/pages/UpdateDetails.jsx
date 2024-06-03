@@ -16,6 +16,10 @@ const UpdateDetails = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [phoneNumberError, setPhoneNumberError] = useState('');
 
+  useEffect(() => {
+    document.title = "Update Details";
+  }, []);
+
   // Fetch user details on component mount
   useEffect(() => {
     const fetchUserDetails = async () => {

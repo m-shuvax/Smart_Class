@@ -1,20 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import Navbar from '../features/Navbar';
-import { useEffect } from 'react';
+import { useAppContext } from '../Context';
+import axios from 'axios';
+
 
 const HomePageStudent = () => {
-  const [classrooms, setClassrooms] = useState(['Math 101', 'English 202', 'History 303', 'Science 404']);
+  const [classrooms, setClassrooms] = useState([]);
   const [showInput, setShowInput] = useState(false);
   const [newClassroomCode, setNewClassroomCode] = useState('');
+  const [Name, setName] = useState('');
 
-useEffect(
-  
-)
+  useEffect(() => {
+    const fetchData = async () => {
+      try{
+        /* setName(user.firstName, user.lastName); */
+        console.log(2222222222222222);
+        const response = await axios.get('http://localhost:5000/api/users/studentHomePage', { withCredentials: true })
+        console.log(response);
+        setClassrooms(response.data.classes);
+    }
+    catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  fetchData();
+  }, []);
+
+  useEffect(() => {
+    document.title = "Home Page";
+  }, []);
 
   const handleAddClassroom = () => {
-    const newClassrooms = [...classrooms, newClassroomCode];
+    const responst = axios.post('http://localhost:5000/api/users/studentHomePage', { classroomCode: newClassroomCode }, { withCredentials: true });
+    const newClassrooms = [...classrooms, response.data.classes];
     setClassrooms(newClassrooms);
     setNewClassroomCode('');
     setShowInput(false);
@@ -38,8 +59,7 @@ useEffect(
         <div className="grid grid-cols-4 gap-4">
           {classrooms.map((classroom, id) => (
             <Link
-              id={id}
-              
+              key={id}
               to={`/classPageStudent`}
               className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
@@ -75,6 +95,7 @@ useEffect(
               className="border border-gray-300 rounded px-3 py-2 my-3 w-4/5"
             />
             <button
+              onClick={handleAddClassroom}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
               Enter
