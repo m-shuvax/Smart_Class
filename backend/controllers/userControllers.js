@@ -15,7 +15,7 @@ const { log } = require('console');
 const handleResponse = (res, data, statusCode = 200) => {
   res.status(statusCode).json({
     success: true,
-    ...data,
+    data,
   });
 };
 
@@ -91,7 +91,11 @@ exports.addToPending = asyncHandler(async (req, res, next) => {
   log('addToPending4');
   await classData.save();
   log('addToPending5');
-  handleResponse(res, classData);
+  res.status(200).json({
+    success: true,
+    classData,
+    message: 'Request sent successfully',
+  });
 });
 
 // File Controllers

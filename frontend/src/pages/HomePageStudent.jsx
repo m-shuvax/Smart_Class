@@ -34,9 +34,8 @@ const HomePageStudent = () => {
   }, []);
 
   const handleAddClassroom = () => {
-    const responst = axios.post('http://localhost:5000/api/users/studentHomePage', { classroomCode: newClassroomCode }, { withCredentials: true });
-    const newClassrooms = [...classrooms, response.data.classes];
-    setClassrooms(newClassrooms);
+    const response = axios.post('http://localhost:5000/api/users/studentHomePage', { classroomCode: newClassroomCode }, { withCredentials: true });
+    console.log(response);
     setNewClassroomCode('');
     setShowInput(false);
   };
