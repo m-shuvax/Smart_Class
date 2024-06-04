@@ -91,12 +91,6 @@ const HomePageInstructor = () => {
 
   const handleCopyToClipboard = (classId) => {
     navigator.clipboard.writeText(classId)
-      .then(() => {
-        alert('Class ID copied to clipboard: ' + classId);
-      })
-      .catch((error) => {
-        console.error('Error copying text: ', error);
-      });
   };
 
   return (
