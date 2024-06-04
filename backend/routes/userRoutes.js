@@ -7,11 +7,7 @@ const router = express.Router();
 router.route('/register')
     .post(userControllers.createUser);
 
-router.route('/forgotPassword')
-    .post(authControllers.forgetPassword);
-
-router.route('/resetPassword/:token')
-    .patch(authControllers.resetPassword)
+router.route('/login')
     .post(authControllers.login);
 
 router.route('/')
@@ -22,26 +18,18 @@ router.route('/classes')
     .get(authControllers.protect, pageRenderController.renderInstructorClasses)
     .post(authControllers.protect, userControllers.createClass);
 
-router.route('/login')
-    .post(authControllers.login);
-
 router.route('/logout')
     .get(authControllers.logout);
 
 router.route('/account')
     .put(authControllers.protect, userControllers.updateUser);
-
-router.route('/pendingStudents')
-    .post(authControllers.protect, pageRenderController.handlePendingStudent); 
-    
-router.route('/pendingStudents/:classId')
-    .get(authControllers.protect, pageRenderController.addPendingStudent);
    
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
 //     .post(authMiddleware.protect, userControllers.createUser);
 
-
+// router.route('/login')
+//     .post(userControllers.login);
 
 // router.route('/class/file')
 //     .post(authMiddleware.protect, userControllers.createFile)
@@ -65,10 +53,5 @@ router.route('/pendingStudents/:classId')
 // router.get('/userClasses/:email', authMiddleware.protect, pageRenderController.renderUserClasses);
 // router.post('/studentClass', authMiddleware.protect, pageRenderController.renderStudentClass);
 // router.post('/instructorClass', authMiddleware.protect, pageRenderController.renderInstructorClass);
-
-
-
-
-
 
 module.exports = router;
