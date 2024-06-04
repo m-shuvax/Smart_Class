@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
+import Loader from '../components/Loader';
 
 const UpdateDetails = () => {
+  const [loading, setLoading] = useState(false);
   const [accountType, setAccountType] = useState('');
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -20,9 +22,9 @@ const UpdateDetails = () => {
     document.title = "Update Details";
   }, []);
 
-  // Fetch user details on component mount
   useEffect(() => {
     const fetchUserDetails = async () => {
+      setLoading(true);
       try {
         const response = await axios.get('http://localhost:5000/api/users/me');
         const { role, email, firstName, lastName, phoneNumber } = response.data;
@@ -33,6 +35,8 @@ const UpdateDetails = () => {
         setPhoneNumber(phoneNumber);
       } catch (error) {
         console.error('Failed to fetch user details:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -41,22 +45,25 @@ const UpdateDetails = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // Validate email and password before submission
     if (!isEmailValid()) {
       setEmailError('Please enter a valid email address.');
+      setLoading(false);
       return;
     } else {
       setEmailError('');
     }
     if (!isPasswordValid()) {
       setPasswordError('Please enter a valid password.');
+      setLoading(false);
       return;
     } else {
       setPasswordError('');
     }
     if (!isPhoneNumberValid()) {
       setPhoneNumberError('Please enter a valid phone number.');
+      setLoading(false);
       return;
     } else {
       setPhoneNumberError('');
@@ -81,7 +88,6 @@ const UpdateDetails = () => {
       }
 
       alert('Update successful');
-      // Navigate to the user profile or another page
       window.location.href = '/profile';
     } catch (error) {
       if (error.response && error.response.data) {
@@ -92,6 +98,8 @@ const UpdateDetails = () => {
         console.log('Update failed:', error);
       }
       alert('Update failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -130,7 +138,6 @@ const UpdateDetails = () => {
       setPhoneNumberError('Phone number can contain digits only.');
     }
   };
-
 
   return (
     <div className="mt-10 min-h-screen bg-gray-100 flex flex-col">
@@ -234,17 +241,20 @@ const UpdateDetails = () => {
                 <p className="text-red-500 text-sm">{phoneNumberError}</p>
               )}
             </div>
-            <span className="text-red-500 text-sm font-bold">* All fields are required</span>
-            <button
-              type="submit"
-              className={`mt-4 w-full font-bold py-2 px-4 rounded ${!isPasswordValid() || !isEmailValid() ? 'bg-blue-300 hover:bg-blue-300' : 'bg-blue-500 hover:bg-blue-700'} text-white ${!isPasswordValid() || !isEmailValid() ? 'cursor-not-allowed' : ''}`}
-              disabled={!isPasswordValid() || !isEmailValid()}
-            >
-              Update
-            </button>
+            <span className="text-red-500 text-sm">* Required</span>
+            <div className="mt-6">
+              <button
+                type="submit"
+                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                disabled={loading}
+              >
+                Update
+              </button>
+            </div>
           </form>
         </div>
       </div>
+      {loading && <Loader />}
     </div>
   );
 };

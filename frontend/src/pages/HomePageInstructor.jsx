@@ -95,12 +95,6 @@ console.log(response);
 
   const handleCopyToClipboard = (classId) => {
     navigator.clipboard.writeText(classId)
-      .then(() => {
-        alert('Class ID copied to clipboard: ' + classId);
-      })
-      .catch((error) => {
-        console.error('Error copying text: ', error);
-      });
   };
 
   return (
@@ -108,7 +102,7 @@ console.log(response);
       <Navbar />
       <div className="w-3/4 pt-20 pl-8">
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
-        <div className="grid grid-cols-3 gap-4 overflow-y-auto h-[calc(100vh-10rem)]"> {/* הוספת גלילה וחישוב גובה */}
+        <div className="grid grid-cols-3 gap-4 overflow-y-auto h-[calc(100vh-10rem)]">
           {classes.map((classroom) => (
             <div key={classroom._id} className="relative bg-white p-2 rounded-md shadow-md w-64 h-32 flex flex-col items-center justify-center hover:bg-blue-200 transition-colors duration-300">
               <Link to={`/classPageInstructor`} className="text-2xl absolute inset-0 flex flex-col items-center justify-center">
