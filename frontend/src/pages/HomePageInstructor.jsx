@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaRegCopy } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
 import { useAppContext } from '../Context';
@@ -15,6 +15,7 @@ const HomePageInstructor = () => {
   const [students, setStudents] = useState([]);
 
   useEffect(() => {
+    document.title = "Home Page";
     console.log(user);
     const fetchClassrooms = async () => {
       try {
@@ -92,24 +93,29 @@ console.log(response);
     }
   };
 
+  const handleCopyToClipboard = (classId) => {
+    navigator.clipboard.writeText(classId)
+  };
+
   return (
     <div className="h-screen bg-blue-100 flex">
       <Navbar />
-      <div className="w-3/4 pt-20 pl-6">
+      <div className="w-3/4 pt-20 pl-8">
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-3 gap-4 overflow-y-auto h-[calc(100vh-10rem)]">
           {classes.map((classroom) => (
-            <Link
-              key={classroom._id}
-              to={`/classPageInstructor`}
-              className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
-            >
-              {classroom.name} (ID: {classroom._id})
-            </Link>
+            <div key={classroom._id} className="relative bg-white p-2 rounded-md shadow-md w-64 h-32 flex flex-col items-center justify-center hover:bg-blue-200 transition-colors duration-300">
+              <Link to={`/classPageInstructor`} className="text-2xl absolute inset-0 flex flex-col items-center justify-center">
+                {classroom.name}
+              </Link>
+              <button onClick={() => handleCopyToClipboard(classroom._id)} className="absolute top-2 right-2 text-gray-500 hover:text-black">
+                <FaRegCopy className="h-5 w-5" />
+              </button>
+            </div>
           ))}
         </div>
       </div>
-      <div className="w-1/4 pr-4 pt-20">
+      <div className="w-1/4 px-4 pt-20">
         {!showInput && (
           <div>
             <button

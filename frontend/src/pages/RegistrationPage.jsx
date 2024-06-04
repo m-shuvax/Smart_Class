@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
@@ -17,6 +17,8 @@ const RegistrationPage = () => {
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [phoneNumberError, setPhoneNumberError] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "Registration";
@@ -26,7 +28,6 @@ const RegistrationPage = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Validate email and password before submission
     if (!isEmailValid()) {
       setEmailError('Please enter a valid email address.');
       setLoading(false);
@@ -61,27 +62,19 @@ const RegistrationPage = () => {
 
       if (response.data) {
         console.log('Registration successful:', response.data);
-        // Stop loading animation
         setLoading(false);
-        alert('Registration successful');
-        // Navigate to the login page
-        window.location.href = '/';
-      } else if (response) {
-        console.error('Registration successful but response is not as expected:', response);
+        localStorage.setItem('registrationMessage', 'Registration successful, please log in.');
+        navigate('/');
       } else {
-        console.error('Registration successful but response is not as expected.');
+        console.error('Registration successful but response is not as expected:', response);
       }
     } catch (error) {
-      if (error.response && error.response.data) {
-        console.log('Registration failed:', error.response.data);
-      } else if (error.response) {
-        console.log('Registration failed with response but no data:', error.response);
-      } else {
-        console.log('Registration failed:');
-      }
-      // Stop loading animation
       setLoading(false);
-      alert('Registration failed');
+      if (error.response && error.response.data) {
+        setError(error.response.data.message || 'Registration failed');
+      } else {
+        setError('Registration failed');
+      }
     }
   };
 
@@ -262,6 +255,7 @@ const RegistrationPage = () => {
               )}
             </div>
             <span className="text-red-500 text-sm font-bold">* All fields are required</span>
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
             <button
               type="submit"
               className={`mt-4 w-full font-bold py-2 px-4 rounded ${!isPasswordValid() || !isEmailValid() || !isPhoneNumberValid() ? 'bg-blue-300 hover:bg-blue-300' : 'bg-blue-500 hover:bg-blue-700'} text-white ${!isPasswordValid() || !isEmailValid() || !isPhoneNumberValid() ? 'cursor-not-allowed' : ''}`}

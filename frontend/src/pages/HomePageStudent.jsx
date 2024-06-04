@@ -73,9 +73,10 @@ const HomePageStudent = () => {
         {!showInput && (
           <button
             onClick={handleToggleInput}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 flex items-center rounded"
           >
-            <PlusCircleIcon className="h-5 w-5" />
+            <PlusCircleIcon className="h-5 w-5 mr-2" />
+            Join Classroom
           </button>
         )}
         {showInput && (
