@@ -27,6 +27,7 @@ const RegistrationPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
     if (!isEmailValid()) {
       setEmailError('Please enter a valid email address.');
@@ -89,8 +90,8 @@ const RegistrationPage = () => {
   };
 
   const isPhoneNumberValid = () => {
-    const phoneRegex = /^\d+$/;
-    return phoneRegex.test(phoneNumber);
+    const phoneNumberRegex = /^\d{8,15}$/;
+    return phoneNumberRegex.test(phoneNumber);
   };
 
   const handleEmailBlur = () => {
@@ -108,6 +109,7 @@ const RegistrationPage = () => {
       setPasswordError('');
     }
   };
+
 
   const handlePhoneNumberChange = (e) => {
     const value = e.target.value;
@@ -243,7 +245,7 @@ const RegistrationPage = () => {
                 <span className="text-red-500">*</span> Phone Number
               </label>
               <input
-                type="tel"
+                type="text"
                 id="phoneNumber"
                 value={phoneNumber}
                 onChange={handlePhoneNumberChange}
@@ -254,19 +256,22 @@ const RegistrationPage = () => {
                 <p className="text-red-500 text-sm">{phoneNumberError}</p>
               )}
             </div>
-            <span className="text-red-500 text-sm font-bold">* All fields are required</span>
-            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-            <button
-              type="submit"
-              className={`mt-4 w-full font-bold py-2 px-4 rounded ${!isPasswordValid() || !isEmailValid() || !isPhoneNumberValid() ? 'bg-blue-300 hover:bg-blue-300' : 'bg-blue-500 hover:bg-blue-700'} text-white ${!isPasswordValid() || !isEmailValid() || !isPhoneNumberValid() ? 'cursor-not-allowed' : ''}`}
-              disabled={!isPasswordValid() || !isEmailValid() || !isPhoneNumberValid()}
-            >
-              Register
-            </button>
+            {error && (
+              <div className="mb-4">
+                <p className="text-red-500 text-sm">{error}</p>
+              </div>
+            )}
+            <div className="mb-4">
+              <button
+                type="submit"
+                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                {loading ? <Loader /> : 'Register'}
+              </button>
+            </div>
           </form>
         </div>
       </div>
-      {loading && <Loader />}
     </div>
   );
 };
