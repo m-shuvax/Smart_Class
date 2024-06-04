@@ -41,7 +41,7 @@ exports.renderInstructorClasses = asyncHandler(async (req, res, next) => {
       return acc.concat(classPendingStudents);
     }, [])
   );
-console.log('renderInstructorClasses4', pendingStudents);
+  console.log('renderInstructorClasses4', pendingStudents);
 
 
   res.status(200).json({
@@ -63,13 +63,14 @@ exports.renderStudentClasses = asyncHandler(async (req, res, next) => {
   log('renderStudentClasses3');
   // Fetching all classes where the user is a student
   const studentClasses = await Class.find({ students: user._id }).select('name instructor');
-      // Map through the classes to fetch instructor details
-      const classesWithInstructors = await Promise.all(studentClasses.map(async (classObj) => {
-        const instructorName = await User.findById(classObj.instructor).select('name');
-      const instructor = { instructorName, instructorId: classObj.instructor };
-      return { ...classObj._doc, instructor
-        };
-      }));
+  // Map through the classes to fetch instructor details
+  const classesWithInstructors = await Promise.all(studentClasses.map(async (classObj) => {
+    const instructorName = await User.findById(classObj.instructor).select('name');
+    const instructor = { instructorName, instructorId: classObj.instructor };
+    return {
+      ...classObj._doc, instructor
+    };
+  }));
   log('renderStudentClasses4');
   res.status(200).json({
     success: true,
@@ -151,14 +152,16 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
 
 // Function to add a student to the pending list
 exports.addPendingStudent = asyncHandler(async (req, res, next) => {
-  const { userId, classId } = req.body;
+  log('addPendingStudent0', req.params, req.user._id);
+  const { classId } = req.params;
+  const userId = req.user._id;
 
   if (!userId || !classId) {
     return next(new AppError('User ID and Class ID are required', 400));
   }
 
   const classData = await Class.findById(classId);
-
+  log('addPendingStudent1', classData);
   if (!classData) {
     return next(new AppError('Class not found', 404));
   }
@@ -179,10 +182,10 @@ exports.handlePendingStudent = asyncHandler(async (req, res, next) => {
   const { studentId, classId, action } = req.body;
   log('handlePendingStudent1');
 
-if (!studentId || !classId || !['approve', 'reject'].includes(action)) {
+  if (!studentId || !classId || !['approve', 'reject'].includes(action)) {
     return next(new AppError('User ID, Class ID, and valid action are required', 400));
   }
-log('handlePendingStudent22');
+  log('handlePendingStudent22');
   const classData = await Class.findById(classId);
   log('handlePendingStudent2');
   if (!classData) {
