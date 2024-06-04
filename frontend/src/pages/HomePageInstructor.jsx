@@ -1,171 +1,262 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
-import { FaCheck } from 'react-icons/fa';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
-import { useAppContext } from '../Context';
+import Loader from '../components/Loader';
 
-const HomePageInstructor = () => {
-  const { user, setUser } = useAppContext();
-  const [classes, setClasses] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const [showInput, setShowInput] = useState(false);
-  const [newClassName, setNewClassName] = useState('');
-  const [students, setStudents] = useState([]);
-
+const UpdateDetails = () => {
+  const [loading, setLoading] = useState(false);
+  const [accountType, setAccountType] = useState('');
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumberError, setPhoneNumberError] = useState('');
 
   useEffect(() => {
-    console.log(user);
-    const fetchClassrooms = async () => {
-      try {
-        console.log('Fetching classrooms');
-        const response = await axios.get('http://localhost:5000/api/users/classes', { withCredentials: true });
-        console.log('Response:', response.data);
-        setClasses(response.data.classes);
-        setStudents(response.data.pendingStudents);
-        setUser(response.data.user);
-        console.log('User:', user);
-      } catch (error) {
-        console.error('Error fetching classrooms:', error);
-      }
-    };
-    fetchClassrooms();
+    document.title = "Update Details";
   }, []);
 
-  const handleAddClassroom = async () => {
-    if (newClassName.trim() === '') return;
-    try {
-      const response = await axios.post('http://localhost:5000/api/users/classes', {
-        name: newClassName,
-      }, { withCredentials: true });
-      console.log('Response:', response.data);
-      alert('the ID of the class is ' + response.data._id)
-      setClasses([...classes, response.data]);
-      setNewClassName('');
-      setShowInput(false);
-      alert('the ID of the class is ' + response.data._id)
-    } catch (error) {
-      console.error('Error adding classroom:', error);
-    }
-  };
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/me');
+        const { role, email, firstName, lastName, phoneNumber } = response.data;
+        setAccountType(role);
+        setEmail(email);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setPhoneNumber(phoneNumber);
+      } catch (error) {
+        console.error('Failed to fetch user details:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleApproveStudent = async (studentId, classId) => {
+    fetchUserDetails();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    if (!isEmailValid()) {
+      setEmailError('Please enter a valid email address.');
+      setLoading(false);
+      return;
+    } else {
+      setEmailError('');
+    }
+    if (!isPasswordValid()) {
+      setPasswordError('Please enter a valid password.');
+      setLoading(false);
+      return;
+    } else {
+      setPasswordError('');
+    }
+    if (!isPhoneNumberValid()) {
+      setPhoneNumberError('Please enter a valid phone number.');
+      setLoading(false);
+      return;
+    } else {
+      setPhoneNumberError('');
+    }
+
     try {
-      await axios.post('http://localhost:5000/api/users/students', {
-        studentId: studentId,
-        classId: classId,
-        action: 'approve',
+      const response = await axios.put('http://localhost:5000/api/users/account', {
+        role: accountType,
+        email,
+        password,
+        firstName,
+        lastName,
+        phoneNumber,
       });
-      // Remove the approved student from the pending students list
-      setStudents(students.filter((student) => student.id !== studentId));
+
+      if (response.data) {
+        console.log('Update successful:', response.data);
+      } else if (response) {
+        console.error('Update successful but response is not as expected:', response);
+      } else {
+        console.error('Update successful but response is not as expected.');
+      }
+
+      alert('Update successful');
+      window.location.href = '/profile';
     } catch (error) {
-      console.error('Error approving student:', error);
+      if (error.response && error.response.data) {
+        console.log('Update failed:', error.response.data);
+      } else if (error.response) {
+        console.log('Update failed with response but no data:', error.response);
+      } else {
+        console.log('Update failed:', error);
+      }
+      alert('Update failed');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleRejectStudent = async (studentId) => {
-    try {
-      await axios.post('http://localhost:5000/api/users/students', {
-        studentId,
-        classId,
-        action: 'reject',
-      });
-      // Remove the rejected student from the pending students list
-      setStudents(students.filter((student) => student.id !== studentId));
-    } catch (error) {
-      console.error('Error rejecting student:', error);
+  const isPasswordValid = () => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  const isEmailValid = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailBlur = () => {
+    if (!isEmailValid()) {
+      setEmailError('Please enter a valid email address.');
+    } else {
+      setEmailError('');
     }
   };
 
-  const handleToggleInput = () => {
-    setShowInput(!showInput);
+  const handlePasswordBlur = () => {
+    if (!isPasswordValid()) {
+      setPasswordError('Password must contain at least one uppercase letter, one lowercase letter, and one digit.');
+    } else {
+      setPasswordError('');
+    }
   };
 
-  const handleEnterKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleAddClassroom();
+  const handlePhoneNumberChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setPhoneNumber(value);
+      setPhoneNumberError('');
+    } else {
+      setPhoneNumberError('Phone number can contain digits only.');
     }
   };
 
   return (
-    <div className="h-screen bg-blue-100 flex">
+    <div className="mt-10 min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
-      <div className="w-3/4 pt-20 pl-6">
-        <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
-        <div className="grid grid-cols-4 gap-4">
-          {classes.map((classroom) => (
-            <Link
-              key={classroom._id}
-              to={`/classPageInstructor`}
-              className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
-            >
-              {classroom.name} (ID: {classroom._id})
-            </Link>
-          ))}
-        </div>
-      </div>
-      <div className="w-1/4 pr-4 pt-20">
-        {!showInput && (
-          <div>
-            <button
-              onClick={handleToggleInput}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center"
-            >
-              <PlusCircleIcon className="h-5 w-5 mr-2" />
-              Add Classroom
-            </button>
-            <div className="p-4 mt-4 bg-white rounded-md shadow-md">
-              <h2 className="text-xl font-bold mb-2">Pending Students</h2>
-              <ul>
-                {students.map((student) => (
-                  <li
-                    key={student.id}
-                    className="text-left cursor-pointer text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md flex justify-between items-center"
-                    onClick={() => handleStudentClick(student)}
-                  >
-                    <button>
-                      <XCircleIcon className="h-6 w-6 hover:text-red-700" />
-                    </button>
-                    {student.firstName} {student.lastName}<br /> class id {student.id}
-                    <button className="bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center">
-                      <FaCheck className="h-14 w-4 mr-2" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
-        {showInput && (
-          <>
-            <div className="flex items-center mb-4">
-              <button
-                onClick={handleToggleInput}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-l"
-              >
-                <XCircleIcon className="h-5 w-5" />
-              </button>
+      <Link
+        to="/"
+        className="mx-auto mt-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Back
+      </Link>
+      <div className="mt-4 min-h-screen bg-gray-100 flex flex-col">
+        <div className="w-full max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold mb-6">Update Details</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label htmlFor="firstName" className="block font-bold mb-2">
+                <span className="text-red-500">*</span> First Name
+              </label>
               <input
                 type="text"
-                placeholder="Enter classroom name"
-                value={newClassName}
-                onChange={(e) => setNewClassName(e.target.value)}
-                onKeyPress={handleEnterKeyPress}
-                className="border border-gray-300 rounded-r px-3 py-2 w-full"
+                id="firstName"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                required
               />
             </div>
-            <button
-              onClick={handleAddClassroom}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Enter
-            </button>
-          </>
-        )}
+            <div className="mb-4">
+              <label htmlFor="lastName" className="block font-bold mb-2">
+                <span className="text-red-500">*</span> Last Name
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="email" className="block font-bold mb-2">
+                <span className="text-red-500">*</span> Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={handleEmailBlur}
+                className={`w-full px-4 py-2 border ${emailError ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+                required
+              />
+              {emailError && (
+                <p className="text-red-500 text-sm">{emailError}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="password" className="block font-bold mb-2">
+                <span className="text-red-500">*</span> Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onBlur={handlePasswordBlur}
+                  className={`w-full px-4 py-2 border ${passwordError ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 px-4 flex items-center text-gray-500"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+              {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
+              {!passwordError && (
+                <p className="text-gray-500 text-sm">
+                  The password should be a minimum of 8 characters long and include at least one uppercase letter, one
+                  lowercase letter, and one digit
+                </p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="phoneNumber" className="block font-bold mb-2">
+                <span className="text-red-500">*</span> Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phoneNumber"
+                value={phoneNumber}
+                onChange={handlePhoneNumberChange}
+                className={`w-full px-4 py-2 border ${phoneNumberError ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+                required
+              />
+              {phoneNumberError && (
+                <p className="text-red-500 text-sm">{phoneNumberError}</p>
+              )}
+            </div>
+            <span className="text-red-500 text-sm">* Required</span>
+            <div className="mt-6">
+              <button
+                type="submit"
+                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                disabled={loading}
+              >
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
+      {loading && <Loader />}
     </div>
   );
 };
 
-export default HomePageInstructor;
+export default UpdateDetails;
