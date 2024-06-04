@@ -9,7 +9,6 @@ const AppError = require('./../utils/AppError');
 const bcrypt = require('bcryptjs');
 
 
-
 // Utility function to handle response
 const handleResponse = (res, data, statusCode = 200) => {
   res.status(statusCode).json({

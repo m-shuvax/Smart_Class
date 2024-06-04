@@ -11,8 +11,7 @@ import { useAppContext } from '../Context';
 
 
 const StudentClassPage = () => {
-  const { classId } = useParams();
-  const { user } = useAppContext();
+  const { user, setUser, classId, setClassId } = useAppContext();
   const [data, setData] = useState({
     files: [],
     lessons: [],
@@ -28,14 +27,17 @@ const StudentClassPage = () => {
   const [showLessons, setShowLessons] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
 
+
   useEffect(() => {
     const fetchClassData = async () => {
+      console.log(classId);
       try {
-        const response = await axios.post('/api/student-class-page', { classId }, { withCredentials: true });
-        const { files, lessons, userDetails, chat, liveLink } = response.data;
-        setData({ files, lessons, userDetails, chat, liveLink });
+        const response = await axios.get(`/api/users/studentPage/${classId}`, { withCredentials: true });
+        const { files, lessons, user, chat, liveLink } = response.data;
+        setData({ files, lessons, user, chat, liveLink });
         setLoading(false);
         setFilteredFiles(files);
+        setUser(user);
       } catch (error) {
         console.error(error);
         setError('Error fetching class data');
@@ -53,7 +55,7 @@ const StudentClassPage = () => {
     return <div>{error}</div>;
   }
 
-  const { files, lessons, userDetails, chat, liveLink } = data;
+  const { files, lessons, chat, liveLink } = data;
 
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
@@ -109,7 +111,7 @@ const StudentClassPage = () => {
                   </button>
                 </div>
               </div>
-              {!showLessons && (
+              {/* {!showLessons && (
                 <div className="ml-52 mt-6 grow flex flex-col h-80 overflow-y-auto">
                   {filteredFiles.map((file, index) => (
                     <div
@@ -122,14 +124,14 @@ const StudentClassPage = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteFile(file.id)}>
+                      <button onClick={() => handleDeleteFile(file._id)}>
                         <FaTrash className="w-4 h-4 inline-block" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>
                   ))}
                 </div>
-              )}
-              {showLessons && (
+              )} */}
+              {/* {showLessons && (
                 <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
                   {lessons.map((lesson, index) => (
                     <div
@@ -142,13 +144,13 @@ const StudentClassPage = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(lesson.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteLiveStream(lesson.id)}>
+                      <button onClick={() => handleDeleteLiveStream(lesson._id)}>
                         <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>
                   ))}
                 </div>
-              )}
+              )} */}
             </div>
           </div>
           <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
@@ -161,4 +163,4 @@ const StudentClassPage = () => {
   );
 };
 
-export default ClassPageStudent;
+export default StudentClassPage;

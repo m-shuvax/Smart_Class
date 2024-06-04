@@ -74,10 +74,8 @@ exports.renderStudentClasses = asyncHandler(async (req, res, next) => {
   log('renderStudentClasses4');
   res.status(200).json({
     success: true,
-    data: {
-      classes: classesWithInstructors,
-      user
-    }
+    classes: classesWithInstructors,
+    user
   });
 });
 
