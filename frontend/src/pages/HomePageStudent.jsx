@@ -2,20 +2,41 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import Navbar from '../features/Navbar';
+import axios from 'axios';
+import { useAppContext } from '../Context';
 
 
 const HomePageStudent = () => {
-  const [classrooms, setClassrooms] = useState(['Math 101', 'English 202', 'History 303', 'Science 404']);
+  const [classrooms, setClassrooms] = useState([]);
   const [showInput, setShowInput] = useState(false);
   const [newClassroomCode, setNewClassroomCode] = useState('');
+  const {user, setUser} = useAppContext();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try{
+        /* setName(user.firstName, user.lastName); */
+        console.log(2222222222222222);
+        const response = await axios.get('http://localhost:5000/api/users/studentHomePage', { withCredentials: true })
+        console.log(response);
+        setUser(response.data.user);    
+        setClassrooms(response.data.classes);
+    }
+    catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  fetchData();
+  }, []);
 
   useEffect(() => {
     document.title = "Home Page";
   }, []);
 
   const handleAddClassroom = () => {
-    const response = axios.post('http://localhost:5000/api/users/studentHomePage', { classroomCode: newClassroomCode }, { withCredentials: true });
-    console.log(response);
+    const response = axios.get(`http://localhost:5000/api/users/pendingStudents/${newClassroomCode}`, { withCredentials: true });
+    console.log('111', response);
 
     setNewClassroomCode('');
     setShowInput(false);
@@ -72,7 +93,7 @@ const HomePageStudent = () => {
               placeholder="Enter classroom code"
               value={newClassroomCode}
               onChange={(e) => setNewClassroomCode(e.target.value)}
-              onKeyPress={handleEnterKeyPress}
+             // onKeyPress={handleEnterKeyPress}
               className="border border-gray-300 rounded px-3 py-2 my-3 w-4/5"
             />
             <button
