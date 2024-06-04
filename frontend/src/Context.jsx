@@ -4,12 +4,16 @@ const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [classId, setClassId] = useState(null);
+  const [lastPage, setLastPage] = useState(null);
 
   return (
     <AppContext.Provider
       value={{
         user,
         setUser,
+        classId,
+        setClassId
       }}
     >
       {children}

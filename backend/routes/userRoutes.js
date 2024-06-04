@@ -7,7 +7,11 @@ const router = express.Router();
 router.route('/register')
     .post(userControllers.createUser);
 
-router.route('/login')
+router.route('/forgetPassword')
+    .post(authControllers.forgetPassword);
+
+router.route('/resetPassword/:token')
+    .patch(authControllers.resetPassword)
     .post(authControllers.login);
 
 router.route('/')
@@ -18,11 +22,26 @@ router.route('/classes')
     .get(authControllers.protect, pageRenderController.renderInstructorClasses)
     .post(authControllers.protect, userControllers.createClass);
 
+router.route('/studentHomePage')
+    .get(authControllers.protect, pageRenderController.renderStudentClasses);
+
+router.route('/login')
+    .post(authControllers.login);
+
 router.route('/logout')
     .get(authControllers.logout);
 
 router.route('/account')
     .put(authControllers.protect, userControllers.updateUser);
+
+router.route('/pendingStudents')
+    .post(authControllers.protect, pageRenderController.handlePendingStudent); 
+    
+router.route('/pendingStudents/:classId')
+    .get(authControllers.protect, pageRenderController.addPendingStudent);
+
+router.route('/studentClass/:classId')
+    .get(authControllers.protect, pageRenderController.renderStudentClass);
    
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
