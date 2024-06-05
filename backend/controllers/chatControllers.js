@@ -5,7 +5,6 @@ const Chat = require('./../models/chatModel');
 const Message = require('./../models/messageModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
-const authMiddleware = require('./../middleware/authMiddleware');
 
 
 // Function to create a new message
@@ -50,15 +49,13 @@ exports.createMessage = asyncHandler(async (req, res, next) => {
 
 
 // Function to create a new chat
-exports.createChat = asyncHandler(async (req, res, next) => {
-  const { classId, studentId } = req.body;
-
-  if (!classId || !studentId) {
-    return next(new AppError('Class ID and Student ID are required', 400));
-  }
+exports.createChat = asyncHandler(async (classId, studentId) => {
+  console.log ('createChat1', classId, studentId);
 
   const existingClass = await Class.findById(classId);
   const existingStudent = await User.findById(studentId);
+
+  console.log ('createChat2', existingClass, existingStudent);
 
   if (!existingClass || !existingStudent) {
     return next(new AppError('Class or student not found', 404));
@@ -70,12 +67,34 @@ exports.createChat = asyncHandler(async (req, res, next) => {
     messages: []
   });
 
+  console.log ('createChat3', newChat);
+
   await newChat.save();
 
-  res.status(201).json({
-    success: true,
-    chat: newChat
+  // Create initial messages
+  const studentMessage = new Message({
+    authorId: studentId,
+    message: 'Thank you for approving'
   });
+  
+  const instructorMessage = new Message({
+    authorId: existingClass.instructorId, // Assuming the class model has an instructorId field
+    message: 'Do you have any questions?'
+  });
+
+  console.log ('createChat4', studentMessage, instructorMessage);
+
+  // Save the messages
+  await studentMessage.save();
+  await instructorMessage.save();
+
+  // Add messages to the chat
+  newChat.messages.push(studentMessage);
+  newChat.messages.push(instructorMessage);
+  await newChat.save();
+
+  console.log ('createChat5', newChat); 
+
 });
 
 // Function to delete a message
@@ -114,7 +133,3 @@ exports.deleteMessage = asyncHandler(async (req, res, next) => {
   });
 });
 
-// Protect routes
-router.post('/createMessage', authMiddleware.protect, chatController.createMessage);
-router.post('/createChat', authMiddleware.protect, chatController.createChat);
-router.delete('/deleteMessage', authMiddleware.protect, chatController.deleteMessage);

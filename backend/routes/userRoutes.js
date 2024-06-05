@@ -22,6 +22,9 @@ router.route('/classes')
     .get(authControllers.protect, pageRenderController.renderInstructorClasses)
     .post(authControllers.protect, userControllers.createClass);
 
+router.route('/studentHomePage')
+    .get(authControllers.protect, pageRenderController.renderStudentClasses);
+
 router.route('/login')
     .post(authControllers.login);
 
@@ -36,6 +39,9 @@ router.route('/pendingStudents')
     
 router.route('/pendingStudents/:classId')
     .get(authControllers.protect, pageRenderController.addPendingStudent);
+
+router.route('/studentClass/:classId')
+    .get(authControllers.protect, pageRenderController.renderStudentClass);
    
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
