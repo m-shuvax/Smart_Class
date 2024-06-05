@@ -5,7 +5,7 @@ import { FaTrash, FaPlay } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
-import Chat from '../components/chat';
+//import Chat from '../components/chat';
 import { useParams } from 'react-router-dom';
 import { useAppContext } from '../Context';
 
@@ -27,12 +27,12 @@ const StudentClassPage = () => {
   const [showLessons, setShowLessons] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
 
-
   useEffect(() => {
+    console.log(classId);
     const fetchClassData = async () => {
-      console.log(classId);
       try {
-        const response = await axios.get(`/api/users/studentPage/${classId}`, { withCredentials: true });
+        const response = await axios.get(`/api/users/studentClass/${classId}`, { withCredentials: true });
+        console.log(response.data);
         const { files, lessons, user, chat, liveLink } = response.data;
         setData({ files, lessons, user, chat, liveLink });
         setLoading(false);
@@ -45,7 +45,7 @@ const StudentClassPage = () => {
       }
     };
     fetchClassData();
-  }, []);
+  }, [classId, setUser]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -155,7 +155,7 @@ const StudentClassPage = () => {
           </div>
           <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
             <h2 className="text-lg font-bold mb-4 text-white">Chat with Teacher</h2>
-            <Chat />
+            //chat
           </div>
         </div>
       </div>

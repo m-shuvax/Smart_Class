@@ -9,6 +9,7 @@ const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const message = require('../models/messageModel');
 const categorizeFiles = require('./../utils/categorize');
+const { createChat } = require('./chatControllers');
 
 // Function to render instructor classes and pending students
 exports.renderInstructorClasses = asyncHandler(async (req, res, next) => {
@@ -205,6 +206,8 @@ exports.handlePendingStudent = asyncHandler(async (req, res, next) => {
   classData.pendingStudents.splice(studentIndex, 1);
   await classData.save();
   log('handlePendingStudent5');
+
+  createChat(classId, studentId);
 
   res.status(200).json({ success: true, message: `Student ${action === 'approve' ? 'approved' : 'rejected'}` });
 });
