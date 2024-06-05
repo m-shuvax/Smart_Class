@@ -166,7 +166,7 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
   console.log(`Reset token (hashed): ${resetPasswordToken}`);
 
   // Send the reset token to the user's email
-  const resetURL = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`;
+  const resetURL = `${req.protocol}://localhost:5173/resetPassword/${resetToken}`;
 
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
 
