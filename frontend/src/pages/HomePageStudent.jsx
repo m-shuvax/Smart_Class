@@ -48,20 +48,25 @@ const HomePageStudent = () => {
     setShowInput(!showInput);
   };
 
+  const handleEnterKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleAddClassroom();
+    }
+  };
+
   return (
     <div className="fixed top-16 w-screen bg-blue-100 min-h-screen flex">
       <Navbar />
       <div className="w-3/4 pt-8 pl-4">
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-4 gap-4">
-          {classrooms.map((classroom) => (
+          {classrooms.map((classroom, id) => (
             <Link
-              key={classroom._id}
+              key={id}
               to={`/classPageStudent`}
-              onClick={() => setClassId(classroom._id)}
               className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
-              {classroom.name}
+              {classroom}
             </Link>
           ))}
         </div>
@@ -70,10 +75,9 @@ const HomePageStudent = () => {
         {!showInput && (
           <button
             onClick={handleToggleInput}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 flex items-center rounded"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded"
           >
-            <PlusCircleIcon className="h-5 w-5 mr-2" />
-            Join Classroom
+            <PlusCircleIcon className="h-5 w-5" />
           </button>
         )}
         {showInput && (
