@@ -29,16 +29,27 @@ const userSchema = new mongoose.Schema({
       message: 'The role must be either "admin", "instructor" or "student"'
     },
   },
-  resetPasswordToken: String,
-  resetPasswordExpires: Date
+  phoneNumber: {
+    type: String,
+    required: [true, 'Please provide phone number'],
+    minLength: 9,
+    maxLength: 15,
+    
+  },
+  resetPasswordToken:{
+  type: String,
+},
+  resetPasswordExpires:{
+  type: Date,
+  }
 });
 
 
 // Hash password before saving
 userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
+    if (!this.isModified('password') || !this.password) {
+        return next();
     }
-
     this.password = await bcrypt.hash(this.password, 12);
     next();
 });

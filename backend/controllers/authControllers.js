@@ -18,7 +18,6 @@ const signToken = id => {
 // Function to create and send a token to the client
 const createSendToken = (user, statusCode, res) => {
   console.log(customDate.getFormatDate());
-
   const token = signToken(user._id);
   const cookieOptions = {
     expires: new Date(
@@ -27,9 +26,10 @@ const createSendToken = (user, statusCode, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production' // Use secure cookies in production
   };
-  console.log('createSendToken' , token, '\n', cookieOptions );
+  console.log('createSendToken', token, '\n', cookieOptions);
   res.cookie('jwt', token, cookieOptions);
   console.log('createSendToken2');
+  user.password = undefined;
   res.status(statusCode).json({
     status: 'success',
     token,
@@ -43,7 +43,7 @@ const createSendToken = (user, statusCode, res) => {
 
 // Middleware to protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
-  console.log('protect',customDate.getFormatDate());
+  console.log('protect', customDate.getFormatDate());
   let token;
   if (req.headers.cookie) {
     token = req.headers.cookie.split('=')[1];
@@ -130,28 +130,42 @@ exports.restrictTo = (...roles) => {
   };
 };
 exports.forgetPassword = asyncHandler(async (req, res, next) => {
+  log(customDate.getFormatDate(), 'forgetPassword');
   // Get user based on POSTed email
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
+    log('user not found')
     return next(new AppError('There is no user with that email address.', 404));
   }
 
   // Generate the random reset token
   const resetToken = crypto.randomBytes(32).toString('hex');
+  log('resetToken: ', resetToken);
   const resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-  const resetPasswordExpires = Date.now() + 10 * 60 * 1000; // Token expires in 10 minutes
-
+  log('resetPasswordToken: ', resetPasswordToken);
+  const resetPasswordExpires = new Date(Date.now() + 10 * 60 * 1000); // Token expires in 10 minutes
+  log('resetPasswordExpires: ', resetPasswordExpires);
   // Save the hashed token and expiration time to the user document
   user.resetPasswordToken = resetPasswordToken;
   user.resetPasswordExpires = resetPasswordExpires;
+  try{
   await user.save({ validateBeforeSave: false });
+}
+  catch (err) {
+    
+    log('error sending user: ', err);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    return next(new AppError('There was an error seving user . Try again later!', 500));
+  }
 
   // Log the reset token
   console.log(`Reset token (raw): ${resetToken}`);
   console.log(`Reset token (hashed): ${resetPasswordToken}`);
 
   // Send the reset token to the user's email
-  const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+  const resetURL = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`;
 
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
 
