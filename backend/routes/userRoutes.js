@@ -28,8 +28,8 @@ router.route('/login')
 router.route('/logout')
     .get(authControllers.logout);
 
-router.route('/account')
-    .put(authControllers.protect, userControllers.updateUser);
+router.route('/accountDetails')
+    .put(authControllers.protect, userControllers.updateUser);  
 
 router.route('/pendingStudents')
     .post(authControllers.protect, pageRenderController.handlePendingStudent); 
