@@ -216,18 +216,3 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   // Log the user in, send JWT
   createSendToken(user, 200, res);
 });
-
-
-async function logPasswordHash(password) {
-  try {
-    // Hash the password with 12 salt rounds
-    const hashedPassword = await bcrypt.hash(password, 12);
-    // Log the hashed password
-    console.log(hashedPassword);
-  } catch (error) {
-    console.error('Error hashing password:', error);
-  }
-}
-
-// Example usage
-logPasswordHash('Bb123456');
