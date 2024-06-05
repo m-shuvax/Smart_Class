@@ -27,25 +27,25 @@ const StudentClassPage = () => {
   const [showLessons, setShowLessons] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
 
-  useEffect(() => {
-    console.log(classId);
-    const fetchClassData = async () => {
-      try {
-        const response = await axios.get(`/api/users/studentClass/${classId}`, { withCredentials: true });
-        console.log(response.data);
-        const { files, lessons, user, chat, liveLink } = response.data;
-        setData({ files, lessons, user, chat, liveLink });
-        setLoading(false);
-        setFilteredFiles(files);
-        setUser(user);
-      } catch (error) {
-        console.error(error);
-        setError('Error fetching class data');
-        setLoading(false);
-      }
-    };
-    fetchClassData();
-  }, [classId, setUser]);
+  const classID = '665d7a1e65de6ed8c1b44b6c';
+
+  const fetchClassData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/users/studentClass/${classID}`, { withCredentials: true });
+      console.log(response.data);
+      const { files, lessons, user, chat, liveLink } = response.data;
+      setData({ files, lessons, user, chat, liveLink });
+      setLoading(false);
+      setFilteredFiles(files);
+      setUser(user);
+    } catch (error) {
+      console.error(error);
+      setError('Error fetching class data');
+      setLoading(false);
+    }
+  };
+
+  fetchClassData();
 
   if (loading) {
     return <div>Loading...</div>;

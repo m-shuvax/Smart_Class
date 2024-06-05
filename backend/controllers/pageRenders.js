@@ -83,7 +83,9 @@ exports.renderStudentClasses = asyncHandler(async (req, res, next) => {
 
 // Function to render student class
 exports.renderStudentClass = asyncHandler(async (req, res, next) => {
-  const { userId, classId } = req.body;
+  console.log('renderStudentClass0');
+  const { classId } = req.params;
+  const userId = req.user._id;
 
   if (!userId || !classId) {
     return next(new AppError('User ID and Class ID are required', 400));
@@ -96,21 +98,28 @@ exports.renderStudentClass = asyncHandler(async (req, res, next) => {
   if (!user || !classData) {
     return next(new AppError('User or class not found', 404));
   }
+  console.log('renderStudentClass1');
   // Fetching files, lessons and chat related to the class
   const files = await File.find({ classId: classId });
+  console.log('renderStudentClass2', files);
   const lessons = await Lesson.find({ classId: classId });
+  console.log('renderStudentClass3', lessons);
   const chat = await Chat.findOne({ studentId: userId, classId: classId }).populate('messages');
-
+  console.log('renderStudentClass4', chat);
   // Categorize files
   const categorizedFiles = categorizeFiles(files);
+  const liveLink = classData.liveLink;
+  const instructorName = await User.findById(classData.instructor).select('firstName lastName');
+  console.log('renderStudentClass5');
 
   // Sending response
   res.status(200).json({
-    files: files,
+    files: categorizedFiles,
     lessons: lessons,
-    userDetails: user,
+    userDetails: req.user,
     chat: chat,
-    liveLink: liveLink
+    liveLink: liveLink,
+    instructorName: instructorName
   });
 });
 

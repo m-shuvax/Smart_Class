@@ -43,15 +43,16 @@ const createSendToken = (user, statusCode, res) => {
 
 // Middleware to protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
-  console.log('protect', customDate.getFormatDate());
+  console.log('protect', customDate.getFormatDate(), '\n', req.headers.cookie);
   let token;
   if (req.headers.cookie) {
     token = req.headers.cookie.split('=')[1];
   }
+  if (!token) return console.log('protect', new AppError('Please login', 401));
   if (!token) return next(new AppError('Please login', 401));
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
+console.log('protect2', decoded);
   if (!decoded) return next(new AppError('Token is invalid or has expired', 401));
 
   const user = await User.findById(decoded.id);
