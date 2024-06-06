@@ -9,7 +9,6 @@ const AppError = require('./../utils/AppError');
 const bcrypt = require('bcryptjs');
 
 
-
 // Utility function to handle response
 const handleResponse = (res, data, statusCode = 200) => {
   res.status(statusCode).json({
@@ -31,6 +30,7 @@ exports.createUser = asyncHandler(async (req, res, next) => {
     if (existingUser) {
       return res.status(409).json({ message: 'Email already in use' });
     }
+
   const user = await User.create({
     firstName,
     lastName,
