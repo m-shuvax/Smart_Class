@@ -13,7 +13,7 @@ const ClassPageInstructor = () => {
   const [filesByCategory, setFilesByCategory] = useState([]);
   const [filteredFiles, setFilteredFiles] = useState([]);
   const [lessons, setLessons] = useState([]);
-  const [showLiveStreams, setShowLiveStreams] = useState(false);
+  const [showLessons, setShowLessons] = useState(false);
   const [newFileName, setNewFileName] = useState('');
   const [newFileDate, setNewFileDate] = useState('');
   const [newLessonName, setNewLessonName] = useState('');
@@ -106,7 +106,7 @@ const ClassPageInstructor = () => {
         liveLink: liveBroadcastLink,
         classId
       }, { withCredentials: true });
-      setLiveBroadcastLink(liveBroadcastLink);
+      setLiveBroadcastLink(liveLink);
       setIsEditingBroadcast(false);
     } catch (error) {
       console.error(error);
@@ -121,14 +121,14 @@ const ClassPageInstructor = () => {
   const handleDeleteFile = async (fileId) => {
     try {
       await axios.delete(`http://localhost:5000/api/users/deleteFile/${fileId}`, { withCredentials: true });
-      setFilesByCategory(filesByCategory.filter(file => file.id !== fileId));
+      setFilesByCategory(filesByCategory.filter(file => file.id !== =fileId));
     } catch (error) {
       console.error(error);
       setError('Error deleting file');
     }
   };
 
-  const handleDeleteLiveStream = async (streamId) => {
+  const handleDeleteLesson = async (streamId) => {
     try {
       await axios.delete(`http://localhost:5000/api/users/deleteLiveStream/${streamId}`, { withCredentials: true });
       setLessons(lessons.filter(lesson => lesson.id !== streamId));
@@ -234,7 +234,7 @@ const ClassPageInstructor = () => {
                 <FilesNav
                   category={category}
                   setCategory={setCategory}
-                  setShowLiveStreams={setShowLiveStreams}
+                  setShowLessons={setShowLessons}
                   setFilteredFiles={setFilteredFiles}
                   filesByCategory={filesByCategory}
                 />
@@ -287,7 +287,7 @@ const ClassPageInstructor = () => {
                       <div>
                         <button
                           className="mt-4 w-40 inline-flex items-center px-4 py-2 bg-gray-400 text-white rounded-md mr-2 shadow hover:bg-gray-300"
-                          onClick={() => setShowLiveStreams(!showLiveStreams)}
+                          onClick={() => setShowLessons(!showLessons)}
                         >
                           <FiMenu className="h-6 w-6 mr-2" />
                           <span>Recordings</span>
@@ -344,7 +344,7 @@ const ClassPageInstructor = () => {
                 </div>
               </div>
 
-              {!showLiveStreams && (
+              {!showLessons && (
                 <div className="ml-52 mt-6 grow flex flex-col h-80 overflow-y-auto">
                   {filteredFiles.map((file, index) => (
                     <div key={index} className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex items-center mb-4 h-14">
@@ -362,7 +362,7 @@ const ClassPageInstructor = () => {
                 </div>
               )}
 
-              {showLiveStreams && (
+              {showLessons && (
                 <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
                   {lessons.map((lesson, index) => (
                     <div key={index} className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center">
@@ -372,7 +372,7 @@ const ClassPageInstructor = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(lesson.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteLiveStream(lesson.id)}>
+                      <button onClick={() => handleDeleteLesson(lesson.id)}>
                         <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>

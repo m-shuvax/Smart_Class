@@ -25,7 +25,9 @@ const StudentClassPage = () => {
   const [filteredFiles, setFilteredFiles] = useState([]);
   const [showLessons, setShowLessons] = useState(false);
 
-  const classID = '665d7a1e65de6ed8c1b44b6c';
+  useEffect(() => {
+    document.title = "Class Page";
+  }, []);
 
   const fetchClassData = async () => {
     try {

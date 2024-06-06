@@ -59,7 +59,7 @@ const HomePageStudent = () => {
               key={classroom._id}
               to={`/classPageStudent`}
               onClick={() => setClassId(classroom._id)}
-              className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
+              className="text-2xl bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
               {classroom.name}
             </Link>
