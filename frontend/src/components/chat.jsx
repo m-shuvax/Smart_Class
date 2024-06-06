@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const Chat = ({ chat, classId, studentId }) => {
+const Chat = ({ chat }) => {
 
   const handleSend = async () => {
     if (newMessage.trim()) {
       try {
         const res = await axios.post('/api/chats/createMessage', {
           userId: studentId,
-          chatId: chat._id, // Assuming chat object has _id property
+          chatId: chat._id,
           messageText: newMessage
         });
         if (res.data && res.data.chat) {
