@@ -5,7 +5,7 @@ import { FaTrash, FaPlay } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
-//import Chat from '../components/chat';
+import Chat from '../components/chat';
 import { useParams } from 'react-router-dom';
 import { useAppContext } from '../Context';
 
@@ -159,7 +159,7 @@ const StudentClassPage = () => {
           </div>
           <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
             <h2 className="text-lg font-bold mb-4 text-white">Chat with Teacher</h2>
-            //chat
+            <Chat />
           </div>
         </div>
       </div>
