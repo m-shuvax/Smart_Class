@@ -191,7 +191,7 @@ exports.createClass = asyncHandler(async (req, res, next) => {
 
 // New controller to update class liveLink
 exports.updateClassLiveLink = asyncHandler(async (req, res, next) => {
-  const { classId, newLink } = req.body;
+  const { liveLink, classId } = req.body;
 
   const classData = await Class.findById(classId);
 
@@ -199,7 +199,7 @@ exports.updateClassLiveLink = asyncHandler(async (req, res, next) => {
     return next(new AppError('Class not found', 404));
   }
 
-  classData.liveLink = newLink || null;  // Set to null if not provided
+  classData.liveLink = liveLink;
   await classData.save();
 
   res.status(200).json({

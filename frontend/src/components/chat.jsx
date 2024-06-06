@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Chat = () => {
+const Chat = ({}) => {
 
   const [newMessage, setNewMessage] = useState('');
   const [classId, setClassId] = useState('');

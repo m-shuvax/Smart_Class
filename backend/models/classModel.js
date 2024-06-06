@@ -22,7 +22,7 @@ const classSchema = new mongoose.Schema({
   }],
   liveLink: {
     type: String,
-    default: null  // Default value to null
+    default: 'null'  // Default value to null
   }
 });
 
