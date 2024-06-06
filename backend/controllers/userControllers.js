@@ -26,7 +26,6 @@ const handleError = (next, message, statusCode) => {
 // User Controllers
 exports.createUser = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
-
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     return res.status(409).json({ message: 'Email already in use' });
