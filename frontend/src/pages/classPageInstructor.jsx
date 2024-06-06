@@ -13,6 +13,7 @@ const ClassPageInstructor = () => {
   const [filesByCategory, setFilesByCategory] = useState([]);
   const [filteredFiles, setFilteredFiles] = useState([]);
   const [lessons, setLessons] = useState([]);
+  const [chats, setChats] = useState([]);
   const [showLessons, setShowLessons] = useState(false);
   const [newFileName, setNewFileName] = useState('');
   const [newFileDate, setNewFileDate] = useState('');
@@ -25,17 +26,15 @@ const ClassPageInstructor = () => {
   const [isAddingFile, setIsAddingFile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user, setUser, classId } = useAppContext();
-
-  console.log('classId:', classId);
+  const { user, setUser, classId, setClassId } = useAppContext();
 
   const fetchClassData = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/users/instructorClass/${classId}`, { withCredentials: true });
-      console.log(response.data);
-      const { files, lessons, user, chat, liveLink } = response.data;
+      const { files, lessons, user, chats, liveLink } = response.data;
       setFilesByCategory(files);
       setLessons(lessons);
+      setChats(chats);
       setUser(user);
       setLiveBroadcastLink(liveLink);
       setLoading(false);
@@ -52,7 +51,8 @@ const ClassPageInstructor = () => {
 
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 60000);
+    }, 6000);
+    console.log('intervalId:', classId);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -102,11 +102,11 @@ const ClassPageInstructor = () => {
 
   const handleEditLiveBroadcastLink = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/users/editLiveLink`, {
-        liveLink: liveBroadcastLink,
+      const response = await axios.put(`http://localhost:5000/api/users/editLiveLink`, {
+        liveLink,
         classId
       }, { withCredentials: true });
-      setLiveBroadcastLink(liveLink);
+      setLiveBroadcastLink(response.data.liveLink);
       setIsEditingBroadcast(false);
     } catch (error) {
       console.error(error);
@@ -121,7 +121,7 @@ const ClassPageInstructor = () => {
   const handleDeleteFile = async (fileId) => {
     try {
       await axios.delete(`http://localhost:5000/api/users/deleteFile/${fileId}`, { withCredentials: true });
-      setFilesByCategory(filesByCategory.filter(file => file.id !== =fileId));
+      setFilesByCategory(filesByCategory.filter(file => file.id !== fileId));
     } catch (error) {
       console.error(error);
       setError('Error deleting file');
