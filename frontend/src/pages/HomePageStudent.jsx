@@ -57,7 +57,7 @@ const HomePageStudent = () => {
           {classrooms.map((classroom) => (
             <Link
               key={classroom._id}
-              to={`/classPageStudent`}
+              to={`/ClassPageStudent`}
               onClick={() => setClassId(classroom._id)}
               className="text-2xl bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
