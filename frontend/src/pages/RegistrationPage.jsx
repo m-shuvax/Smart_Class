@@ -4,6 +4,8 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
 import Loader from '../components/Loader';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RegistrationPage = () => {
   const [loading, setLoading] = useState(false);
@@ -64,8 +66,8 @@ const RegistrationPage = () => {
       if (response.data) {
         console.log('Registration successful:', response.data);
         setLoading(false);
-        localStorage.setItem('registrationMessage', 'Registration successful, please log in.');
-        navigate('/');
+        toast.success('Registration successful, please log in.');
+        setTimeout(() => navigate('/'), 3000); // Navigate to login after 3 seconds
       } else {
         console.error('Registration successful but response is not as expected:', response);
       }
@@ -120,6 +122,7 @@ const RegistrationPage = () => {
       setPhoneNumberError('Phone number can contain digits only.');
     }
   };
+
 
   return (
     <div className="mt-10 min-h-screen bg-gray-100 flex flex-col">
@@ -270,6 +273,7 @@ const RegistrationPage = () => {
               </button>
             </div>
           </form>
+          <ToastContainer position="top-right" autoClose={3000} />
         </div>
       </div>
     </div>

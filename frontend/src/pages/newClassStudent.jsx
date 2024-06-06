@@ -28,6 +28,10 @@ const StudentClassPage = () => {
   const [isAddingLesson, setIsAddingLesson] = useState(false);
 
   useEffect(() => {
+    document.title = "Class Page";
+  }, []);
+
+  useEffect(() => {
     console.log(classId);
     const fetchClassData = async () => {
       try {
