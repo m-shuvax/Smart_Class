@@ -69,12 +69,12 @@ const HomePageInstructor = () => {
 
   const handleRejectStudent = async (studentId, classId) => {
     try {
-      response=await axios.post('http://localhost:5000/api/users/pendingStudents', {
+      response = await axios.post('http://localhost:5000/api/users/pendingStudents', {
         studentId,
         classId,
         action: 'reject',
       }, { withCredentials: true });
-console.log(response);
+      console.log(response);
       // Remove the rejected student from the pending students list
       setStudents(students.filter(student => !(student._id === studentId && student.classId === classId)));
 

@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 
-function FilesNav({ category, setCategory, setShowLiveStreams, setFilteredFiles, filesByCategory }) {
+function FilesNav({ category, setCategory, setShowLessons, setFilteredFiles, filesByCategory }) {
 
     const handleAllFilesClick = () => {
         const allFilesArray = Object.values(filesByCategory).flat();
         const sortedFiles = allFilesArray.sort((a, b) => new Date(a.date) - new Date(b.date));
         setCategory('allFiles');
         setFilteredFiles(sortedFiles);
-        setShowLiveStreams(false);
+        setShowLessons(false);
     };
 
     const handleCategoryChange = (newCategory) => {
         setCategory(newCategory);
         setFilteredFiles(filesByCategory[newCategory] || []);
-        setShowLiveStreams(false);
+        setShowLessons(false);
     };
 
     return (
