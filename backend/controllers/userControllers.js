@@ -26,10 +26,11 @@ const handleError = (next, message, statusCode) => {
 // User Controllers
 exports.createUser = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
-  
+
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return res.status(409).json({ message: 'Email already in use' });}
+    return res.status(409).json({ message: 'Email already in use' });
+  }
   const user = await User.create({
     firstName,
     lastName,
@@ -42,7 +43,7 @@ exports.createUser = asyncHandler(async (req, res, next) => {
     return handleError(next, 'Failed to create user', 500);
   }
   handleResponse(res, user, 201);
-  
+
   console.log('hhhh');
 
   res.status(201).json({
@@ -53,21 +54,18 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 
 exports.updateUser = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password, phoneNumber } = req.body;
-
-  const user = await User.findById(req.params.id);
+  console.log('updateUser1');
+  const user = await User.findById(req.user._id);
+  console.log(user);
   if (!user) {
     return handleError(next, 'User not found', 404);
   }
-
-  user.firstName = firstName;
-  user.lastName = lastName;
-  user.email = email;
-  if (password) {
-    user.password = await bcrypt.hash(password, 12);
-  }
-  user.phoneNumber = phoneNumber;
-  await user.save();
-
+  user.firstName = firstName || user.firstName;
+  user.lastName = lastName || user.lastName;
+  user.email = email || user.email;
+  user.password = password || user.password;
+  user.phoneNumber = phoneNumber || user.phoneNumber;
+  await user.save({ validateBeforeSave: false });
   handleResponse(res, user);
 });
 
@@ -84,7 +82,7 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 exports.addToPending = asyncHandler(async (req, res, next) => {
   log('addToPending');
   const { user } = req;
-  const classId  = req.body.classroomCode;
+  const classId = req.body.classroomCode;
   log('addToPending2');
   const classData = await Class.findById(classId);
   log('addToPending3');
