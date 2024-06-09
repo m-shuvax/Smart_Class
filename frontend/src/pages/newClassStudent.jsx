@@ -5,8 +5,7 @@ import { FaTrash, FaPlay } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
-//import Chat from '../components/chat';
-import { useParams } from 'react-router-dom';
+import Chat from '../components/chat';
 import { useAppContext } from '../Context';
 
 
@@ -22,30 +21,42 @@ const StudentClassPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [category, setCategory] = useState('assignments');
-  const [filesByCategory] = useState([]);
+  const [filesByCategory, setFilesByCategory] = useState([]);
   const [filteredFiles, setFilteredFiles] = useState([]);
   const [showLessons, setShowLessons] = useState(false);
-  const [isAddingLesson, setIsAddingLesson] = useState(false);
 
   useEffect(() => {
-    console.log(classId);
-    const fetchClassData = async () => {
-      try {
-        const response = await axios.get(`/api/users/studentClass/${classId}`, { withCredentials: true });
-        console.log(response.data);
-        const { files, lessons, user, chat, liveLink } = response.data;
-        setData({ files, lessons, user, chat, liveLink });
-        setLoading(false);
-        setFilteredFiles(files);
-        setUser(user);
-      } catch (error) {
-        console.error(error);
-        setError('Error fetching class data');
-        setLoading(false);
-      }
-    };
+    document.title = "Class Page";
+  }, []);
+
+  const fetchClassData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/users/studentClass/${classID}`, { withCredentials: true });
+      console.log(response.data);
+      const { files, lessons, user, chat, liveLink } = response.data;
+      setData({ files, lessons, user, chat, liveLink });
+      setLoading(false);
+      setFilesByCategory(files);
+      setUser(user);
+    } catch (error) {
+      console.error(error);
+      setError('Error fetching class data');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch data initially
     fetchClassData();
-  }, [classId, setUser]);
+
+    // Set interval to fetch data every minute
+    const intervalId = setInterval(() => {
+      fetchClassData();
+    }, 60000); // 60000 milliseconds = 1 minute
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -56,6 +67,7 @@ const StudentClassPage = () => {
   }
 
   const { files, lessons, chat, liveLink } = data;
+  console.log('files:', files, 'lessons:', lessons, 'chat:', chat, 'liveLink:', liveLink);
 
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
@@ -79,15 +91,14 @@ const StudentClassPage = () => {
 
         <div className="flex flex-row">
           <div className="w-2/3 p-4 pt-6 pl-0 pr-9">
-            {!isAddingLesson && (
-              <FilesNav
-                category={category}
-                setCategory={setCategory}
-                setShowLessons={setShowLessons}
-                setFilteredFiles={setFilteredFiles}
-                filesByCategory={filesByCategory}
-              />
-            )}
+            <FilesNav
+              category={category}
+              setCategory={setCategory}
+              setShowLessons={setShowLessons}
+              setFilteredFiles={setFilteredFiles}
+              filesByCategory={filesByCategory}
+            />
+
             <div className="flex flex-row">
               <div className="fixed bottom-9">
                 <div>
@@ -111,7 +122,7 @@ const StudentClassPage = () => {
                   </button>
                 </div>
               </div>
-              {/* {!showLessons && (
+              {!showLessons && (
                 <div className="ml-52 mt-6 grow flex flex-col h-80 overflow-y-auto">
                   {filteredFiles.map((file, index) => (
                     <div
@@ -130,8 +141,8 @@ const StudentClassPage = () => {
                     </div>
                   ))}
                 </div>
-              )} */}
-              {/* {showLessons && (
+              )}
+              {showLessons && (
                 <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
                   {lessons.map((lesson, index) => (
                     <div
@@ -150,12 +161,14 @@ const StudentClassPage = () => {
                     </div>
                   ))}
                 </div>
-              )} */}
+              )}
             </div>
           </div>
           <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
             <h2 className="text-lg font-bold mb-4 text-white">Chat with Teacher</h2>
-            //chat
+            <Chat
+              chat={chat}
+            />
           </div>
         </div>
       </div>

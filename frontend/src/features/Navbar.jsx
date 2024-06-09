@@ -1,25 +1,39 @@
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import LogoutButton from '../components/logoutButton';
 import AccountEditButton from '../components/accountEditButton';
+import { useAppContext } from '../Context';
 
 function Navbar() {
   const location = useLocation();
-
+  const { user, className } = useAppContext();
   const hideButtons = location.pathname === "/" || location.pathname === "/register";
   const hideButtons2 = location.pathname === "/UpdateDetails";
+  const showComponent = location.pathname === "/classPageInstructor" || location.pathname === "/ClassPageStudent";
 
   return (
     <nav className="fixed top-0 w-screen bg-gray-800 py-4 flex justify-between items-center">
-      <div className="text-neutral-50 font-bold ml-3 text-4xl"><h1>Smart Class</h1></div>
-      {!hideButtons && (
-        <div className="flex space-x-4 items-center mr-8">
-          {!hideButtons2 && (<div>
+      <div className="text-neutral-50 font-bold ml-3 text-4xl flex items-center">
+        <h1>Smart Class</h1>
+        {user && !hideButtons && !hideButtons2 && (
+          <div className="text-xl text-neutral-50 font-bold ml-8 mt-2">{`Hi, ${user.firstName} ${user.lastName}`}</div>
+        )}
+      </div>
+      {showComponent && (
+        <div className="text-neutral-50 text-4xl">{className}</div>
+      )}
+      <div className="flex items-center mr-8">
+        {!hideButtons2 && !hideButtons && (
+          <div>
             <AccountEditButton />
           </div>
-          )}
-          <LogoutButton />
-        </div>
-      )}
+        )}
+        {!hideButtons && (
+          <div>
+            <LogoutButton />
+          </div>
+        )}
+      </div>
     </nav>
   );
 }

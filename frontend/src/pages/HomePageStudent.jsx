@@ -62,9 +62,10 @@ const HomePageStudent = () => {
         <div className="grid grid-cols-4 gap-4">
           {classrooms.map((classroom, id) => (
             <Link
-              key={id}
-              to={`/classPageStudent`}
-              className="bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
+              key={classroom._id}
+              to={`/ClassPageStudent`}
+              onClick={() => setClassId(classroom._id)}
+              className="text-2xl bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
               {classroom}
             </Link>

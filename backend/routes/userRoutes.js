@@ -42,13 +42,22 @@ router.route('/pendingStudents/:classId')
 
 router.route('/studentClass/:classId')
     .get(authControllers.protect, pageRenderController.renderStudentClass);
-   
-// router.route('/class')
-//     .get(authMiddleware.protect, userControllers.renderStudentClass)
-//     .post(authMiddleware.protect, userControllers.createUser);
 
-// router.route('/login')
-//     .post(userControllers.login);
+
+router.route('/instructorClass/:classId')
+    .get(authControllers.protect, pageRenderController.renderInstructorClass);
+   
+router.route('/files')
+    .post(authControllers.protect, userControllers.createFile)
+    .delete(authControllers.protect, userControllers.deleteFile);
+
+router.route('/lessons')    
+    .post(authControllers.protect, userControllers.createLesson)
+    .delete(authControllers.protect, userControllers.deleteLesson);
+
+router.route('/editLiveLink')
+    .put(authControllers.protect, userControllers.updateClassLiveLink);
+
 
 // router.route('/class/file')
 //     .post(authMiddleware.protect, userControllers.createFile)

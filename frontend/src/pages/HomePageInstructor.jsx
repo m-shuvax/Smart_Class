@@ -5,9 +5,11 @@ import { FaCheck, FaRegCopy } from 'react-icons/fa';
 import axios from 'axios';
 import Navbar from '../features/Navbar';
 import { useAppContext } from '../Context';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const HomePageInstructor = () => {
-  const { user, setUser } = useAppContext();
+  const { user, setUser, setClassId } = useAppContext();
   const [classes, setClasses] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showInput, setShowInput] = useState(false);
@@ -62,24 +64,32 @@ const HomePageInstructor = () => {
 
       // Remove the approved student from the pending students list
       setStudents(students.filter(student => !(student._id === studentId && student.classId === classId)));
+
+      // Show success toast
+      toast.success('Student has joined the class!');
     } catch (error) {
       console.error('Error approving student:', error);
+      toast.error('Failed to approve student.');
     }
   };
 
   const handleRejectStudent = async (studentId, classId) => {
     try {
-      response=await axios.post('http://localhost:5000/api/users/pendingStudents', {
+      const response = await axios.post('http://localhost:5000/api/users/pendingStudents', {
         studentId,
         classId,
         action: 'reject',
       }, { withCredentials: true });
-console.log(response);
+      console.log(response);
+
       // Remove the rejected student from the pending students list
       setStudents(students.filter(student => !(student._id === studentId && student.classId === classId)));
 
+      // Show success toast
+      toast.success('Student was rejected.');
     } catch (error) {
       console.error('Error rejecting student:', error);
+      toast.error('Failed to reject student.');
     }
   };
 
@@ -95,6 +105,12 @@ console.log(response);
 
   const handleCopyToClipboard = (classId) => {
     navigator.clipboard.writeText(classId)
+      .then(() => {
+        toast.success('ID copied to clipboard!');
+      })
+      .catch(() => {
+        toast.error('Failed to copy ID.');
+      });
   };
 
   return (
@@ -104,12 +120,14 @@ console.log(response);
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-3 gap-4 overflow-y-auto h-[calc(100vh-10rem)]">
           {classes.map((classroom) => (
-            <div key={classroom._id} className="relative bg-white p-2 rounded-md shadow-md w-64 h-32 flex flex-col items-center justify-center hover:bg-blue-200 transition-colors duration-300">
-              <Link to={`/classPageInstructor`} className="text-2xl absolute inset-0 flex flex-col items-center justify-center">
+            <div key={classroom._id} className="relative bg-white p-2 rounded-md shadow-md w-72 h-32 flex flex-col items-center justify-center hover:bg-blue-200 transition-colors duration-300">
+              <Link onClick={() => setClassId(classroom._id)}
+              to={`/classPageInstructor`} className="text-2xl absolute inset-0 flex flex-col items-center justify-center">
                 {classroom.name}
               </Link>
-              <button onClick={() => handleCopyToClipboard(classroom._id)} className="absolute top-2 right-2 text-gray-500 hover:text-black">
-                <FaRegCopy className="h-5 w-5" />
+              <button onClick={() => handleCopyToClipboard(classroom._id)} className="absolute top-2 right-2 text-gray-500 hover:text-black flex items-center">
+                <span>Copy ID</span>
+                <FaRegCopy className="ml-1 h-5 w-5" />
               </button>
             </div>
           ))}
@@ -131,17 +149,21 @@ console.log(response);
                 {students.map((student) => (
                   <li
                     key={student._id}
-                    className="text-left cursor-pointer text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md flex justify-between items-center"
+                    className="text-left text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md flex justify-between items-center"
                   >
                     <button onClick={() => handleRejectStudent(student._id, student.classId)}>
-                      <XCircleIcon className="h-6 w-6 hover:text-red-700" />
+                      <XCircleIcon className="cursor-pointer h-6 w-6 hover:text-red-700" />
                     </button>
-                    {student.firstName} {student.lastName}<br /> {student.className}
+                    <div>
+                      <span>{student.firstName} {student.lastName}</span>
+                      <br />
+                      <span className="font-bold">{student.className}</span>
+                    </div>
                     <button
-                      className="bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center"
+                      className="cursor-pointer bg-blue-600 hover:bg-green-600 text-white font-bold py-2 px-2 rounded flex items-center"
                       onClick={() => handleApproveStudent(student._id, student.classId)}
                     >
-                      <FaCheck className="h-14 w-4 mr-2" />
+                      <FaCheck className="h-14 w-4" />
                     </button>
                   </li>
                 ))}
@@ -176,9 +198,9 @@ console.log(response);
           </>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };
 
 export default HomePageInstructor;
-

@@ -43,15 +43,16 @@ const createSendToken = (user, statusCode, res) => {
 
 // Middleware to protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
-  console.log('protect', customDate.getFormatDate());
+  console.log('protect', customDate.getFormatDate(), '\n', req.headers.cookie);
   let token;
   if (req.headers.cookie) {
     token = req.headers.cookie.split('=')[1];
   }
+  if (!token) return console.log('protect', new AppError('Please login', 401));
   if (!token) return next(new AppError('Please login', 401));
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
+console.log('protect2', decoded);
   if (!decoded) return next(new AppError('Token is invalid or has expired', 401));
 
   const user = await User.findById(decoded.id);
@@ -165,7 +166,7 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
   console.log(`Reset token (hashed): ${resetPasswordToken}`);
 
   // Send the reset token to the user's email
-  const resetURL = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`;
+  const resetURL = `${req.protocol}://localhost:5173/resetPassword/${resetToken}`;
 
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
 
