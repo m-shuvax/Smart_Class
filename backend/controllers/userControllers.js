@@ -100,13 +100,15 @@ exports.addToPending = asyncHandler(async (req, res, next) => {
 
 // File Controllers
 exports.createFile = asyncHandler(async (req, res, next) => {
-  const { fileName, classId, category, fileLink } = req.body;
+  const { fileName, fileDate, classId, category, fileLink } = req.body;
+  console.log(fileName, fileDate, classId, category, fileLink);
 
   const file = await File.create({
-    fileName,
+    name: fileName,
+    date: fileDate,
     classId,
     category,
-    fileLink,
+    fLink: fileLink,
   });
 
   if (!file) {

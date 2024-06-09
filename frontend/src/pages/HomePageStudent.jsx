@@ -20,9 +20,7 @@ const HomePageStudent = () => {
         console.log(response);
         setUser(response.data.user);    
         setClassrooms(response.data.classes);
-        console.log(classrooms);
-        setClassId(classrooms[0]._id);
-        console.log('aaaaaaa', classrooms[0].name, classId, user )}
+        console.log(classrooms)}
    
     catch (error) {
       console.error('Error fetching data:', error);
@@ -30,7 +28,7 @@ const HomePageStudent = () => {
   }
 
   fetchData();
-  }, []);
+  }, [classId]);
 
   useEffect(() => {
     document.title = "Home Page";
@@ -58,7 +56,7 @@ const HomePageStudent = () => {
             <Link
               key={classroom._id}
               to={`/ClassPageStudent`}
-              onClick={() => setClassId(classroom._id)}
+              onClick={() => {setClassId(classroom._id); console.log(33,classId)}}
               className="text-2xl bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
               {classroom.name}

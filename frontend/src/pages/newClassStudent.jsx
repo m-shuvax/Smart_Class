@@ -31,7 +31,8 @@ const StudentClassPage = () => {
 
   const fetchClassData = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/users/studentClass/${classID}`, { withCredentials: true });
+      console.log(classId, 777);
+      const response = await axios.get(`http://localhost:5000/api/users/studentClass/${classId}`, { withCredentials: true });
       console.log(response.data);
       const { files, lessons, user, chat, liveLink } = response.data;
       setData({ files, lessons, user, chat, liveLink });
@@ -56,7 +57,7 @@ const StudentClassPage = () => {
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [classId]);
 
   if (loading) {
     return <div>Loading...</div>;

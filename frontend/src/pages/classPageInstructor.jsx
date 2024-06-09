@@ -17,6 +17,7 @@ const ClassPageInstructor = () => {
   const [showLessons, setShowLessons] = useState(false);
   const [newFileName, setNewFileName] = useState('');
   const [newFileDate, setNewFileDate] = useState('');
+  const [newFileLink, setNewFileLink] = useState('');
   const [newLessonName, setNewLessonName] = useState('');
   const [newLessonDate, setNewLessonDate] = useState('');
   const [liveBroadcastLink, setLiveBroadcastLink] = useState('');
@@ -26,13 +27,17 @@ const ClassPageInstructor = () => {
   const [isAddingFile, setIsAddingFile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user, setUser, classId, setClassId } = useAppContext();
+  const { user, setUser, classId, setClassId, studentsList, setStudentsList } = useAppContext();
 
   const fetchClassData = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/users/instructorClass/${classId}`, { withCredentials: true });
-      const { files, lessons, user, chats, liveLink } = response.data;
+      const { files, lessons, user, chats, liveLink, students } = response.data;
+      console.log('files:', files,'lessons:', lessons, user, chats,'link:', liveLink, 'students:', students);
       setFilesByCategory(files);
+      try{
+       setStudentsList(students);
+      console.log('contextStudents:', studentsList)} catch (err) {console.log(err, 333)}
       setLessons(lessons);
       setChats(chats);
       setUser(user);
@@ -62,14 +67,17 @@ const ClassPageInstructor = () => {
     if (name === 'newFileName') setNewFileName(value);
     if (name === 'newFileDate') setNewFileDate(value);
     if (name === 'liveLink') setLiveBroadcastLink(value);
+    if (name === 'newFileLink') setNewFileLink(value)
   };
 
   const handleAddFile = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/users/createFile', {
-        name: newFileName,
-        date: newFileDate,
-        category
+      const response = await axios.post('http://localhost:5000/api/users/files', {
+        fileName: newFileName,
+        fileDate: newFileDate,
+        category,
+        classId,
+        fileLink: newFileLink
       }, { withCredentials: true });
       setFilesByCategory([...filesByCategory, response.data.file]);
       setIsAddingFile(false);
@@ -83,6 +91,7 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newLessonName') setNewLessonName(value);
     if (name === 'newLessonDate') setNewLessonDate(value);
+    if (name === 'newLesson') ;
   };
 
   const handleAddLesson = async () => {
@@ -118,9 +127,19 @@ const ClassPageInstructor = () => {
     setIsEditingBroadcast(true);
   };
 
+  // const handleAddFile = async () => {
+  //   try {
+  //     await axios.post('http://localhost:5000/api/users/files/'), {
+  //       fileName,
+  //       fileDate,
+  //       fileCat
+  //     }
+  //   }
+  // }
+
   const handleDeleteFile = async (fileId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/deleteFile/${fileId}`, { withCredentials: true });
+      await axios.delete(`http://localhost:5000/api/users/files/${fileId}`, { withCredentials: true });
       setFilesByCategory(filesByCategory.filter(file => file.id !== fileId));
     } catch (error) {
       console.error(error);
@@ -187,9 +206,17 @@ const ClassPageInstructor = () => {
                           />
                           <input
                             type="text"
-                            placeholder="File Link"
+                            placeholder="File date"
                             name="newFileDate"
                             value={newFileDate}
+                            onChange={handleFileInputChange}
+                            className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                          />
+                          <input
+                            type="text"
+                            placeholder="File Link"
+                            name="newFileLink"
+                            value={newFileLink}
                             onChange={handleFileInputChange}
                             className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                           />
