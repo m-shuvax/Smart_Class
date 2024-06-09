@@ -31,10 +31,13 @@ const LoginPage = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/users/', { withCredentials: true });
-        const newUser = response.data.data.user;
+        console.log(response.data);
+        const newUser = response.data.user;
+        console.log("2");
         setUser(newUser);
+        console.log("3");
         const isStudent = newUser.role === 'student';
-
+        console.log("4");
         if (isStudent) {
           navigate('/HomePageStudent');
         } else {

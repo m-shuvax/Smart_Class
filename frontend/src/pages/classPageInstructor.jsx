@@ -20,19 +20,25 @@ const ClassPageInstructor = () => {
   const [newLessonName, setNewLessonName] = useState('');
   const [newLessonDate, setNewLessonDate] = useState('');
   const [liveBroadcastLink, setLiveBroadcastLink] = useState('');
-  let liveLink;
   const [isEditingBroadcast, setIsEditingBroadcast] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
   const [isAddingFile, setIsAddingFile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user, setUser, classId, setClassId } = useAppContext();
+  const { user, setUser, classId, setClassId, studentsList, setStudentsList } = useAppContext();
 
   const fetchClassData = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/users/instructorClass/${classId}`, { withCredentials: true });
-      const { files, lessons, user, chats, liveLink } = response.data;
+      const { files, lessons, user, chats, liveLink, students } = response.data;
+      console.log('files:', files, 'lessons:', lessons, user, chats, 'link:', liveLink, 'students:', students);
       setFilesByCategory(files);
+      try {
+        setStudentsList(students);
+        console.log('contextStudents:', studentsList);
+      } catch (err) {
+        console.log(err, 333);
+      }
       setLessons(lessons);
       setChats(chats);
       setUser(user);
@@ -51,7 +57,7 @@ const ClassPageInstructor = () => {
 
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 6000);
+    }, 600000000);
     console.log('intervalId:', classId);
 
     return () => clearInterval(intervalId);
@@ -83,14 +89,16 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newLessonName') setNewLessonName(value);
     if (name === 'newLessonDate') setNewLessonDate(value);
+    if (name === 'liveLink') setLiveBroadcastLink(value);
   };
 
   const handleAddLesson = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/users/createLesson', {
+      const response = await axios.post('http://localhost:5000/api/users/Lessons', {
         name: newLessonName,
-        date: newLessonDate,
-        category
+        date: newLessonDate, 
+        classId,
+        lLink: liveBroadcastLink
       }, { withCredentials: true });
       setLessons([...lessons, response.data.lesson]);
       setIsAddingLesson(false);
@@ -98,7 +106,7 @@ const ClassPageInstructor = () => {
       console.error(error);
       setError('Error adding lesson');
     }
-  };
+  };  
 
   const handleEditLiveBroadcastLink = async () => {
     try {
@@ -320,10 +328,18 @@ const ClassPageInstructor = () => {
                                 className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                               />
                               <input
-                                type="text"
-                                placeholder="Lesson Link"
+                                type="date"
+                                placeholder="Lesson Date"
                                 name="newLessonDate"
                                 value={newLessonDate}
+                                onChange={handleLessonInputChange}
+                                className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                              />
+                              <input
+                                type="text"
+                                placeholder="Lesson Link"
+                                name="liveLink"
+                                value={liveBroadcastLink}
                                 onChange={handleLessonInputChange}
                                 className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                               />

@@ -8,7 +8,6 @@ import Navbar from '../features/Navbar';
 import Chat from '../components/chat';
 import { useAppContext } from '../Context';
 
-
 const StudentClassPage = () => {
   const { user, setUser, classId, setClassId } = useAppContext();
   const [data, setData] = useState({
@@ -16,7 +15,7 @@ const StudentClassPage = () => {
     lessons: [],
     userDetails: null,
     chat: null,
-    liveLink: null
+    liveLink: '',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,12 +25,12 @@ const StudentClassPage = () => {
   const [showLessons, setShowLessons] = useState(false);
 
   useEffect(() => {
-    document.title = "Class Page";
+    document.title = 'Class Page';
   }, []);
 
   const fetchClassData = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/users/studentClass/${classID}`, { withCredentials: true });
+      const response = await axios.get(`http://localhost:5000/api/users/studentClass/${classId}`, { withCredentials: true });
       console.log(response.data);
       const { files, lessons, user, chat, liveLink } = response.data;
       setData({ files, lessons, user, chat, liveLink });
@@ -56,7 +55,7 @@ const StudentClassPage = () => {
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [classId]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -104,9 +103,7 @@ const StudentClassPage = () => {
                 <div>
                   <button
                     className="w-40 inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-md mr-2 shadow hover:bg-red-700 relative"
-                    onClick={() =>
-                      window.open(liveLink)
-                    }
+                    onClick={() => window.open(liveLink)}
                   >
                     <FaPlay className="h-4 w-4 mr-2" />
                     Live Broadcast
@@ -166,9 +163,7 @@ const StudentClassPage = () => {
           </div>
           <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
             <h2 className="text-lg font-bold mb-4 text-white">Chat with Teacher</h2>
-            <Chat
-              chat={chat}
-            />
+            <Chat chat={chat} />
           </div>
         </div>
       </div>

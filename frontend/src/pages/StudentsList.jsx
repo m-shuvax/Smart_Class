@@ -2,28 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../features/Navbar';
 import Chat from '../components/chat';
+import { useAppContext } from '../Context';
 
 const StudentList = () => {
-  const [selectedStudent, setSelectedStudent] = useState(null);
 
-  const students = [
-    { id: 1, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894' },
-    { id: 2, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
-    { id: 3, firstName: 'Michael', lastName: 'Golan', email: 'tr0526696507@gmail.com', phoneNumber: '0526696507' },
-    { id: 4, firstName: 'Binyomin', lastName: 'Zaiddman', email: '4140276@gmail.com', phoneNumber: '0555613314' },
-    { id: 5, firstName: 'Meir', lastName: 'Noishtut', email: 'msn.binah.1@gmail.com', phoneNumber: '0527124197' },
-    { id: 6, firstName: 'Menachem', lastName: 'Shubkas', email: 'mc1212479@gmail.com', phoneNumber: '0533121279' },
-    { id: 7, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894' },
-    { id: 8, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
-    { id: 1, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894' },
-    { id: 2, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
-    { id: 3, firstName: 'Michael', lastName: 'Golan', email: 'tr0526696507@gmail.com', phoneNumber: '0526696507' },
-    { id: 4, firstName: 'Binyomin', lastName: 'Zaiddman', email: '4140276@gmail.com', phoneNumber: '0555613314' },
-    { id: 5, firstName: 'Meir', lastName: 'Noishtut', email: 'msn.binah.1@gmail.com', phoneNumber: '0527124197' },
-    { id: 6, firstName: 'Menachem', lastName: 'Shubkas', email: 'mc1212479@gmail.com', phoneNumber: '0533121279' },
-    { id: 7, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894' },
-    { id: 8, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
-  ];
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const { studentsList } = useAppContext();
 
   const handleStudentClick = (student) => {
     setSelectedStudent(student);
@@ -50,17 +34,20 @@ const StudentList = () => {
       <h2 className="fixed text-4xl font-bold text-center mb-2 w-1/5 mt-20 ml-24">Student List</h2>
       <div className="flex flex-grow overflow-hidden mt-32 pl-4">
         <div className="w-1/3 bg-blue-200 p-4 h-full overflow-y-auto">
-          <ul>
-            {students.map((student) => (
-              <li
-                key={student.id}
-                onClick={() => handleStudentClick(student)}
-                className="cursor-pointer text-blue-400 hover:text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md"
-              >
-                {student.firstName} {student.lastName}
-              </li>
-            ))}
-          </ul>
+          {studentsList.length > 0 && (
+            <ul>
+              {studentsList.map((student) => (
+                <li
+                  key={student.id}
+                  onClick={() => handleStudentClick(student)}
+                  className="cursor-pointer text-blue-400 hover:text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md"
+                >
+                  {student.firstName} {student.lastName}
+                </li>
+              ))}
+            </ul>
+          )}
+
         </div>
         <div className="w-1/3 p-4 h-full overflow-y-auto">
           {selectedStudent && (
@@ -100,3 +87,4 @@ const StudentList = () => {
 };
 
 export default StudentList;
+

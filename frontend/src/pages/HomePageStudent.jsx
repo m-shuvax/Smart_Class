@@ -5,40 +5,43 @@ import Navbar from '../features/Navbar';
 import axios from 'axios';
 import { useAppContext } from '../Context';
 
-
 const HomePageStudent = () => {
   const [classrooms, setClassrooms] = useState([]);
   const [showInput, setShowInput] = useState(false);
   const [newClassroomCode, setNewClassroomCode] = useState('');
-  const {user, setUser, classId, setClassId} = useAppContext();
+  const { user, setUser, classId, setClassId } = useAppContext();
 
   useEffect(() => {
     const fetchData = async () => {
-      try{
+      try {
         console.log(classId);
-        const response = await axios.get('http://localhost:5000/api/users/studentHomePage', { withCredentials: true })
+        const response = await axios.get('http://localhost:5000/api/users/studentHomePage', { withCredentials: true });
         console.log(response);
-        setUser(response.data.user);    
+        setUser(response.data.user);
         setClassrooms(response.data.classes);
-        console.log(classrooms);
-        setClassId(classrooms[0]._id);
-        console.log('aaaaaaa', classrooms[0].name, classId, user )}
-   
-    catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }
+        if (response.data.classes.length > 0) {
+          setClassId(response.data.classes[0]._id);
+          console.log('aaaaaaa', response.data.classes[0].name, classId, user);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-  fetchData();
-  }, []);
+    fetchData();
+  }, [classId]);
 
   useEffect(() => {
     document.title = "Home Page";
   }, []);
 
-  const handleAddClassroom = () => {
-    const response = axios.get(`http://localhost:5000/api/users/pendingStudents/${newClassroomCode}`, { withCredentials: true });
-    console.log('111', response);
+  const handleAddClassroom = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/users/pendingStudents/${newClassroomCode}`, { withCredentials: true });
+      console.log('111', response);
+    } catch (error) {
+      console.error('Error adding classroom:', error);
+    }
 
     setNewClassroomCode('');
     setShowInput(false);
@@ -48,26 +51,20 @@ const HomePageStudent = () => {
     setShowInput(!showInput);
   };
 
-  const handleEnterKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleAddClassroom();
-    }
-  };
-
   return (
     <div className="fixed top-16 w-screen bg-blue-100 min-h-screen flex">
       <Navbar />
       <div className="w-3/4 pt-8 pl-4">
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-4 gap-4">
-          {classrooms.map((classroom, id) => (
+          {classrooms.map((classroom) => (
             <Link
               key={classroom._id}
               to={`/ClassPageStudent`}
               onClick={() => setClassId(classroom._id)}
               className="text-2xl bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
-              {classroom}
+              {classroom.name}
             </Link>
           ))}
         </div>
@@ -76,9 +73,10 @@ const HomePageStudent = () => {
         {!showInput && (
           <button
             onClick={handleToggleInput}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 flex items-center rounded"
           >
-            <PlusCircleIcon className="h-5 w-5" />
+            <PlusCircleIcon className="h-5 w-5 mr-2" />
+            Join Classroom
           </button>
         )}
         {showInput && (
@@ -95,7 +93,6 @@ const HomePageStudent = () => {
               placeholder="Enter classroom code"
               value={newClassroomCode}
               onChange={(e) => setNewClassroomCode(e.target.value)}
-             // onKeyPress={handleEnterKeyPress}
               className="border border-gray-300 rounded px-3 py-2 my-3 w-4/5"
             />
             <button

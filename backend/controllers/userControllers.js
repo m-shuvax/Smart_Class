@@ -131,12 +131,17 @@ exports.deleteFile = asyncHandler(async (req, res, next) => {
 
 // Lesson Controllers
 exports.createLesson = asyncHandler(async (req, res, next) => {
-  const { name, classId, lLink } = req.body;
+  const { name, classId, lLink, date } = req.body;
+
+  if (!name || !date || !classId || !lLink) {
+    return handleError(next, 'All fields are required', 400);
+  }
 
   const lesson = await Lesson.create({
     name,
     classId,
     lLink,
+    date 
   });
 
   if (!lesson) {
