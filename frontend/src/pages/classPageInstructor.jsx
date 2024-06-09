@@ -51,7 +51,7 @@ const ClassPageInstructor = () => {
 
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 6000);
+    }, 600000000);
     console.log('intervalId:', classId);
 
     return () => clearInterval(intervalId);

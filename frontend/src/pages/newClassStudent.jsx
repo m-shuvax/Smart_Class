@@ -52,7 +52,7 @@ const StudentClassPage = () => {
     // Set interval to fetch data every minute
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 60000); // 60000 milliseconds = 1 minute
+    }, 6000000000); // 60000 milliseconds = 1 minute
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
