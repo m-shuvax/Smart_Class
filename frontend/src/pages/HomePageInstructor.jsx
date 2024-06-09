@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const HomePageInstructor = () => {
-  const { user, setUser } = useAppContext();
+  const { user, setUser, setClassId } = useAppContext();
   const [classes, setClasses] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showInput, setShowInput] = useState(false);
@@ -121,7 +121,8 @@ const HomePageInstructor = () => {
         <div className="grid grid-cols-3 gap-4 overflow-y-auto h-[calc(100vh-10rem)]">
           {classes.map((classroom) => (
             <div key={classroom._id} className="relative bg-white p-2 rounded-md shadow-md w-72 h-32 flex flex-col items-center justify-center hover:bg-blue-200 transition-colors duration-300">
-              <Link to={`/classPageInstructor`} className="text-2xl absolute inset-0 flex flex-col items-center justify-center">
+              <Link onClick={() => setClassId(classroom._id)}
+              to={`/classPageInstructor`} className="text-2xl absolute inset-0 flex flex-col items-center justify-center">
                 {classroom.name}
               </Link>
               <button onClick={() => handleCopyToClipboard(classroom._id)} className="absolute top-2 right-2 text-gray-500 hover:text-black flex items-center">

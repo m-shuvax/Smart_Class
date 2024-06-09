@@ -125,32 +125,45 @@ exports.renderStudentClass = asyncHandler(async (req, res, next) => {
 
 // Function to render instructor class
 exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
-  const { userId, classId } = req.body;
+
+    console.log('renderClass0');
+    const { classId } = req.params;
+    const userId = req.user._id;
+    console.log('renderClass0', classId, userId);
+    if (!userId || !classId) {
+      return next(new AppError('User ID and Class ID are required', 400));
+    }
+  
+    // Fetching user and class data
+    const user = await User.findById(userId);
+    const classData = await Class.findById(classId);
+    // If user or class not found, throw an error
+    if (!user || !classData) {
+      return next(new AppError('User or class not found', 404));
+    }
+    console.log('renderClass1');
+    // Fetching files, lessons and chat related to the class
+    const files = await File.find({ classId: classId });
+    console.log('renderClass2', files);
+    const lessons = await Lesson.find({ classId: classId });
+    console.log('renderClass3', lessons);
+    const students = await User.find({ _id: { $in: classData.students } });
+    console.log('renderClass4', students);
+    const chats = await Chat.find({ classId: classId }).populate('messages');
+        console.log('renderClass4', chats);
+    // Categorize files
+    const categorizedFiles = categorizeFiles(files);
+    const liveLink = classData.liveLink;
 
   if (!userId || !classId) {
     return next(new AppError('User ID and Class ID are required', 400));
   }
 
-  // Fetching user and class data
-  const user = await User.findById(userId);
-  const classData = await Class.findById(classId).populate('pendingStudents');
-
-  // If user or class not found, throw an error
-  if (!user || !classData) {
-    return next(new AppError('User or class not found', 404));
-  }
-
-  // Fetching files, lessons, students and chats related to the class
-  const files = await File.find({ classId: classId });
-  const lessons = await Lesson.find({ classId: classId });
-  const students = await User.find({ _id: { $in: classData.students } });
-  const chats = await Chat.find({ classId: classId }).populate('messages');
-
   // Sending response
   res.status(200).json({
     files: files,
     lessons: lessons,
-    userDetails: user,
+    user: user,
     students: students,
     pendingStudents: classData.pendingStudents,
     chats: chats,
