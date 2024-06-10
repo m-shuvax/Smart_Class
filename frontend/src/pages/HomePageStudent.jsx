@@ -57,9 +57,9 @@ const HomePageStudent = () => {
               key={classroom._id}
               to={`/ClassPageStudent`}
               onClick={() => {setClassId(classroom._id); console.log(33,classId)}}
-              className="text-2xl bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
+              className="text-2xl bg-[url('src/assets/class.jpg')] bg-cover bg-center border-2 border-current p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
-              {classroom.name}
+              <span className='bg-blue-200 opacity-70 px-1.5 py-0.5 rounded'>{classroom.name}</span>
             </Link>
           ))}
         </div>
