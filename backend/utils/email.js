@@ -13,6 +13,8 @@ const sendEmail = async options => {
     from: 'NoReplay <smart.class383@gmail.com>', 
     to: options.email,
     subject: options.subject,
+    messageId: options.messageId,
+    html: options.html,
     text: options.message
   };
 
