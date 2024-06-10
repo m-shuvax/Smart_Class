@@ -154,14 +154,6 @@ const ClassPageInstructor = () => {
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
     <div className="flex flex-col h-screen bg-blue-100">
       <Navbar />
