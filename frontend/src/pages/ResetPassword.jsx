@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
@@ -11,6 +11,11 @@ const ResetPassword = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  useEffect(() => {
+    document.title = "Reset Password";
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,36 +40,36 @@ const ResetPassword = () => {
     <div className="flex h-screen bg-blue-100">
       <div className="w-2/3 flex justify-center items-center">
         <form className="bg-white p-8 rounded-lg shadow-md" onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type={showPassword ? 'text' : 'password'}
-              placeholder="New Password"
-              className="px-4 py-2 border border-gray-300 rounded-md w-80"
-            />
-            <button
+          <div className="mb-4 relative">
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type={showPassword ? 'text' : 'password'}
+                placeholder="New Password"
+                className="px-4 py-2 border border-gray-300 rounded-md w-80"
+              />
+              <button
                 type="button"
                 className="absolute inset-y-0 right-0 px-4 flex items-center text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
-          </div>
-          <div className="mb-4">
+            </div>
+          <div className="mb-4 relative">
             <input
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              type={showPassword ? 'text' : 'password'}
+              type={showConfirmPassword ? 'text' : 'password'}
               placeholder="Confirm New Password"
               className="px-4 py-2 border border-gray-300 rounded-md w-80"
             />
             <button
                 type="button"
                 className="absolute inset-y-0 right-0 px-4 flex items-center text-gray-500"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
           </div>
           <div className="flex justify-center">
