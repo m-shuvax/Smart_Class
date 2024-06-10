@@ -18,7 +18,7 @@ const fileSchema = new mongoose.Schema({
     category:{
         type: String,
         enum:{
-            values:['Study Materials', 'Lesson Summaries', 'Assignments'],
+            values:['studyMaterials', 'lessonSummaries', 'assignments'],
             message: '{VALUE} is not a valid category'}
     },
     fLink:{

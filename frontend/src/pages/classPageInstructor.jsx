@@ -21,7 +21,6 @@ const ClassPageInstructor = () => {
   const [newLessonName, setNewLessonName] = useState('');
   const [newLessonDate, setNewLessonDate] = useState('');
   const [liveBroadcastLink, setLiveBroadcastLink] = useState('');
-  let liveLink;
   const [isEditingBroadcast, setIsEditingBroadcast] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
   const [isAddingFile, setIsAddingFile] = useState(false);
@@ -31,13 +30,11 @@ const ClassPageInstructor = () => {
 
   const fetchClassData = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/users/instructorClass/${classId}`, { withCredentials: true });
+      const response = await axios.get(`http://localhost:5000/api/instructorClass/${classId}`, { withCredentials: true });
       const { files, lessons, user, chats, liveLink, students } = response.data;
-      console.log('files:', files,'lessons:', lessons, user, chats,'link:', liveLink, 'students:', students);
+      console.log('files:', files, 'lessons:', lessons, user, chats, 'link:', liveLink, 'students:', students);
       setFilesByCategory(files);
-      try{
-       setStudentsList(students);
-      console.log('contextStudents:', studentsList)} catch (err) {console.log(err, 333)}
+      setStudentsList(students);
       setLessons(lessons);
       setChats(chats);
       setUser(user);
@@ -72,7 +69,7 @@ const ClassPageInstructor = () => {
 
   const handleAddFile = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/users/files', {
+      const response = await axios.post('http://localhost:5000/api/files', {
         fileName: newFileName,
         fileDate: newFileDate,
         category,
@@ -91,12 +88,12 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newLessonName') setNewLessonName(value);
     if (name === 'newLessonDate') setNewLessonDate(value);
-    if (name === 'newLesson') ;
+    if (name === 'newLesson');
   };
 
   const handleAddLesson = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/users/createLesson', {
+      const response = await axios.post('http://localhost:5000/api/createLesson', {
         name: newLessonName,
         date: newLessonDate,
         category
@@ -111,7 +108,7 @@ const ClassPageInstructor = () => {
 
   const handleEditLiveBroadcastLink = async () => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/users/editLiveLink`, {
+      const response = await axios.put(`http://localhost:5000/api/editLiveLink`, {
         liveLink,
         classId
       }, { withCredentials: true });
@@ -139,7 +136,7 @@ const ClassPageInstructor = () => {
 
   const handleDeleteFile = async (fileId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/files/${fileId}`, { withCredentials: true });
+      await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });
       setFilesByCategory(filesByCategory.filter(file => file.id !== fileId));
     } catch (error) {
       console.error(error);
@@ -149,7 +146,7 @@ const ClassPageInstructor = () => {
 
   const handleDeleteLesson = async (streamId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/deleteLiveStream/${streamId}`, { withCredentials: true });
+      await axios.delete(`http://localhost:5000/api/deleteLiveStream/${streamId}`, { withCredentials: true });
       setLessons(lessons.filter(lesson => lesson.id !== streamId));
     } catch (error) {
       console.error(error);
@@ -226,9 +223,9 @@ const ClassPageInstructor = () => {
                             onChange={(e) => setCategory(e.target.value)}
                             className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                           >
-                            <option value="Lesson Summaries">Lesson Summaries</option>
-                            <option value="Study Materials">Study Materials</option>
-                            <option value="Assignments">Assignments</option>
+                            <option value="lessonSummaries">lessonSummaries</option>
+                            <option value="studyMaterials">studyMaterials</option>
+                            <option value="assignments">assignments</option>
                           </select>
                         </div>
                         <div className="flex justify-end">

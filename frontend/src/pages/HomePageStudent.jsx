@@ -16,7 +16,7 @@ const HomePageStudent = () => {
     const fetchData = async () => {
       try{
         console.log(classId);
-        const response = await axios.get('http://localhost:5000/api/users/studentHomePage', { withCredentials: true })
+        const response = await axios.get('http://localhost:5000/api/studentHomePage', { withCredentials: true })
         console.log(response);
         setUser(response.data.user);    
         setClassrooms(response.data.classes);
@@ -35,7 +35,7 @@ const HomePageStudent = () => {
   }, []);
 
   const handleAddClassroom = () => {
-    const response = axios.get(`http://localhost:5000/api/users/pendingStudents/${newClassroomCode}`, { withCredentials: true });
+    const response = axios.get(`http://localhost:5000/api/pendingStudents/${newClassroomCode}`, { withCredentials: true });
     console.log('111', response);
 
     setNewClassroomCode('');
