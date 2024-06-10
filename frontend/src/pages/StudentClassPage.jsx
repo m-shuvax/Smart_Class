@@ -60,14 +60,6 @@ const StudentClassPage = () => {
     return () => clearInterval(intervalId);
   }, [classId]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   const { files, lessons, chat, liveLink } = data;
   console.log('files:', files, 'lessons:', lessons, 'chat:', chat, 'liveLink:', liveLink);
 
