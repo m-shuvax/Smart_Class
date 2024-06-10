@@ -93,18 +93,20 @@ const ClassPageInstructor = () => {
 
   const handleAddLesson = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/createLesson', {
+      const response = await axios.post('http://localhost:5000/api/lessons', {
         name: newLessonName,
-        date: newLessonDate,
-        category
+        date: newLessonDate, 
+        classId,
+        lLink: liveBroadcastLink
       }, { withCredentials: true });
-      setLessons([...lessons, response.data.lesson]);
+      setLessons([...lessons, response.data.data]);
       setIsAddingLesson(false);
     } catch (error) {
       console.error(error);
       setError('Error adding lesson');
     }
   };
+  
 
   const handleEditLiveBroadcastLink = async () => {
     try {
