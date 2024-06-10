@@ -4,7 +4,7 @@ const Chat = ({ chat, classId, studentId }) => {
   // const [chat, setChat] = useState(null);
   const [newMessage, setNewMessage] = useState('');
   const [error, setError] = useState(null);
-  // const { userId, setUser } = useAppContext();
+  // const { userId, setUser } = u/seAppContext();
 
   const handleSend = async () => {
     if (newMessage.trim()) {

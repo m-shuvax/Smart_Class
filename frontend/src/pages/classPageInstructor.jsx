@@ -13,7 +13,6 @@ const ClassPageInstructor = () => {
   const [filesByCategory, setFilesByCategory] = useState([]);
   const [filteredFiles, setFilteredFiles] = useState([]);
   const [lessons, setLessons] = useState([]);
-  const [chats, setChats] = useState([]);
   const [showLessons, setShowLessons] = useState(false);
   const [newFileName, setNewFileName] = useState('');
   const [newFileDate, setNewFileDate] = useState('');
@@ -26,7 +25,7 @@ const ClassPageInstructor = () => {
   const [isAddingFile, setIsAddingFile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user, setUser, classId, setClassId, studentsList, setStudentsList } = useAppContext();
+  const { user, setUser, classId, setClassId, studentsList, setStudentsList, chats, setChats } = useAppContext();
 
   const fetchClassData = async () => {
     try {
