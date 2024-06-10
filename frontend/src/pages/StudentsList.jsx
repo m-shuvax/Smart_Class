@@ -14,7 +14,7 @@ const StudentList = () => {
   const handleStudentClick = (student) => {
     setSelectedStudent(student);
     // Find the chat associated with the selected student
-    const studentChat = chat.find(chat => chat.studentId === student._id);
+    const studentChat = chats.find(chat => chat.studentId === student._id);
     setChat(studentChat);
   };
 
@@ -83,7 +83,7 @@ const StudentList = () => {
         <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
           <h2 className="text-lg font-bold mb-4 text-white">Chat With Students</h2>
           {selectedStudent ? (
-            <Chat chat={chats} />
+            <Chat chat={chat} />
           ) : (
             <p className="text-center text-xl text-gray-500">Select a student to start chatting</p>
           )}
