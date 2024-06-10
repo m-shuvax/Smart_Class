@@ -47,15 +47,13 @@ const StudentClassPage = () => {
   };
 
   useEffect(() => {
-    // Fetch data initially
+
     fetchClassData();
 
-    // Set interval to fetch data every minute
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 6000000000); // 60000 milliseconds = 1 minute
+    }, 60000000); 
 
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, [classId]);
 
@@ -122,8 +120,7 @@ const StudentClassPage = () => {
                       key={index}
                       className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex items-center mb-4 h-14"
                     >
-                      <div className="flex items-center"
-                        onClick={window.open(file.fLink)}>
+                      <div className="flex items-center">
                         <span className="text-base font-medium">{file.name}</span>
                       </div>
                       <div style={{ textAlign: 'center', flex: 1 }}>

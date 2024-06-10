@@ -124,16 +124,6 @@ const ClassPageInstructor = () => {
     setIsEditingBroadcast(true);
   };
 
-  // const handleAddFile = async () => {
-  //   try {
-  //     await axios.post('http://localhost:5000/api/users/files/'), {
-  //       fileName,
-  //       fileDate,
-  //       fileCat
-  //     }
-  //   }
-  // }
-
   const handleDeleteFile = async (fileId) => {
     try {
       await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });

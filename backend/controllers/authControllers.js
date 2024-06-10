@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const sendEmail = require('./../utils/email');
 const crypto = require('crypto');
 const customDate = require('./../features/dates');
+const {log} = require('console')
 
 
 
