@@ -7,7 +7,8 @@ const bcrypt = require('bcryptjs');
 const sendEmail = require('./../utils/email');
 const crypto = require('crypto');
 const customDate = require('./../features/dates');
-const {log} = require('console')
+const { v4: uuidv4 } = require('uuid');
+const log = console.log;
 
 
 
@@ -125,15 +126,34 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
   console.log(`Reset token (raw): ${resetToken}`);
   console.log(`Reset token (hashed): ${resetPasswordToken}`);
 
+  const name = user.firstName + (' ') + user.lastName;
+  const messageId = `<${uuidv4()}@gmail.com>`;
   const resetURL = `${req.protocol}://localhost:5173/resetPassword/${resetToken}`;
+  const message = `
+     <div style="width: 100%; display: flex; justify-content: center;">
+    <div style="max-width: 600px; width: 100%; padding: 20px;">
+        <div style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); text-align: center; border: 2px solid #c0d6ff;">
+            <div style="padding: 20px;">
+                <h3 style="font-size: 24px;">Hi ${name}</h3>
+                <p style="font-size: 16px;">We received a request to reset your password.</p>
+                <p style="font-size: 16px;">We have sent a link to reset the password, the link is valid for 10 minutes.</p>
+                <p style="font-size: 16px;">Click the button below to reset your password:</p>
+                <a href="${resetURL}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; margin-top: 10px; margin-bottom: 20px;">Reset Password</a>
+                <p style="font-size: 16px;">If you did not request to reset the password, please ignore this email!</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+
+    `
 
   try {
     await sendEmail({
+      messageId: messageId,
       email: user.email,
-      subject: 'Your password reset token (valid for 10 minutes)',
-      message
+      subject: 'Password Reset | smart class',
+      html: message
     });
 
     res.status(200).json({
