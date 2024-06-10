@@ -43,7 +43,7 @@ const HomePageInstructor = () => {
         name: newClassName,
       }, { withCredentials: true });
       console.log('Response:', response.data);
-      alert('The ID of the class is ' + response.data._id);
+      toast.success('You have successfully created a new class')
       setClasses([...classes, response.data]);
       setNewClassName('');
       setShowInput(false);
