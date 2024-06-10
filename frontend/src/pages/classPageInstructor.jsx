@@ -17,22 +17,24 @@ const ClassPageInstructor = () => {
   const [showLessons, setShowLessons] = useState(false);
   const [newFileName, setNewFileName] = useState('');
   const [newFileDate, setNewFileDate] = useState('');
+  const [newFileLink, setNewFileLink] = useState('');
   const [newLessonName, setNewLessonName] = useState('');
   const [newLessonDate, setNewLessonDate] = useState('');
   const [liveBroadcastLink, setLiveBroadcastLink] = useState('');
-  let liveLink;
   const [isEditingBroadcast, setIsEditingBroadcast] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
   const [isAddingFile, setIsAddingFile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user, setUser, classId, setClassId } = useAppContext();
+  const { user, setUser, classId, setClassId, studentsList, setStudentsList } = useAppContext();
 
   const fetchClassData = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/users/instructorClass/${classId}`, { withCredentials: true });
-      const { files, lessons, user, chats, liveLink } = response.data;
+      const response = await axios.get(`http://localhost:5000/api/instructorClass/${classId}`, { withCredentials: true });
+      const { files, lessons, user, chats, liveLink, students } = response.data;
+      console.log('files:', files, 'lessons:', lessons, user, chats, 'link:', liveLink, 'students:', students);
       setFilesByCategory(files);
+      setStudentsList(students);
       setLessons(lessons);
       setChats(chats);
       setUser(user);
@@ -51,7 +53,7 @@ const ClassPageInstructor = () => {
 
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 6000);
+    }, 600000000);
     console.log('intervalId:', classId);
 
     return () => clearInterval(intervalId);
@@ -62,14 +64,17 @@ const ClassPageInstructor = () => {
     if (name === 'newFileName') setNewFileName(value);
     if (name === 'newFileDate') setNewFileDate(value);
     if (name === 'liveLink') setLiveBroadcastLink(value);
+    if (name === 'newFileLink') setNewFileLink(value)
   };
 
   const handleAddFile = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/users/createFile', {
-        name: newFileName,
-        date: newFileDate,
-        category
+      const response = await axios.post('http://localhost:5000/api/files', {
+        fileName: newFileName,
+        fileDate: newFileDate,
+        category,
+        classId,
+        fileLink: newFileLink
       }, { withCredentials: true });
       setFilesByCategory([...filesByCategory, response.data.file]);
       setIsAddingFile(false);
@@ -83,11 +88,12 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newLessonName') setNewLessonName(value);
     if (name === 'newLessonDate') setNewLessonDate(value);
+    if (name === 'newLesson');
   };
 
   const handleAddLesson = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/users/createLesson', {
+      const response = await axios.post('http://localhost:5000/api/createLesson', {
         name: newLessonName,
         date: newLessonDate,
         category
@@ -102,7 +108,7 @@ const ClassPageInstructor = () => {
 
   const handleEditLiveBroadcastLink = async () => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/users/editLiveLink`, {
+      const response = await axios.put(`http://localhost:5000/api/editLiveLink`, {
         liveLink,
         classId
       }, { withCredentials: true });
@@ -118,9 +124,19 @@ const ClassPageInstructor = () => {
     setIsEditingBroadcast(true);
   };
 
+  // const handleAddFile = async () => {
+  //   try {
+  //     await axios.post('http://localhost:5000/api/users/files/'), {
+  //       fileName,
+  //       fileDate,
+  //       fileCat
+  //     }
+  //   }
+  // }
+
   const handleDeleteFile = async (fileId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/deleteFile/${fileId}`, { withCredentials: true });
+      await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });
       setFilesByCategory(filesByCategory.filter(file => file.id !== fileId));
     } catch (error) {
       console.error(error);
@@ -130,21 +146,13 @@ const ClassPageInstructor = () => {
 
   const handleDeleteLesson = async (streamId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/deleteLiveStream/${streamId}`, { withCredentials: true });
+      await axios.delete(`http://localhost:5000/api/deleteLiveStream/${streamId}`, { withCredentials: true });
       setLessons(lessons.filter(lesson => lesson.id !== streamId));
     } catch (error) {
       console.error(error);
       setError('Error deleting live stream');
     }
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   return (
     <div className="flex flex-col h-screen bg-blue-100">
@@ -187,9 +195,17 @@ const ClassPageInstructor = () => {
                           />
                           <input
                             type="text"
-                            placeholder="File Link"
+                            placeholder="File date"
                             name="newFileDate"
                             value={newFileDate}
+                            onChange={handleFileInputChange}
+                            className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                          />
+                          <input
+                            type="text"
+                            placeholder="File Link"
+                            name="newFileLink"
+                            value={newFileLink}
                             onChange={handleFileInputChange}
                             className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                           />
@@ -199,9 +215,9 @@ const ClassPageInstructor = () => {
                             onChange={(e) => setCategory(e.target.value)}
                             className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                           >
-                            <option value="Lesson Summaries">Lesson Summaries</option>
-                            <option value="Study Materials">Study Materials</option>
-                            <option value="Assignments">Assignments</option>
+                            <option value="lessonSummaries">lessonSummaries</option>
+                            <option value="studyMaterials">studyMaterials</option>
+                            <option value="assignments">assignments</option>
                           </select>
                         </div>
                         <div className="flex justify-end">

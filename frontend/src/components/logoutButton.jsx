@@ -7,7 +7,7 @@ const LogoutButton = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/users/logout', { withCredentials: true });
+      const response = await axios.get('http://localhost:5000/api/logout', { withCredentials: true });
       console.log('Response:', response.data);
       navigate('/');
     } catch (error) {

@@ -32,7 +32,8 @@ const StudentClassPage = () => {
 
   const fetchClassData = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/users/studentClass/${classID}`, { withCredentials: true });
+      console.log(classId, 777);
+      const response = await axios.get(`http://localhost:5000/api/studentClass/${classId}`, { withCredentials: true });
       console.log(response.data);
       const { files, lessons, user, chat, liveLink } = response.data;
       setData({ files, lessons, user, chat, liveLink });
@@ -53,11 +54,11 @@ const StudentClassPage = () => {
     // Set interval to fetch data every minute
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 60000); // 60000 milliseconds = 1 minute
+    }, 6000000000); // 60000 milliseconds = 1 minute
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [classId]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -75,7 +76,7 @@ const StudentClassPage = () => {
       <Navbar />
       <div className="container mx-auto pt-24 pl-4">
         <Link
-          to="/HomePageInstructor"
+          to="/HomePageStudent"
           className="mr-20 bg-indigo-300 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded shadow-md"
         >
           <svg
@@ -130,7 +131,8 @@ const StudentClassPage = () => {
                       key={index}
                       className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex items-center mb-4 h-14"
                     >
-                      <div className="flex items-center">
+                      <div className="flex items-center"
+                        onClick={window.open(file.fLink)}>
                         <span className="text-base font-medium">{file.name}</span>
                       </div>
                       <div style={{ textAlign: 'center', flex: 1 }}>
