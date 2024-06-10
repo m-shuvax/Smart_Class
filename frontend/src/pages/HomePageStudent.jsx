@@ -16,13 +16,11 @@ const HomePageStudent = () => {
     const fetchData = async () => {
       try{
         console.log(classId);
-        const response = await axios.get('http://localhost:5000/api/users/studentHomePage', { withCredentials: true })
+        const response = await axios.get('http://localhost:5000/api/studentHomePage', { withCredentials: true })
         console.log(response);
         setUser(response.data.user);    
         setClassrooms(response.data.classes);
-        console.log(classrooms);
-        setClassId(classrooms[0]._id);
-        console.log('aaaaaaa', classrooms[0].name, classId, user )}
+        console.log(classrooms)}
    
     catch (error) {
       console.error('Error fetching data:', error);
@@ -30,14 +28,14 @@ const HomePageStudent = () => {
   }
 
   fetchData();
-  }, []);
+  }, [classId]);
 
   useEffect(() => {
     document.title = "Home Page";
   }, []);
 
   const handleAddClassroom = () => {
-    const response = axios.get(`http://localhost:5000/api/users/pendingStudents/${newClassroomCode}`, { withCredentials: true });
+    const response = axios.get(`http://localhost:5000/api/pendingStudents/${newClassroomCode}`, { withCredentials: true });
     console.log('111', response);
 
     setNewClassroomCode('');
@@ -57,8 +55,8 @@ const HomePageStudent = () => {
           {classrooms.map((classroom) => (
             <Link
               key={classroom._id}
-              to={`/classPageStudent`}
-              onClick={() => setClassId(classroom._id)}
+              to={`/ClassPageStudent`}
+              onClick={() => {setClassId(classroom._id); console.log(33,classId)}}
               className="text-2xl bg-white p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
               {classroom.name}

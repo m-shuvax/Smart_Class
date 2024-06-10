@@ -6,10 +6,10 @@ import { useAppContext } from '../Context';
 
 function Navbar() {
   const location = useLocation();
-  const { user } = useAppContext();
-
+  const { user, className } = useAppContext();
   const hideButtons = location.pathname === "/" || location.pathname === "/register";
   const hideButtons2 = location.pathname === "/UpdateDetails";
+  const showComponent = location.pathname === "/classPageInstructor" || location.pathname === "/ClassPageStudent";
 
   return (
     <nav className="fixed top-0 w-screen bg-gray-800 py-4 flex justify-between items-center">
@@ -19,6 +19,9 @@ function Navbar() {
           <div className="text-xl text-neutral-50 font-bold ml-8 mt-2">{`Hi, ${user.firstName} ${user.lastName}`}</div>
         )}
       </div>
+      {showComponent && (
+        <div className="text-neutral-50 text-4xl">{className}</div>
+      )}
       <div className="flex items-center mr-8">
         {!hideButtons2 && !hideButtons && (
           <div>

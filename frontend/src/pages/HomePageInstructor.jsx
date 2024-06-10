@@ -9,9 +9,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const HomePageInstructor = () => {
-  const { user, setUser } = useAppContext();
+  const { user, setUser, setClassId } = useAppContext();
   const [classes, setClasses] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
   const [showInput, setShowInput] = useState(false);
   const [newClassName, setNewClassName] = useState('');
   const [students, setStudents] = useState([]);
@@ -22,7 +21,7 @@ const HomePageInstructor = () => {
     const fetchClassrooms = async () => {
       try {
         console.log('Fetching classrooms');
-        const response = await axios.get('http://localhost:5000/api/users/classes', { withCredentials: true });
+        const response = await axios.get('http://localhost:5000/api/classes', { withCredentials: true });
         console.log('Response:', response.data);
         setClasses(response.data.classes);
 
@@ -40,11 +39,11 @@ const HomePageInstructor = () => {
   const handleAddClassroom = async () => {
     if (newClassName.trim() === '') return;
     try {
-      const response = await axios.post('http://localhost:5000/api/users/classes', {
+      const response = await axios.post('http://localhost:5000/api/classes', {
         name: newClassName,
       }, { withCredentials: true });
       console.log('Response:', response.data);
-      alert('The ID of the class is ' + response.data._id);
+      toast.success('You have successfully created a new class')
       setClasses([...classes, response.data]);
       setNewClassName('');
       setShowInput(false);
@@ -56,7 +55,7 @@ const HomePageInstructor = () => {
   const handleApproveStudent = async (studentId, classId) => {
     try {
       console.log('Approving student:', studentId, classId);
-      await axios.post('http://localhost:5000/api/users/pendingStudents', {
+      await axios.post('http://localhost:5000/api/pendingStudents', {
         studentId,
         classId,
         action: 'approve',
@@ -75,7 +74,7 @@ const HomePageInstructor = () => {
 
   const handleRejectStudent = async (studentId, classId) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/users/pendingStudents', {
+      const response = await axios.post('http://localhost:5000/api/pendingStudents', {
         studentId,
         classId,
         action: 'reject',
@@ -121,7 +120,8 @@ const HomePageInstructor = () => {
         <div className="grid grid-cols-3 gap-4 overflow-y-auto h-[calc(100vh-10rem)]">
           {classes.map((classroom) => (
             <div key={classroom._id} className="relative bg-white p-2 rounded-md shadow-md w-72 h-32 flex flex-col items-center justify-center hover:bg-blue-200 transition-colors duration-300">
-              <Link to={`/classPageInstructor`} className="text-2xl absolute inset-0 flex flex-col items-center justify-center">
+              <Link onClick={() => setClassId(classroom._id)}
+              to={`/classPageInstructor`} className="text-2xl absolute inset-0 flex flex-col items-center justify-center">
                 {classroom.name}
               </Link>
               <button onClick={() => handleCopyToClipboard(classroom._id)} className="absolute top-2 right-2 text-gray-500 hover:text-black flex items-center">

@@ -1,38 +1,35 @@
-// Importing required modules and models
 const User = require('./../models/userModel');
 const Class = require('./../models/classModel');
-const { log } = require('console');
 const File = require('./../models/fileModel');
 const Lesson = require('./../models/lessonModel');
 const Chat = require('./../models/chatModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
-const message = require('../models/messageModel');
 const categorizeFiles = require('./../utils/categorize');
 const { createChat } = require('./chatControllers');
 
-// Function to render instructor classes and pending students
+
+
+// HOME-PAGE RENDERING 
+
 exports.renderInstructorClasses = asyncHandler(async (req, res, next) => {
-  log('renderInstructorClasses1');
+  console.log('renderInstructorClasses1');
   const { user } = req;
 
   if (!user) {
     return next(new AppError('User ID is required', 400));
   }
 
-  // Fetching all classes
   const allClasses = await Class.find({});
-  log('renderInstructorClasses2');
+  console.log('renderInstructorClasses2');
 
-  // Filtering classes where the user is the instructor
   const classes = allClasses.filter(classObj => classObj.instructor.equals(user._id));
-  log('renderInstructorClasses3');
+  console.log('renderInstructorClasses3');
 
-  // Gathering all pending students
   const pendingStudents = await Promise.all(
     classes.reduce((acc, classObj) => {
       const classPendingStudents = classObj.pendingStudents.map(async (studentId) => {
-        const student = await User.findById(studentId).select('firstName lastName email'); // Select the fields you need
+        const student = await User.findById(studentId).select('firstName lastName email');
         return {
           ...student._doc,
           classId: classObj._id,
@@ -42,8 +39,6 @@ exports.renderInstructorClasses = asyncHandler(async (req, res, next) => {
       return acc.concat(classPendingStudents);
     }, [])
   );
-  console.log('renderInstructorClasses4', pendingStudents);
-
 
   res.status(200).json({
     success: true,
@@ -53,26 +48,29 @@ exports.renderInstructorClasses = asyncHandler(async (req, res, next) => {
   });
 });
 
-// Function to render student classes
+
+
 exports.renderStudentClasses = asyncHandler(async (req, res, next) => {
-  log('renderStudentClasses1');
+  console.log('renderStudentClasses1');
   const { user } = req;
-  log('renderStudentClasses2');
+  console.log('renderStudentClasses2');
+
   if (!user._id) {
     return next(new AppError('User ID is required', 400));
   }
-  log('renderStudentClasses3');
-  // Fetching all classes where the user is a student
+
+  console.log('renderStudentClasses3');
   const studentClasses = await Class.find({ students: user._id }).select('name instructor');
-  // Map through the classes to fetch instructor details
+
   const classesWithInstructors = await Promise.all(studentClasses.map(async (classObj) => {
     const instructorName = await User.findById(classObj.instructor).select('name');
     const instructor = { instructorName, instructorId: classObj.instructor };
     return {
-      ...classObj._doc, instructor
+      ...classObj._doc,
+      instructor
     };
   }));
-  log('renderStudentClasses4');
+
   res.status(200).json({
     success: true,
     classes: classesWithInstructors,
@@ -81,7 +79,51 @@ exports.renderStudentClasses = asyncHandler(async (req, res, next) => {
 });
 
 
-// Function to render student class
+
+// CLASS RENDERING
+
+exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
+  console.log('renderClass0');
+  const { classId } = req.params;
+  const userId = req.user._id;
+  console.log('renderClass0', classId, userId);
+
+  if (!userId || !classId) {
+    return next(new AppError('User ID and Class ID are required', 400));
+  }
+
+  const user = await User.findById(userId);
+  const classData = await Class.findById(classId);
+
+  if (!user || !classData) {
+    return next(new AppError('User or class not found', 404));
+  }
+
+  console.log('renderClass1');
+  const files = await File.find({ classId: classId });
+  console.log('renderClass2', files);
+  const lessons = await Lesson.find({ classId: classId });
+  console.log('renderClass3', lessons);
+  const students = await User.find({ _id: { $in: classData.students } });
+  console.log('renderClass4', students);
+  const chats = await Chat.find({ classId: classId }).populate('messages');
+  console.log('renderClass4', chats);
+  const categorizedFiles = categorizeFiles(files);
+  const liveLink = classData.liveLink;
+
+  res.status(200).json({
+    files: files,
+    lessons: lessons,
+    user: user,
+    students: students,
+    pendingStudents: classData.pendingStudents,
+    chats: chats,
+    liveLink: liveLink
+  });
+});
+
+
+
 exports.renderStudentClass = asyncHandler(async (req, res, next) => {
   console.log('renderStudentClass0');
   const { classId } = req.params;
@@ -91,28 +133,25 @@ exports.renderStudentClass = asyncHandler(async (req, res, next) => {
     return next(new AppError('User ID and Class ID are required', 400));
   }
 
-  // Fetching user and class data
   const user = await User.findById(userId);
   const classData = await Class.findById(classId);
-  // If user or class not found, throw an error
+
   if (!user || !classData) {
     return next(new AppError('User or class not found', 404));
   }
+
   console.log('renderStudentClass1');
-  // Fetching files, lessons and chat related to the class
   const files = await File.find({ classId: classId });
   console.log('renderStudentClass2', files);
   const lessons = await Lesson.find({ classId: classId });
   console.log('renderStudentClass3', lessons);
   const chat = await Chat.findOne({ studentId: userId, classId: classId }).populate('messages');
   console.log('renderStudentClass4', chat);
-  // Categorize files
   const categorizedFiles = categorizeFiles(files);
   const liveLink = classData.liveLink;
   const instructorName = await User.findById(classData.instructor).select('firstName lastName');
   console.log('renderStudentClass5');
 
-  // Sending response
   res.status(200).json({
     files: categorizedFiles,
     lessons: lessons,
@@ -123,44 +162,12 @@ exports.renderStudentClass = asyncHandler(async (req, res, next) => {
   });
 });
 
-// Function to render instructor class
-exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
-  const { userId, classId } = req.body;
 
-  if (!userId || !classId) {
-    return next(new AppError('User ID and Class ID are required', 400));
-  }
 
-  // Fetching user and class data
-  const user = await User.findById(userId);
-  const classData = await Class.findById(classId).populate('pendingStudents');
+// PENDING STUDENTS
 
-  // If user or class not found, throw an error
-  if (!user || !classData) {
-    return next(new AppError('User or class not found', 404));
-  }
-
-  // Fetching files, lessons, students and chats related to the class
-  const files = await File.find({ classId: classId });
-  const lessons = await Lesson.find({ classId: classId });
-  const students = await User.find({ _id: { $in: classData.students } });
-  const chats = await Chat.find({ classId: classId }).populate('messages');
-
-  // Sending response
-  res.status(200).json({
-    files: files,
-    lessons: lessons,
-    userDetails: user,
-    students: students,
-    pendingStudents: classData.pendingStudents,
-    chats: chats,
-    liveLink: liveLink
-  });
-});
-
-// Function to add a student to the pending list
 exports.addPendingStudent = asyncHandler(async (req, res, next) => {
-  log('addPendingStudent0', req.params, req.user._id);
+  console.log('addPendingStudent0', req.params, req.user._id);
   const { classId } = req.params;
   const userId = req.user._id;
 
@@ -169,7 +176,8 @@ exports.addPendingStudent = asyncHandler(async (req, res, next) => {
   }
 
   const classData = await Class.findById(classId);
-  log('addPendingStudent1', classData);
+  console.log('addPendingStudent1', classData);
+
   if (!classData) {
     return next(new AppError('Class not found', 404));
   }
@@ -184,25 +192,26 @@ exports.addPendingStudent = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, message: 'Student added to pending list' });
 });
 
-// Function to approve or reject a pending student
+
+
 exports.handlePendingStudent = asyncHandler(async (req, res, next) => {
-  log('handlePendingStudent0', req.body);
+  console.log('handlePendingStudent0', req.body);
   const { studentId, classId, action } = req.body;
-  log('handlePendingStudent1');
+  console.log('handlePendingStudent1');
 
   if (!studentId || !classId || !['approve', 'reject'].includes(action)) {
     return next(new AppError('User ID, Class ID, and valid action are required', 400));
   }
-  log('handlePendingStudent22');
+
   const classData = await Class.findById(classId);
-  log('handlePendingStudent2');
+  console.log('handlePendingStudent2');
+
   if (!classData) {
     return next(new AppError('Class not found', 404));
   }
-  log('handlePendingStudent3');
 
   const studentIndex = classData.pendingStudents.indexOf(studentId);
-  log('handlePendingStudent4', studentIndex);
+  console.log('handlePendingStudent3', studentIndex);
 
   if (studentIndex === -1) {
     return next(new AppError('Student not in pending list', 404));
@@ -214,7 +223,7 @@ exports.handlePendingStudent = asyncHandler(async (req, res, next) => {
 
   classData.pendingStudents.splice(studentIndex, 1);
   await classData.save();
-  log('handlePendingStudent5');
+  console.log('handlePendingStudent4');
 
   createChat(classId, studentId);
 
