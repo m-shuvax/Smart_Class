@@ -114,7 +114,7 @@ const UpdateDetails = () => {
     }
 
     try {
-      const response = await axios.put('http://localhost:5000/api/users/accountDetails', {
+      const response = await axios.put('http://localhost:5000/api/accountDetails', {
         email,
         password,
         firstName,
