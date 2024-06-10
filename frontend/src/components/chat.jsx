@@ -4,7 +4,7 @@ const Chat = ({ chat, classId, studentId }) => {
   // const [chat, setChat] = useState(null);
   const [newMessage, setNewMessage] = useState('');
   const [error, setError] = useState(null);
-  const { user, setUser } = useAppContext();
+  // const { userId, setUser } = useAppContext();
 
   const handleSend = async () => {
     if (newMessage.trim()) {
@@ -31,6 +31,8 @@ const Chat = ({ chat, classId, studentId }) => {
   if (!chat) {
     return <div>Loading...</div>;
   };
+
+  
 
   return (
     <div className="flex-col h-3/4 border-t-2 rounded-md">
