@@ -14,6 +14,9 @@ router.route('/resetPassword/:token')
     .patch(authControllers.resetPassword)
     .post(authControllers.login);
 
+router.route('/vrifyToken')
+    .post(authControllers.protect, userControllers.sendUserData);
+
 router.route('/')
     .get(authControllers.protect, pageRenderController.renderStudentClasses)
     .post(authControllers.protect, pageRenderController.renderStudentClasses);
@@ -32,17 +35,17 @@ router.route('/logout')
     .get(authControllers.logout);
 
 router.route('/accountDetails')
-    .put(authControllers.protect, userControllers.updateUser);  
+    .put(authControllers.protect, userControllers.updateUser);
 
 router.route('/pendingStudents')
-    .post(authControllers.protect, pageRenderController.handlePendingStudent); 
-    
+    .post(authControllers.protect, pageRenderController.handlePendingStudent);
+
 router.route('/pendingStudents/:classId')
     .get(authControllers.protect, pageRenderController.addPendingStudent);
 
 router.route('/studentClass/:classId')
     .get(authControllers.protect, pageRenderController.renderStudentClass);
-   
+
 // router.route('/class')
 //     .get(authMiddleware.protect, userControllers.renderStudentClass)
 //     .post(authMiddleware.protect, userControllers.createUser);
