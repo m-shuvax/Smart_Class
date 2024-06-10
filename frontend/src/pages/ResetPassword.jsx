@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 
 const ResetPassword = () => {
@@ -9,6 +10,7 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,19 +39,33 @@ const ResetPassword = () => {
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               placeholder="New Password"
               className="px-4 py-2 border border-gray-300 rounded-md w-80"
             />
+            <button
+                type="button"
+                className="absolute inset-y-0 right-0 px-4 flex items-center text-gray-500"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
           </div>
           <div className="mb-4">
             <input
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               placeholder="Confirm New Password"
               className="px-4 py-2 border border-gray-300 rounded-md w-80"
             />
+            <button
+                type="button"
+                className="absolute inset-y-0 right-0 px-4 flex items-center text-gray-500"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
           </div>
           <div className="flex justify-center">
             <button
