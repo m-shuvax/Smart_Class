@@ -121,7 +121,7 @@ const ClassPageInstructor = () => {
   };
 
   const handleEditButtonClick = () => {
-    setIsEditingBroadcast(true);
+    setIsEditingBroadcast(!isEditingBroadcast);
   };
 
   // const handleAddFile = async () => {
