@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
 const ResetPassword = () => {
@@ -20,18 +22,18 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
     try {
       const response = await axios.patch(`http://localhost:5000/api/resetPassword/${token}`, { password, confirmPassword });
-      setMessage('Password reset successful');
+      toast.success('Password reset successful'),{autoClose: 5000};
       setError('');
       setTimeout(() => {
         navigate('/');
       }, 1000);
     } catch (error) {
-      setError('There was an error resetting the password. Please try again later.');
+      toast.error('There was an error resetting the password. Please try again later.');
       setMessage('');
     }
   };
@@ -85,6 +87,7 @@ const ResetPassword = () => {
           {error && <p className="text-red-500 mt-4">{error}</p>}
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };
