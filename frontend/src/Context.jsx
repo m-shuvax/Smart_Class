@@ -7,6 +7,7 @@ export const AppProvider = ({ children }) => {
   const [classId, setClassId] = useState('665d7a1e65de6ed8c1b44b6c');
   const [studentsList, setStudentsList] = useState([])
   const [className, setClassName] = useState('Math4Algo')
+  const [chats, setChats] = useState([])
   
 
   return (
@@ -19,7 +20,9 @@ export const AppProvider = ({ children }) => {
         classId,
         setClassId,
         className,
-        setClassName
+        setClassName,
+        chats,
+        setChats
       }}
     >
       {children}

@@ -6,6 +6,7 @@ import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
 import Chat from '../components/chat';
+import { useParams } from 'react-router-dom';
 import { useAppContext } from '../Context';
 
 
@@ -36,7 +37,9 @@ const StudentClassPage = () => {
       console.log(response.data);
       const { files, lessons, user, chat, liveLink } = response.data;
       setData({ files, lessons, user, chat, liveLink });
+      console.log(files)
       setLoading(false);
+      console.log(chat);
       setFilesByCategory(files);
       setUser(user);
     } catch (error) {
@@ -158,7 +161,7 @@ const StudentClassPage = () => {
             <Chat
               chat={chat}
             />
-          </div>
+             </div>
         </div>
       </div>
     </div>
