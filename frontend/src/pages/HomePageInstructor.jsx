@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const HomePageInstructor = () => {
-  const { user, setUser, setClassId } = useAppContext();
+  const { user, setUser, setClassId, setClassName } = useAppContext();
   const [classes, setClasses] = useState([]);
   const [showInput, setShowInput] = useState(false);
   const [newClassName, setNewClassName] = useState('');
@@ -120,7 +120,7 @@ const HomePageInstructor = () => {
         <div className="grid grid-cols-3 gap-4 overflow-y-auto h-[calc(100vh-10rem)]">
           {classes.map((classroom) => (
             <div key={classroom._id} className="border-2 border-current relative p-2 rounded-md shadow-md w-72 h-32 flex flex-col items-center justify-center hover:bg-blue-200 transition-colors duration-300 bg-[url('src/assets/class.jpg')] bg-cover bg-center">
-              <Link onClick={() => setClassId(classroom._id)}
+              <Link onClick={() => {setClassId(classroom._id); setClassName(classroom.name)}}
               to={`/classPageInstructor`} className="text-3xl font-bold absolute inset-0 flex flex-col items-center justify-center">
                 <span className="bg-blue-200 opacity-70 px-1.5 py-0.5 rounded">{classroom.name}</span>
               </Link>

@@ -30,7 +30,7 @@ const createSendToken = (user, statusCode, res) => {
   };
   console.log('createSendToken', token, '\n', cookieOptions);
   res.cookie('jwt', token, cookieOptions);
-  console.log('createSendToken2');
+  console.log('createSendToken2', token);
   user.password = undefined;
   res.status(statusCode).json({
     status: 'success',
@@ -72,7 +72,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) return next(new AppError('Email or password is missing', 400));
   const user = await User.findOne({ email }).select('+password');
-  console.log(user);
+  console.log(user.password);
   if (!user || !await user.checkPassword(password, user.password)) return next(new AppError('Email or password is incorrect', 401));
   createSendToken(user, 200, res);
 });

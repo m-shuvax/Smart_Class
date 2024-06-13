@@ -41,7 +41,6 @@ const ClassPageInstructor = () => {
       setLiveBroadcastLink(liveLink);
       setLoading(false);
     } catch (error) {
-      console.error(error);
       setError('Error fetching class data');
       setLoading(false);
     }
@@ -53,9 +52,7 @@ const ClassPageInstructor = () => {
 
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 600000000);
-    console.log('intervalId:', classId);
-
+    }, 600000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -63,7 +60,6 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newFileName') setNewFileName(value);
     if (name === 'newFileDate') setNewFileDate(value);
-    if (name === 'liveLink') setLiveBroadcastLink(value);
     if (name === 'newFileLink') setNewFileLink(value)
   };
 
@@ -79,7 +75,6 @@ const ClassPageInstructor = () => {
       setFilesByCategory([...filesByCategory, response.data.file]);
       setIsAddingFile(false);
     } catch (error) {
-      console.error(error);
       setError('Error adding file');
     }
   };
@@ -88,34 +83,48 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newLessonName') setNewLessonName(value);
     if (name === 'newLessonDate') setNewLessonDate(value);
-    if (name === 'newLesson');
   };
 
   const handleAddLesson = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/createLesson', {
+      const response = await axios.post('http://localhost:5000/api/lessons', {
         name: newLessonName,
-        date: newLessonDate,
-        category
+        date: newLessonDate, 
+        classId,
+        lLink: liveBroadcastLink
       }, { withCredentials: true });
-      setLessons([...lessons, response.data.lesson]);
+      setLessons([...lessons, response.data.data]);
       setIsAddingLesson(false);
     } catch (error) {
-      console.error(error);
       setError('Error adding lesson');
     }
   };
 
+
+  const handleDeleteLesson = async (lessonId) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/lessons/${lessonId}`, { withCredentials: true });
+      setLessons(lessons.filter(lesson => lesson._id !== lessonId));
+    } catch (error) {
+      setError('Error deleting lesson');
+    }
+  };
+
+  const handleLinkInputChange = (event) => {
+    const { value } = event.target;
+    setLiveBroadcastLink(value);
+  }
+
   const handleEditLiveBroadcastLink = async () => {
     try {
       const response = await axios.put(`http://localhost:5000/api/editLiveLink`, {
-        liveLink,
+        liveLink: liveBroadcastLink,
         classId
       }, { withCredentials: true });
+      console.log(response.data)
       setLiveBroadcastLink(response.data.liveLink);
       setIsEditingBroadcast(false);
     } catch (error) {
-      console.error(error);
       setError('Error editing live broadcast link');
     }
   };
@@ -123,6 +132,7 @@ const ClassPageInstructor = () => {
   const handleEditButtonClick = () => {
     setIsEditingBroadcast(!isEditingBroadcast);
   };
+
 
   const handleDeleteFile = async (fileId) => {
     try {
@@ -134,16 +144,7 @@ const ClassPageInstructor = () => {
     }
   };
 
-  const handleDeleteLesson = async (streamId) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/deleteLiveStream/${streamId}`, { withCredentials: true });
-      setLessons(lessons.filter(lesson => lesson.id !== streamId));
-    } catch (error) {
-      console.error(error);
-      setError('Error deleting live stream');
-    }
-  };
-
+ 
   return (
     <div className="flex flex-col h-screen bg-blue-100">
       <Navbar />
@@ -184,7 +185,7 @@ const ClassPageInstructor = () => {
                             className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                           />
                           <input
-                            type="text"
+                            type="date"
                             placeholder="File date"
                             name="newFileDate"
                             value={newFileDate}
@@ -257,7 +258,7 @@ const ClassPageInstructor = () => {
                             placeholder="Edit Live Broadcast Link"
                             name="liveLink"
                             value={liveBroadcastLink}
-                            onChange={handleFileInputChange}
+                            onChange={handleLinkInputChange}
                             className="border border-gray-300 rounded px-3 py-2 w-64 mr-2"
                           />
                         ) : (
@@ -266,8 +267,7 @@ const ClassPageInstructor = () => {
                               className="w-40 inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-md mr-2 shadow hover:bg-red-700 relative"
                               onClick={() =>
                                 window.open(
-                                  liveBroadcastLink ||
-                                  'https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success'
+                                  liveBroadcastLink
                                 )
                               }
                             >
@@ -326,10 +326,18 @@ const ClassPageInstructor = () => {
                                 className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                               />
                               <input
-                                type="text"
-                                placeholder="Lesson Link"
+                                type="date"
+                                placeholder="Lesson Date"
                                 name="newLessonDate"
                                 value={newLessonDate}
+                                onChange={handleLessonInputChange}
+                                className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                              />
+                              <input
+                                type="text"
+                                placeholder="Lesson Link"
+                                name="liveLink"
+                                value={liveBroadcastLink}
                                 onChange={handleLessonInputChange}
                                 className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                               />
@@ -378,7 +386,7 @@ const ClassPageInstructor = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(lesson.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteLesson(lesson.id)}>
+                      <button onClick={() => handleDeleteLesson(lesson._id)}>
                         <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>

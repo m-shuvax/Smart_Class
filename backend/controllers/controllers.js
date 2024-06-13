@@ -96,12 +96,13 @@ exports.deleteFile = asyncHandler(async (req, res, next) => {
 
 
 exports.createLesson = asyncHandler(async (req, res, next) => {
-  const { name, classId, lLink } = req.body;
+  const { name, classId, lLink, date } = req.body;
 
   const lesson = await Lesson.create({
     name,
     classId,
     lLink,
+    date
   });
 
   if (!lesson) {
@@ -120,8 +121,10 @@ exports.deleteLesson = asyncHandler(async (req, res, next) => {
     return next(new AppError('Lesson not found', 404));
   }
 
-  console.log('Lesson deleted');
-  res.status(200).json({ success: true, message: 'Lesson deleted successfully' });
+  res.status(200).json({
+    success: true,
+    message: 'Lesson deleted successfully',
+  });
 });
 
 
@@ -146,10 +149,11 @@ exports.updateClassLiveLink = asyncHandler(async (req, res, next) => {
   if (!classData) {
     return next(new AppError('Class not found', 404));
   }
+  console.log(liveLink, classData.liveLink)
 
   classData.liveLink = liveLink;
   await classData.save();
 
   console.log('Class live link updated');
-  res.status(200).json({ success: true, message: 'Class live link updated successfully' });
+  res.status(200).json({ success: true, message: 'Class live link updated successfully', liveLink });
 });
