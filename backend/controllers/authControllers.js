@@ -52,7 +52,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
   if (req.headers.cookie) {
     token = req.headers.cookie.split('=')[1];
   }
-  if (!token) return console.log('protect', new AppError('Please login', 401));
   if (!token) return next(new AppError('Please login', 401));
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
