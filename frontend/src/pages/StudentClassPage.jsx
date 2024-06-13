@@ -58,7 +58,7 @@ const StudentClassPage = () => {
   }, [classId]);
 
   const { files, lessons, chat, liveLink } = data;
-  console.log('files:', files, 'lessons:', lessons, 'chat:', chat, 'liveLink:', liveLink);
+  console.log('user: ', user, 'files:', files, 'lessons:', lessons, 'chat:', chat, 'liveLink:', liveLink);
 
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
