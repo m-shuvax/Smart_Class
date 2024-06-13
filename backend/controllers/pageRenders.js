@@ -112,7 +112,7 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
   const liveLink = classData.liveLink;
 
   res.status(200).json({
-    files: files,
+    files: categorizedFiles,
     lessons: lessons,
     user: user,
     students: students,

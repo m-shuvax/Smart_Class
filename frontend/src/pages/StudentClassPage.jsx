@@ -36,6 +36,7 @@ const StudentClassPage = () => {
       console.log(response.data);
       const { files, lessons, user, chat, liveLink } = response.data;
       setData({ files, lessons, user, chat, liveLink });
+      console.log(files)
       setLoading(false);
       setFilesByCategory(files);
       setUser(user);
