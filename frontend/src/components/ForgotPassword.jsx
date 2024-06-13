@@ -16,11 +16,10 @@ const ForgotPasswordForm = ({ onBackToLogin }) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/forgetPassword', { email });
-      setMessage(response.data.message);
-      toast.success('email')
+      toast.success('An email will be sent to reset the password')
       setError('');
     } catch (error) {
-      setError('There was an error sending the email.');
+      toast.error('There was an error sending the email.');
       setMessage('');
     }
   };
