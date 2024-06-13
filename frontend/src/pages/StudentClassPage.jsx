@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { FaTrash, FaPlay } from 'react-icons/fa';
+import { FaPlay } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
@@ -126,9 +126,6 @@ const StudentClassPage = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteFile(file._id)}>
-                        <FaTrash className="w-4 h-4 inline-block" style={{ verticalAlign: 'middle' }} />
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -146,9 +143,6 @@ const StudentClassPage = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(lesson.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteLiveStream(lesson._id)}>
-                        <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
-                      </button>
                     </div>
                   ))}
                 </div>
