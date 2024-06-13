@@ -63,7 +63,6 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newFileName') setNewFileName(value);
     if (name === 'newFileDate') setNewFileDate(value);
-    if (name === 'liveLink') setLiveBroadcastLink(value);
     if (name === 'newFileLink') setNewFileLink(value)
   };
 
@@ -106,12 +105,18 @@ const ClassPageInstructor = () => {
     }
   };
 
+  const handleLinkInputChange = (event) => {
+    const { value } = event.target;
+    setLiveBroadcastLink(value);
+  }
+
   const handleEditLiveBroadcastLink = async () => {
     try {
       const response = await axios.put(`http://localhost:5000/api/editLiveLink`, {
-        liveLink,
+        liveLink: liveBroadcastLink,
         classId
       }, { withCredentials: true });
+      console.log(response.data)
       setLiveBroadcastLink(response.data.liveLink);
       setIsEditingBroadcast(false);
     } catch (error) {
@@ -257,7 +262,7 @@ const ClassPageInstructor = () => {
                             placeholder="Edit Live Broadcast Link"
                             name="liveLink"
                             value={liveBroadcastLink}
-                            onChange={handleFileInputChange}
+                            onChange={handleLinkInputChange}
                             className="border border-gray-300 rounded px-3 py-2 w-64 mr-2"
                           />
                         ) : (
@@ -266,8 +271,7 @@ const ClassPageInstructor = () => {
                               className="w-40 inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-md mr-2 shadow hover:bg-red-700 relative"
                               onClick={() =>
                                 window.open(
-                                  liveBroadcastLink ||
-                                  'https://admin-ort-org-il.zoom.us/j/88968548572?pwd=QXNUWm9TVSsrT1dUZGNpYURSOXRKZz09#success'
+                                  liveBroadcastLink
                                 )
                               }
                             >
