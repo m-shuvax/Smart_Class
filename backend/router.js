@@ -49,10 +49,14 @@ router.route('/instructorClass/:classId')
 
 router.route('/files')
     .post(authControllers.protect, controllers.createFile)
-    .delete(authControllers.protect, controllers.deleteFile);
+
+router.route('/files/:id')
+.delete(authControllers.protect, controllers.deleteFile);
 
 router.route('/lessons')
     .post(authControllers.protect, controllers.createLesson)
+    
+ router.route('/lessons/:id')
     .delete(authControllers.protect, controllers.deleteLesson);
 
 router.route('/editLiveLink')

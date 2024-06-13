@@ -32,7 +32,6 @@ const ClassPageInstructor = () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/instructorClass/${classId}`, { withCredentials: true });
       const { files, lessons, user, chats, liveLink, students } = response.data;
-      console.log('files:', files, 'lessons:', lessons, user, chats, 'link:', liveLink, 'students:', students);
       setFilesByCategory(files);
       setStudentsList(students);
       setLessons(lessons);
@@ -41,7 +40,6 @@ const ClassPageInstructor = () => {
       setLiveBroadcastLink(liveLink);
       setLoading(false);
     } catch (error) {
-      console.error(error);
       setError('Error fetching class data');
       setLoading(false);
     }
@@ -53,9 +51,7 @@ const ClassPageInstructor = () => {
 
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 600000000);
-    console.log('intervalId:', classId);
-
+    }, 600000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -78,7 +74,6 @@ const ClassPageInstructor = () => {
       setFilesByCategory([...filesByCategory, response.data.file]);
       setIsAddingFile(false);
     } catch (error) {
-      console.error(error);
       setError('Error adding file');
     }
   };
@@ -87,21 +82,30 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newLessonName') setNewLessonName(value);
     if (name === 'newLessonDate') setNewLessonDate(value);
-    if (name === 'newLesson');
   };
 
   const handleAddLesson = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/createLesson', {
+      const response = await axios.post('http://localhost:5000/api/lessons', {
         name: newLessonName,
-        date: newLessonDate,
-        category
+        date: newLessonDate, 
+        classId,
+        lLink: liveBroadcastLink
       }, { withCredentials: true });
-      setLessons([...lessons, response.data.lesson]);
+      setLessons([...lessons, response.data.data]);
       setIsAddingLesson(false);
     } catch (error) {
-      console.error(error);
       setError('Error adding lesson');
+    }
+  };
+
+
+  const handleDeleteLesson = async (lessonId) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/lessons/${lessonId}`, { withCredentials: true });
+      setLessons(lessons.filter(lesson => lesson._id !== lessonId));
+    } catch (error) {
+      setError('Error deleting lesson');
     }
   };
 
@@ -120,7 +124,6 @@ const ClassPageInstructor = () => {
       setLiveBroadcastLink(response.data.liveLink);
       setIsEditingBroadcast(false);
     } catch (error) {
-      console.error(error);
       setError('Error editing live broadcast link');
     }
   };
@@ -128,6 +131,7 @@ const ClassPageInstructor = () => {
   const handleEditButtonClick = () => {
     setIsEditingBroadcast(!isEditingBroadcast);
   };
+
 
   const handleDeleteFile = async (fileId) => {
     try {
@@ -139,16 +143,7 @@ const ClassPageInstructor = () => {
     }
   };
 
-  const handleDeleteLesson = async (streamId) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/deleteLiveStream/${streamId}`, { withCredentials: true });
-      setLessons(lessons.filter(lesson => lesson.id !== streamId));
-    } catch (error) {
-      console.error(error);
-      setError('Error deleting live stream');
-    }
-  };
-
+ 
   return (
     <div className="flex flex-col h-screen bg-blue-100">
       <Navbar />
@@ -189,7 +184,7 @@ const ClassPageInstructor = () => {
                             className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                           />
                           <input
-                            type="text"
+                            type="date"
                             placeholder="File date"
                             name="newFileDate"
                             value={newFileDate}
@@ -330,10 +325,18 @@ const ClassPageInstructor = () => {
                                 className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                               />
                               <input
-                                type="text"
-                                placeholder="Lesson Link"
+                                type="date"
+                                placeholder="Lesson Date"
                                 name="newLessonDate"
                                 value={newLessonDate}
+                                onChange={handleLessonInputChange}
+                                className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
+                              />
+                              <input
+                                type="text"
+                                placeholder="Lesson Link"
+                                name="liveLink"
+                                value={liveBroadcastLink}
                                 onChange={handleLessonInputChange}
                                 className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                               />
@@ -382,7 +385,7 @@ const ClassPageInstructor = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(lesson.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteLesson(lesson.id)}>
+                      <button onClick={() => handleDeleteLesson(lesson._id)}>
                         <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>
