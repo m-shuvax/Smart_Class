@@ -20,6 +20,7 @@ const ClassPageInstructor = () => {
   const [newFileLink, setNewFileLink] = useState('');
   const [newLessonName, setNewLessonName] = useState('');
   const [newLessonDate, setNewLessonDate] = useState('');
+  const [newLessonLink, setNewLessonLink] = useState('');
   const [liveBroadcastLink, setLiveBroadcastLink] = useState('');
   const [isEditingBroadcast, setIsEditingBroadcast] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
@@ -59,7 +60,7 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newFileName') setNewFileName(value);
     if (name === 'newFileDate') setNewFileDate(value);
-    if (name === 'newFileLink') setNewFileLink(value)
+    if (name === 'newFileLink') setNewFileLink(value);
   };
 
   const handleAddFile = async () => {
@@ -82,6 +83,7 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newLessonName') setNewLessonName(value);
     if (name === 'newLessonDate') setNewLessonDate(value);
+    if (name === 'newLessonLink') setNewLessonLink(value);
   };
 
   const handleAddLesson = async () => {
@@ -90,7 +92,7 @@ const ClassPageInstructor = () => {
         name: newLessonName,
         date: newLessonDate, 
         classId,
-        lLink: liveBroadcastLink
+        lLink: newLessonLink
       }, { withCredentials: true });
       setLessons([...lessons, response.data.data]);
       setIsAddingLesson(false);
@@ -98,7 +100,6 @@ const ClassPageInstructor = () => {
       setError('Error adding lesson');
     }
   };
-
 
   const handleDeleteLesson = async (lessonId) => {
     try {
@@ -112,7 +113,7 @@ const ClassPageInstructor = () => {
   const handleLinkInputChange = (event) => {
     const { value } = event.target;
     setLiveBroadcastLink(value);
-  }
+  };
 
   const handleEditLiveBroadcastLink = async () => {
     try {
@@ -120,7 +121,6 @@ const ClassPageInstructor = () => {
         liveLink: liveBroadcastLink,
         classId
       }, { withCredentials: true });
-      console.log(response.data)
       setLiveBroadcastLink(response.data.liveLink);
       setIsEditingBroadcast(false);
     } catch (error) {
@@ -132,18 +132,19 @@ const ClassPageInstructor = () => {
     setIsEditingBroadcast(!isEditingBroadcast);
   };
 
-
   const handleDeleteFile = async (fileId) => {
     try {
+      console.log('Attempting to delete file with ID:', fileId);
       await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });
-      setFilesByCategory(filesByCategory.filter(file => file.id !== fileId));
+      setFilesByCategory(filesByCategory.filter(file => file._id !== fileId));
+      setFilteredFiles(filteredFiles.filter(file => file._id !== fileId));
     } catch (error) {
-      console.error(error);
+      console.error('Error deleting file:', error);
       setError('Error deleting file');
     }
   };
+  
 
- 
   return (
     <div className="flex flex-col h-screen bg-blue-100">
       <Navbar />
@@ -335,8 +336,8 @@ const ClassPageInstructor = () => {
                               <input
                                 type="text"
                                 placeholder="Lesson Link"
-                                name="liveLink"
-                                value={liveBroadcastLink}
+                                name="newLessonLink"
+                                value={newLessonLink}
                                 onChange={handleLessonInputChange}
                                 className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                               />
@@ -367,7 +368,7 @@ const ClassPageInstructor = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteFile(file.id)}>
+                      <button onClick={() => handleDeleteFile(file._id)}>
                         <FaTrash className="w-4 h-4 inline-block" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>

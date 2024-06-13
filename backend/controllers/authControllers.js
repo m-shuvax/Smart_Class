@@ -59,12 +59,22 @@ exports.protect = asyncHandler(async (req, res, next) => {
   if (!decoded) return next(new AppError('Token is invalid or has expired', 401));
 
   const user = await User.findById(decoded.id);
+  console.log('protect3', user);
 
   if (!user) return next(new AppError('The user belonging to this token does no longer exist', 401));
 
   req.user = user;
   next();
 });
+
+
+
+exports.retrictToInstructor = asyncHandler(async (req, res, next) => {
+  console.log('retrictToInstructor', customDate.getFormatDate());
+  if (req.user.role != 'instructor') return next(new AppError("The user isn't permitted", 407));
+  next();
+}
+)
 
 
 
