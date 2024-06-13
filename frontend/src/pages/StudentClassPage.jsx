@@ -52,7 +52,7 @@ const StudentClassPage = () => {
 
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 60000000); 
+    }, 60000000);
 
     return () => clearInterval(intervalId);
   }, [classId]);
@@ -121,14 +121,13 @@ const StudentClassPage = () => {
                       className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex items-center mb-4 h-14"
                     >
                       <div className="flex items-center">
-                        <span className="text-base font-medium">{file.name}</span>
+                        <button onClick={() => window.open(file.fLink)}>
+                          <span className="text-base font-medium">{file.name}</span>
+                        </button>
                       </div>
-                      <div style={{ textAlign: 'center', flex: 1 }}>
+                      <div style={{ textAlign: 'end', flex: 1 }}>
                         <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => window.open(file.fLink)}>
-                        <FaPlay className="w-4 h-4 inline-block pr-1" style={{ verticalAlign: 'middle' }} />
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -141,14 +140,13 @@ const StudentClassPage = () => {
                       className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center"
                     >
                       <div className="flex items-center">
-                        <span className="text-base font-medium">{lesson.name}</span>
+                        <button onClick={() => window.open(lesson.lLinkd)}>
+                          <span className="text-base font-medium">{lesson.name}</span>
+                        </button>
                       </div>
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(lesson.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => window.open(lesson.lLinkd)}>
-                        <FaTrash className="w-4 h-4 inline-block mx-1 ml-2" style={{ verticalAlign: 'middle' }} />
-                      </button>
                     </div>
                   ))}
                 </div>
