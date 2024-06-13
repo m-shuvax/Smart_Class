@@ -119,12 +119,12 @@ const HomePageInstructor = () => {
         <h1 className="text-2xl font-bold mb-4">Classrooms</h1>
         <div className="grid grid-cols-3 gap-4 overflow-y-auto h-[calc(100vh-10rem)]">
           {classes.map((classroom) => (
-            <div key={classroom._id} className="relative bg-white p-2 rounded-md shadow-md w-72 h-32 flex flex-col items-center justify-center hover:bg-blue-200 transition-colors duration-300">
+            <div key={classroom._id} className="border-2 border-current relative p-2 rounded-md shadow-md w-72 h-32 flex flex-col items-center justify-center hover:bg-blue-200 transition-colors duration-300 bg-[url('src/assets/class.jpg')] bg-cover bg-center">
               <Link onClick={() => setClassId(classroom._id)}
-              to={`/classPageInstructor`} className="text-2xl absolute inset-0 flex flex-col items-center justify-center">
-                {classroom.name}
+              to={`/classPageInstructor`} className="text-3xl font-bold absolute inset-0 flex flex-col items-center justify-center">
+                <span className="bg-blue-200 opacity-70 px-1.5 py-0.5 rounded">{classroom.name}</span>
               </Link>
-              <button onClick={() => handleCopyToClipboard(classroom._id)} className="absolute top-2 right-2 text-gray-500 hover:text-black flex items-center">
+              <button onClick={() => handleCopyToClipboard(classroom._id)} className="absolute top-2 right-2 text-white hover:text-red-400 flex items-center">
                 <span>Copy ID</span>
                 <FaRegCopy className="ml-1 h-5 w-5" />
               </button>

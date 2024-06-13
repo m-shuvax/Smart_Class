@@ -155,7 +155,7 @@ exports.renderStudentClass = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     files: categorizedFiles,
     lessons: lessons,
-    userDetails: req.user,
+    user: user,
     chat: chat,
     liveLink: liveLink,
     instructorName: instructorName
