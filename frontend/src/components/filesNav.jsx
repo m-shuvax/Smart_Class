@@ -4,7 +4,7 @@ function FilesNav({ category, setCategory, setShowLessons, setFilteredFiles, fil
 
     const handleAllFilesClick = () => {
         const allFilesArray = Object.values(filesByCategory).flat();
-        const sortedFiles = allFilesArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+        const sortedFiles = allFilesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
         setCategory('allFiles');
         setFilteredFiles(sortedFiles);
         setShowLessons(false);

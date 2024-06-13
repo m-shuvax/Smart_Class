@@ -100,7 +100,7 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
   }
 
   console.log('renderClass1');
-  const files = await File.find({ classId: classId });
+  const files = await File.find({ classId: classId }).sort({ date: -1 });
   console.log('renderClass2', files);
   const lessons = await Lesson.find({ classId: classId });
   console.log('renderClass3', lessons);
@@ -141,7 +141,7 @@ exports.renderStudentClass = asyncHandler(async (req, res, next) => {
   }
 
   console.log('renderStudentClass1');
-  const files = await File.find({ classId: classId });
+  const files = await File.find({ classId: classId }).sort({ date: -1 });
   console.log('renderStudentClass2', files);
   const lessons = await Lesson.find({ classId: classId });
   console.log('renderStudentClass3', lessons);
