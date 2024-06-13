@@ -60,4 +60,6 @@ router.route('/editLiveLink')
 
 router.route('/messages/:messageId')
     .post(authControllers.protect, chatControllers.createMessage)
-    .delete(authControllers.protect, chatControllers.deleteMessage)
+    .delete(authControllers.protect, chatControllers.deleteMessage);
+
+module.exports = router;
