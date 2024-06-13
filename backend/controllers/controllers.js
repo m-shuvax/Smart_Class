@@ -149,10 +149,11 @@ exports.updateClassLiveLink = asyncHandler(async (req, res, next) => {
   if (!classData) {
     return next(new AppError('Class not found', 404));
   }
+  console.log(liveLink, classData.liveLink)
 
   classData.liveLink = liveLink;
   await classData.save();
 
   console.log('Class live link updated');
-  res.status(200).json({ success: true, message: 'Class live link updated successfully' });
+  res.status(200).json({ success: true, message: 'Class live link updated successfully', liveLink });
 });

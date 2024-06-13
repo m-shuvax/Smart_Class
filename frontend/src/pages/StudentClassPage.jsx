@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { FaTrash, FaPlay } from 'react-icons/fa';
+import { FaPlay } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
@@ -47,20 +47,18 @@ const StudentClassPage = () => {
   };
 
   useEffect(() => {
-    // Fetch data initially
+
     fetchClassData();
 
-    // Set interval to fetch data every minute
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 6000000000); // 60000 milliseconds = 1 minute
+    }, 60000000); 
 
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, [classId]);
 
   const { files, lessons, chat, liveLink } = data;
-  console.log('files:', files, 'lessons:', lessons, 'chat:', chat, 'liveLink:', liveLink);
+  console.log('user: ', user, 'files:', files, 'lessons:', lessons, 'chat:', chat, 'liveLink:', liveLink);
 
   return (
     <div className="flex flex-col min-h-screen bg-blue-100">
@@ -122,16 +120,12 @@ const StudentClassPage = () => {
                       key={index}
                       className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex items-center mb-4 h-14"
                     >
-                      <div className="flex items-center"
-                        onClick={window.open(file.fLink)}>
+                      <div className="flex items-center">
                         <span className="text-base font-medium">{file.name}</span>
                       </div>
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteFile(file._id)}>
-                        <FaTrash className="w-4 h-4 inline-block" style={{ verticalAlign: 'middle' }} />
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -149,9 +143,6 @@ const StudentClassPage = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(lesson.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteLiveStream(lesson._id)}>
-                        <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
-                      </button>
                     </div>
                   ))}
                 </div>

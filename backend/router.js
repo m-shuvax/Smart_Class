@@ -64,35 +64,6 @@ router.route('/editLiveLink')
 
 router.route('/messages/:messageId')
     .post(authControllers.protect, chatControllers.createMessage)
-    .delete(authControllers.protect, chatControllers.deleteMessage)
-
-
-// router.route('/class/file')
-//     .post(authMiddleware.protect, controllers.createFile)
-//     .delete(authMiddleware.protect, controllers.deleteFile);
-
-// router.route('/class/lesson')
-//     .post(authMiddleware.protect, controllers.createLesson)
-//     .delete(authMiddleware.protect, controllers.deleteLesson);
-
-// router.route('/:email')
-//     .get(authMiddleware.protect, controllers.getUser)
-//     .put(authMiddleware.protect, controllers.updateUser)
-//     .delete(authMiddleware.protect, controllers.deleteUser);
-
-
-// // New routes for pending students
-// router.post('/addPendingStudent', authMiddleware.protect, pageRenders.addPendingStudent);
-// router.post('/handlePendingStudent', authMiddleware.protect, pageRenders.handlePendingStudent);
-
-// // Existing routes for rendering classes
-// router.get('/userClasses/:email', authMiddleware.protect, pageRenders.renderUserClasses);
-// router.post('/studentClass', authMiddleware.protect, pageRenders.renderStudentClass);
-// router.post('/instructorClass', authMiddleware.protect, pageRenders.renderInstructorClass);
-
-
-
-
-
+    .delete(authControllers.protect, chatControllers.deleteMessage);
 
 module.exports = router;
