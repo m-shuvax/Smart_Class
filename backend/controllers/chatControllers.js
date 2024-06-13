@@ -5,7 +5,6 @@ const Message = require('./../models/messageModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 
-
 exports.createChat = asyncHandler(async (classId, studentId) => {
   console.log ('createChat1', classId, studentId);
 

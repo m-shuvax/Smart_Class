@@ -150,7 +150,7 @@ exports.renderStudentClass = asyncHandler(async (req, res, next) => {
   const categorizedFiles = categorizeFiles(files);
   const liveLink = classData.liveLink;
   const instructorName = await User.findById(classData.instructor).select('firstName lastName');
-  console.log('renderStudentClass5');
+  console.log('renderStudentClass5', chat, user);
 
   res.status(200).json({
     files: categorizedFiles,
