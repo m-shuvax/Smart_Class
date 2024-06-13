@@ -30,7 +30,8 @@ const LoginPage = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/', { withCredentials: true });
-        const newUser = response.data.data.user;
+        console.log(response.data)
+        const newUser = response.data.user;
         setUser(newUser);
         const isStudent = newUser.role === 'student';
 
