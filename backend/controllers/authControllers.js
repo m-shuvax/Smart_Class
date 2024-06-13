@@ -67,6 +67,13 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 
 
+exports.retrictToInstructor = asyncHandler(async (req, res, next) => {
+  if (req.user.role != 'instructor') return next(new AppError("The user isn't permitted", 407));
+}
+)
+
+
+
 exports.login = asyncHandler(async (req, res, next) => {
   console.log('login');
   const { email, password } = req.body;

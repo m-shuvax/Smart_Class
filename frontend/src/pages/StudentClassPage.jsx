@@ -6,6 +6,7 @@ import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
 import Chat from '../components/chat';
+import { useParams } from 'react-router-dom';
 import { useAppContext } from '../Context';
 
 
@@ -36,7 +37,9 @@ const StudentClassPage = () => {
       console.log(response.data);
       const { files, lessons, user, chat, liveLink } = response.data;
       setData({ files, lessons, user, chat, liveLink });
+      console.log(files)
       setLoading(false);
+      console.log(chat);
       setFilesByCategory(files);
       setUser(user);
     } catch (error) {
@@ -126,6 +129,9 @@ const StudentClassPage = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
                       </div>
+                      <button onClick={() => window.open(file.fLink)}>
+                        <FaPlay className="w-4 h-4 inline-block pr-1" style={{ verticalAlign: 'middle' }} />
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -143,6 +149,9 @@ const StudentClassPage = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(lesson.date).toLocaleDateString('en-GB')}</span>
                       </div>
+                      <button onClick={() => window.open(lesson.lLinkd)}>
+                        <FaTrash className="w-4 h-4 inline-block mx-1 ml-2" style={{ verticalAlign: 'middle' }} />
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -154,7 +163,7 @@ const StudentClassPage = () => {
             <Chat
               chat={chat}
             />
-          </div>
+             </div>
         </div>
       </div>
     </div>

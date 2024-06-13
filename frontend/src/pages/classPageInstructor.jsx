@@ -14,7 +14,6 @@ const ClassPageInstructor = () => {
   const [filesByCategory, setFilesByCategory] = useState([]);
   const [filteredFiles, setFilteredFiles] = useState([]);
   const [lessons, setLessons] = useState([]);
-  const [chats, setChats] = useState([]);
   const [showLessons, setShowLessons] = useState(false);
   const [newFileName, setNewFileName] = useState('');
   const [newFileDate, setNewFileDate] = useState('');
@@ -28,7 +27,6 @@ const ClassPageInstructor = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user, setUser, studentsList, setStudentsList } = useAppContext();
-  const [selectedStudent, setSelectedStudent] = useState(null);
 
   const fetchClassData = async () => {
     try {
@@ -371,8 +369,11 @@ const ClassPageInstructor = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
                       </div>
+                      <button onClick={() => window.open(file.fLink)}>
+                        <FaPlay className="w-4 h-4 inline-block pr-1" style={{ verticalAlign: 'middle' }} />
+                      </button>
                       <button onClick={() => handleDeleteFile(file.id)}>
-                        <FaTrash className="w-4 h-4 inline-block" style={{ verticalAlign: 'middle' }} />
+                        <FaTrash className="w-4 h-4 inline-block ml-2" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>
                   ))}
@@ -390,7 +391,10 @@ const ClassPageInstructor = () => {
                         <span className="text-gray-500">{new Date(lesson.date).toLocaleDateString('en-GB')}</span>
                       </div>
                       <button onClick={() => handleDeleteLesson(lesson._id)}>
-                        <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
+                        <FaPlay className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
+                      </button>
+                      <button onClick={() => window.open(lesson.lLinkd)}>
+                        <FaTrash className="w-4 h-4 inline-block mx-1 ml-2" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>
                   ))}
