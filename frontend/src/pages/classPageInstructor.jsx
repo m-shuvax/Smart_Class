@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link , useParams} from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { FaPlay, FaEdit, FaPlus, FaTrash, FaUser } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
-import Chat from '../components/chat';
+import InstructorChat from '../components/instructorChat';
 import { useAppContext } from '../Context';
 
 const ClassPageInstructor = () => {
@@ -27,6 +27,7 @@ const ClassPageInstructor = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user, setUser, studentsList, setStudentsList } = useAppContext();
+  const [chats, setChats] = useState([]);
 
   const fetchClassData = async () => {
     try {
@@ -89,7 +90,7 @@ const ClassPageInstructor = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/lessons', {
         name: newLessonName,
-        date: newLessonDate, 
+        date: newLessonDate,
         classId,
         lLink: liveBroadcastLink
       }, { withCredentials: true });
@@ -144,7 +145,7 @@ const ClassPageInstructor = () => {
     }
   };
 
- 
+
   return (
     <div className="flex flex-col h-screen bg-blue-100">
       <Navbar />
@@ -223,7 +224,7 @@ const ClassPageInstructor = () => {
                     </div>
                   </dialog>
                 </div>
-                
+
               )}
               {!isAddingFile && (
                 <Link to="/StudentList" className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md h-10">
@@ -403,8 +404,7 @@ const ClassPageInstructor = () => {
             </div>
             {!isAddingLesson && (
               <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
-                <h2 className="text-lg font-bold mb-4 text-white">Chat with Students</h2>
-                <Chat />
+                <InstructorChat chats={chats} />
               </div>
             )}
           </div>
