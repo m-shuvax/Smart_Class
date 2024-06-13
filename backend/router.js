@@ -9,7 +9,7 @@ router.route('/register')
     .post(controllers.createUser);
 
 router.route('/forgetPassword')
-    .post(authControllers.forgetPassword);
+    .patch(authControllers.forgetPassword);
 
 router.route('/resetPassword/:token')
     .patch(authControllers.resetPassword)

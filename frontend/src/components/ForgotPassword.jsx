@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ForgotPasswordForm = ({ onBackToLogin }) => {
   const [email, setEmail] = useState('');
@@ -15,6 +17,7 @@ const ForgotPasswordForm = ({ onBackToLogin }) => {
     try {
       const response = await axios.post('http://localhost:5000/api/forgetPassword', { email });
       setMessage(response.data.message);
+      toast.success('email')
       setError('');
     } catch (error) {
       setError('There was an error sending the email.');
@@ -53,6 +56,7 @@ const ForgotPasswordForm = ({ onBackToLogin }) => {
           Back to Login
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 };

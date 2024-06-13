@@ -24,11 +24,11 @@ const ResetPassword = () => {
       return;
     }
     try {
-      const response = await axios.patch(`http://localhost:5000/api/users/resetPassword/${token}`, { password, confirmPassword });
+      const response = await axios.patch(`http://localhost:5000/api/resetPassword/${token}`, { password, confirmPassword });
       setMessage('Password reset successful');
       setError('');
       setTimeout(() => {
-        navigate('/login');
+        navigate('/');
       }, 1000);
     } catch (error) {
       setError('There was an error resetting the password. Please try again later.');
