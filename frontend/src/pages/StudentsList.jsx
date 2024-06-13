@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../features/Navbar';
 import Chat from '../components/chat';
 import { useAppContext } from '../Context';
 
 const StudentList = () => {
-
+  const history = useNavigate();
   const [selectedStudent, setSelectedStudent] = useState(null);
   const { studentsList } = useAppContext();
 
@@ -16,8 +16,8 @@ const StudentList = () => {
   return (
     <div className="flex flex-col bg-blue-100 h-screen overflow-hidden">
       <Navbar />
-      <Link
-        to="/classPageInstructor"
+      <button
+        onClick={() => history(-1)}
         className="fixed top-4 left-4 flex items-center bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 mt-16 rounded shadow-md"
       >
         <svg
@@ -30,7 +30,7 @@ const StudentList = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
 
-      </Link>
+      </button>
       <h2 className="fixed text-4xl font-bold text-center mb-2 w-1/5 mt-20 ml-24">Student List</h2>
       <div className="flex flex-grow overflow-hidden mt-32 pl-4">
         <div className="w-1/3 bg-blue-200 p-4 h-full overflow-y-auto">

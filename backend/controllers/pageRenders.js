@@ -7,6 +7,7 @@ const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const categorizeFiles = require('./../utils/categorize');
 const { createChat } = require('./chatControllers');
+const Message = require('./../models/messageModel');
 
 
 
@@ -106,10 +107,22 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
   console.log('renderClass3', lessons);
   const students = await User.find({ _id: { $in: classData.students } });
   console.log('renderClass4', students);
-  const chats = await Chat.find({ classId: classId }).populate('messages');
-  console.log('renderClass4', chats);
   const categorizedFiles = categorizeFiles(files);
   const liveLink = classData.liveLink;
+  let chats = await Chat.find({ classId: classId })
+  .populate(  'messages');
+  
+  chats = await Promise.all(chats.map (async (chat) => {
+    chat = chat.toObject();
+    chat.messages = await Message.populate(chat.messages, { path: 'user', select: 'firstName lastName' });
+    const student = await User.findById(chat.studentId).select('firstName lastName');
+    return {
+      ...chat._doc,
+      studentName: `${student.firstName} ${student.lastName}`,
+      studentId: chat.studentId
+    };
+  }));
+  console.log('renderClass4', chats);
 
   res.status(200).json({
     files: files,
