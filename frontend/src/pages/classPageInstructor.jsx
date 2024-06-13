@@ -13,7 +13,6 @@ const ClassPageInstructor = () => {
   const [filesByCategory, setFilesByCategory] = useState([]);
   const [filteredFiles, setFilteredFiles] = useState([]);
   const [lessons, setLessons] = useState([]);
-  const [chats, setChats] = useState([]);
   const [showLessons, setShowLessons] = useState(false);
   const [newFileName, setNewFileName] = useState('');
   const [newFileDate, setNewFileDate] = useState('');
@@ -27,12 +26,13 @@ const ClassPageInstructor = () => {
   const [isAddingFile, setIsAddingFile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user, setUser, classId, setClassId, studentsList, setStudentsList } = useAppContext();
+  const { user, setUser, classId, setClassId, studentsList, setStudentsList, chats, setChats } = useAppContext();
 
   const fetchClassData = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/instructorClass/${classId}`, { withCredentials: true });
       const { files, lessons, user, chats, liveLink, students } = response.data;
+      console.log(files)
       setFilesByCategory(files);
       setStudentsList(students);
       setLessons(lessons);
@@ -90,7 +90,7 @@ const ClassPageInstructor = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/lessons', {
         name: newLessonName,
-        date: newLessonDate, 
+        date: newLessonDate,
         classId,
         lLink: newLessonLink
       }, { withCredentials: true });
@@ -363,7 +363,14 @@ const ClassPageInstructor = () => {
                   {filteredFiles.map((file, index) => (
                     <div key={index} className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex items-center mb-4 h-14">
                       <div className="flex items-center">
-                        <span className="text-base font-medium">{file.name}</span>
+                        <button onClick={() => window.open(file.fLink)}>
+                          <span className="text-base text-xl underline hover:font-bold">{file.name}</span>
+                        </button>
+                      </div>
+                      <div>
+                        {category === 'allFiles' && (
+                          <span className="text-sm text-gray-500 ml-2">({file.category})</span>
+                        )}
                       </div>
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
@@ -381,13 +388,15 @@ const ClassPageInstructor = () => {
                   {lessons.map((lesson, index) => (
                     <div key={index} className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center">
                       <div className="flex items-center">
-                        <span className="text-base font-medium">{lesson.name}</span>
+                        <button onClick={() => window.open(lesson.lLinkd)}>
+                          <span className="text-base text-xl underline hover:font-bold">{lesson.name}</span>
+                        </button>
                       </div>
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(lesson.date).toLocaleDateString('en-GB')}</span>
                       </div>
                       <button onClick={() => handleDeleteLesson(lesson._id)}>
-                        <FaTrash className="w-4 h-4 inline-block mx-1" style={{ verticalAlign: 'middle' }} />
+                        <FaTrash className="w-4 h-4 inline-block mx-1 ml-2" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>
                   ))}

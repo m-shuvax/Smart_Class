@@ -100,7 +100,7 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
   }
 
   console.log('renderClass1');
-  const files = await File.find({ classId: classId });
+  const files = await File.find({ classId: classId }).sort({ date: -1 });
   console.log('renderClass2', files);
   const lessons = await Lesson.find({ classId: classId });
   console.log('renderClass3', lessons);
@@ -112,7 +112,7 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
   const liveLink = classData.liveLink;
 
   res.status(200).json({
-    files: files,
+    files: categorizedFiles,
     lessons: lessons,
     user: user,
     students: students,
@@ -141,7 +141,7 @@ exports.renderStudentClass = asyncHandler(async (req, res, next) => {
   }
 
   console.log('renderStudentClass1');
-  const files = await File.find({ classId: classId });
+  const files = await File.find({ classId: classId }).sort({ date: -1 });
   console.log('renderStudentClass2', files);
   const lessons = await Lesson.find({ classId: classId });
   console.log('renderStudentClass3', lessons);
@@ -150,7 +150,7 @@ exports.renderStudentClass = asyncHandler(async (req, res, next) => {
   const categorizedFiles = categorizeFiles(files);
   const liveLink = classData.liveLink;
   const instructorName = await User.findById(classData.instructor).select('firstName lastName');
-  console.log('renderStudentClass5');
+  console.log('renderStudentClass5', chat, user);
 
   res.status(200).json({
     files: categorizedFiles,
