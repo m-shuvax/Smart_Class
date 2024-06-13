@@ -32,7 +32,7 @@ const ClassPageInstructor = () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/instructorClass/${classId}`, { withCredentials: true });
       const { files, lessons, user, chats, liveLink, students } = response.data;
-      console.log('files:', files, 'lessons:', lessons, user, chats, 'link:', liveLink, 'students:', students);
+      console.log('files:', files, 'lessons:', lessons, user,'chats', chats, 'link:', liveLink, 'students:', students);
       setFilesByCategory(files);
       setStudentsList(students);
       setLessons(lessons);
