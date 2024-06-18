@@ -20,6 +20,7 @@ const HomePageStudent = () => {
         const response = await axios.get('http://localhost:5000/api/studentHomePage', { withCredentials: true })
         console.log(response);
         setUser(response.data.user);
+        console.log(user);
         setClassrooms(response.data.classes);
         console.log(classrooms)
       }

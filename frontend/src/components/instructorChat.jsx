@@ -52,7 +52,7 @@ const InstructorChat = ({ chats }) => {
                             </button>
                         <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
                             <h2 className="text-lg font-bold mb-4 text-white">{`Chat with ${selectedStudent.studentName}`}</h2>
-                            <Chat chat={chat} />
+                            <Chat chat={chat} setChat = {setChat} />
                         </div>
                     </div>
                 )}

@@ -77,6 +77,7 @@ exports.retrictToInstructor = asyncHandler(async (req, res, next) => {
 exports.login = asyncHandler(async (req, res, next) => {
   console.log('login');
   const { email, password } = req.body;
+  console.log(email,password);
   if (!email || !password) return next(new AppError('Email or password is missing', 400));
   const user = await User.findOne({ email }).select('+password');
   console.log(user.password);
