@@ -121,7 +121,7 @@ const HomePageInstructor = () => {
           {classes.map((classroom) => (
             <div key={classroom._id} className="border-2 border-current relative p-2 rounded-md shadow-md w-72 h-32 flex flex-col items-center justify-center hover:bg-blue-200 transition-colors duration-300 bg-[url('src/assets/class.jpg')] bg-cover bg-center">
               <Link onClick={() => {setClassId(classroom._id); setClassName(classroom.name)}}
-              to={`/classPageInstructor`} className="text-3xl font-bold absolute inset-0 flex flex-col items-center justify-center">
+              to={`/classPageInstructor/${classroom._id}`} className="text-3xl font-bold absolute inset-0 flex flex-col items-center justify-center">
                 <span className="bg-blue-200 opacity-70 px-1.5 py-0.5 rounded">{classroom.name}</span>
               </Link>
               <button onClick={() => handleCopyToClipboard(classroom._id)} className="absolute top-2 right-2 text-white hover:text-red-400 flex items-center">
