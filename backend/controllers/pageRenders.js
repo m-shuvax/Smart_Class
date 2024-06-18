@@ -110,7 +110,7 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
   chats = await Promise.all(chats.map (async (chat) => {
     chat = chat.toObject();
     console.log('renderClass4', chat);
-    chat.messages = await Message.populate(chat.messages, { path: 'user', select: 'firstName lastName' });
+    chat.messages = await Message.populate(chat.messages ,{ path: 'user', select: 'firstName lastName' });
     const student = await User.findById(chat.studentId).select('firstName lastName');
     
     if (!student) {
@@ -128,6 +128,8 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
       ...chat._doc,
       studentName: `${student.firstName} ${student.lastName}`,
       studentId: chat.studentId,
+      lastMessageDate: chat.messages[0] ? chat.messages[0].date : new Date(0),
+      classId: chat.classId,
       messages: chat.messages,
     };
     chats = chats.messages.sort((a, b) => b.lastMessageDate - a.lastMessageDate);

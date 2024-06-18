@@ -11,7 +11,8 @@ import { useAppContext } from '../Context';
 
 
 const StudentClassPage = () => {
-  const { user, setUser, classId, setClassId } = useAppContext();
+  const { classId } = useParams();
+  const { user, setUser } = useAppContext();
   const [data, setData] = useState({
     files: [],
     lessons: [],
