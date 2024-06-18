@@ -12,12 +12,12 @@ const fileSchema = new mongoose.Schema({
     },
     date:{
         type: Date,
-        default: Date.now
+        required: true
     },
     category:{
         type: String,
         enum:{
-            values:['Assignment', 'Quiz', 'Project', 'Exam', 'Other'],
+            values:['studyMaterials', 'lessonSummaries', 'assignments'],
             message: '{VALUE} is not a valid category'}
     },
     fLink:{

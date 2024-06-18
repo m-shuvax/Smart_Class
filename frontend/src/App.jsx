@@ -1,4 +1,4 @@
-import react, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
@@ -7,7 +7,7 @@ import HomePageInstructor from './pages/HomePageInstructor';
 import ClassPageInstructor from './pages/classPageInstructor'
 import StudentList from './pages/StudentsList'
 import UpdateDetails from './pages/UpdateDetails'
-import NewStudentClass from './pages/newClassStudent'
+import StudentClassPage from './pages/StudentClassPage'
 import ResetPassword from './pages/ResetPassword';
 import { AppProvider } from './Context';
 
@@ -21,8 +21,8 @@ function App() {
             <Route path="/register" element={<RegistrationPage />} />
             <Route path="/HomePageStudent" element={<HomePageStudent />} />
             <Route path="/HomePageInstructor" element={<HomePageInstructor />} />
-            <Route path="/ClassPageStudent/" element={<NewStudentClass />} />
-            <Route path="/ClassPageInstructor" element={<ClassPageInstructor />} />
+            <Route path="/ClassPageStudent/:classId" element={<StudentClassPage />} />
+            <Route path="/ClassPageInstructor/:classId" element={<ClassPageInstructor />} />
             <Route path="/StudentList" element={<StudentList />} />
             <Route path="/UpdateDetails" element={<UpdateDetails />} />
             <Route path="/ResetPassword/:token" element={<ResetPassword />} />

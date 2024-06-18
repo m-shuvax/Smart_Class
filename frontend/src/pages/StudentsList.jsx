@@ -1,39 +1,28 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../features/Navbar';
 import Chat from '../components/chat';
+import { useAppContext } from '../Context';
 
 const StudentList = () => {
+  const history = useNavigate();
   const [selectedStudent, setSelectedStudent] = useState(null);
-
-  const students = [
-    { id: 1, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894' },
-    { id: 2, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
-    { id: 3, firstName: 'Michael', lastName: 'Golan', email: 'tr0526696507@gmail.com', phoneNumber: '0526696507' },
-    { id: 4, firstName: 'Binyomin', lastName: 'Zaiddman', email: '4140276@gmail.com', phoneNumber: '0555613314' },
-    { id: 5, firstName: 'Meir', lastName: 'Noishtut', email: 'msn.binah.1@gmail.com', phoneNumber: '0527124197' },
-    { id: 6, firstName: 'Menachem', lastName: 'Shubkas', email: 'mc1212479@gmail.com', phoneNumber: '0533121279' },
-    { id: 7, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894' },
-    { id: 8, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
-    { id: 1, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894' },
-    { id: 2, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
-    { id: 3, firstName: 'Michael', lastName: 'Golan', email: 'tr0526696507@gmail.com', phoneNumber: '0526696507' },
-    { id: 4, firstName: 'Binyomin', lastName: 'Zaiddman', email: '4140276@gmail.com', phoneNumber: '0555613314' },
-    { id: 5, firstName: 'Meir', lastName: 'Noishtut', email: 'msn.binah.1@gmail.com', phoneNumber: '0527124197' },
-    { id: 6, firstName: 'Menachem', lastName: 'Shubkas', email: 'mc1212479@gmail.com', phoneNumber: '0533121279' },
-    { id: 7, firstName: 'Abigail', lastName: 'Cohen', email: 'r0527135949@gmail.com', phoneNumber: '0552759894' },
-    { id: 8, firstName: 'Uri', lastName: 'Levy', email: 'm0527657776@gmail.com', phoneNumber: '0627657776' },
-  ];
+  const [chat, setChat] = useState ([]);
+  const { studentsList, chats } = useAppContext();
+  console.log('chats:',chats); 
 
   const handleStudentClick = (student) => {
     setSelectedStudent(student);
+    // Find the chat associated with the selected student
+    const studentChat = chats.find(chat => chat.studentId === student._id);
+    setChat(studentChat);
   };
 
   return (
     <div className="flex flex-col bg-blue-100 h-screen overflow-hidden">
       <Navbar />
-      <Link
-        to="/classPageInstructor"
+      <button
+        onClick={() => history(-1)}
         className="fixed top-4 left-4 flex items-center bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 mt-16 rounded shadow-md"
       >
         <svg
@@ -46,21 +35,24 @@ const StudentList = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
 
-      </Link>
+      </button>
+
       <h2 className="fixed text-4xl font-bold text-center mb-2 w-1/5 mt-20 ml-24">Student List</h2>
       <div className="flex flex-grow overflow-hidden mt-32 pl-4">
         <div className="w-1/3 bg-blue-200 p-4 h-full overflow-y-auto">
-          <ul>
-            {students.map((student) => (
-              <li
-                key={student.id}
-                onClick={() => handleStudentClick(student)}
-                className="cursor-pointer text-blue-400 hover:text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md"
-              >
-                {student.firstName} {student.lastName}
-              </li>
-            ))}
-          </ul>
+          {studentsList.length > 0 && (
+            <ul>
+              {studentsList.map((student) => (
+                <li
+                  key={student.id}
+                  onClick={() => handleStudentClick(student)}
+                  className="cursor-pointer text-blue-400 hover:text-blue-600 bg-blue-100 hover:bg-blue-200 text-center text-2xl my-2 rounded-md shadow-md"
+                >
+                  {student.firstName} {student.lastName}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <div className="w-1/3 p-4 h-full overflow-y-auto">
           {selectedStudent && (
@@ -90,12 +82,22 @@ const StudentList = () => {
             </div>
           )}
         </div>
-        <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
+        
+          {selectedStudent ? (
+            <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
+          <h2 className="text-lg font-bold mb-4 text-white">{`Chat With Students ${selectedStudent.firstName} ${selectedStudent.lastName}`}</h2>
+            <Chat chat={chat} />
+            </div>
+          )
+          :
+          (
+            <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
           <h2 className="text-lg font-bold mb-4 text-white">Chat With Students</h2>
-          <Chat />
+            <p className="text-center text-xl text-gray-500">Select a student to start chatting</p>
+            </div>
+          )}
         </div>
       </div>
-    </div>
   );
 };
 
