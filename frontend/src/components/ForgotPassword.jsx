@@ -1,19 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ForgotPasswordForm = ({ onBackToLogin }) => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    document.title = "Forgot Password";
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/users/forgetPassword', { email });
-      setMessage(response.data.message);
+      const response = await axios.post('http://localhost:5000/api/forgetPassword', { email });
+      toast.success('An email will be sent to reset the password')
       setError('');
     } catch (error) {
-      setError('There was an error sending the email. Please try again later.');
+      toast.error('There was an error sending the email.');
       setMessage('');
     }
   };
@@ -39,7 +45,7 @@ const ForgotPasswordForm = ({ onBackToLogin }) => {
             Send Reset Email
           </button>
         </div>
-        {message && <p className="text-green-500 mt-4">{message}</p>}
+        {message && <p className="text-green-500 mt-4">An email will be sent to reset the password</p>}
         {error && <p className="text-red-500 mt-4">{error}</p>}
         <button 
           type="button" 
@@ -49,6 +55,7 @@ const ForgotPasswordForm = ({ onBackToLogin }) => {
           Back to Login
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 };

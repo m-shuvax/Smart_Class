@@ -7,10 +7,15 @@ import { useAppContext } from '../Context';
 const StudentList = () => {
 
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const { studentsList } = useAppContext();
+  const [chat, setChat] = useState ([]);
+  const { studentsList, chats } = useAppContext();
+  console.log('chats:',chats); 
 
   const handleStudentClick = (student) => {
     setSelectedStudent(student);
+    // Find the chat associated with the selected student
+    const studentChat = chats.find(chat => chat.studentId === student._id);
+    setChat(studentChat);
   };
 
   return (
@@ -29,7 +34,6 @@ const StudentList = () => {
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
-
       </Link>
       <h2 className="fixed text-4xl font-bold text-center mb-2 w-1/5 mt-20 ml-24">Student List</h2>
       <div className="flex flex-grow overflow-hidden mt-32 pl-4">
@@ -47,7 +51,6 @@ const StudentList = () => {
               ))}
             </ul>
           )}
-
         </div>
         <div className="w-1/3 p-4 h-full overflow-y-auto">
           {selectedStudent && (
@@ -79,7 +82,11 @@ const StudentList = () => {
         </div>
         <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
           <h2 className="text-lg font-bold mb-4 text-white">Chat With Students</h2>
-          <Chat />
+          {selectedStudent ? (
+            <Chat chat={chat} />
+          ) : (
+            <p className="text-center text-xl text-gray-500">Select a student to start chatting</p>
+          )}
         </div>
       </div>
     </div>

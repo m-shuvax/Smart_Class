@@ -19,7 +19,6 @@ const LoginPage = () => {
   useEffect(() => {
     document.title = "Smart Class";
 
-    // Check for message in localStorage
     const registrationMessage = localStorage.getItem('registrationMessage');
     if (registrationMessage) {
       setMessage(registrationMessage);
@@ -30,10 +29,9 @@ const LoginPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users/', { withCredentials: true });
-        console.log(response.data);
+        const response = await axios.get('http://localhost:5000/api/', { withCredentials: true });
+        console.log(response.data)
         const newUser = response.data.user;
-        console.log("2");
         setUser(newUser);
         console.log("3");
         const isStudent = newUser.role === 'student';
@@ -56,7 +54,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', { email: userName, password }, { withCredentials: true });
+      const response = await axios.post('http://localhost:5000/api/login', { email: userName, password }, { withCredentials: true });
       setUser(response.data.data.user);
       const isStudent = response.data.data.user.role === 'student';
       if (isStudent) {

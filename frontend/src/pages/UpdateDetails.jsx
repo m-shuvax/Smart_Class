@@ -5,6 +5,8 @@ import axios from 'axios';
 import Navbar from '../features/Navbar';
 import Loader from '../components/Loader';
 import { useAppContext } from '../Context';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UpdateDetails = () => {
   const [loading, setLoading] = useState(false);
@@ -112,7 +114,7 @@ const UpdateDetails = () => {
     }
 
     try {
-      const response = await axios.put('http://localhost:5000/api/users/accountDetails', {
+      const response = await axios.put('http://localhost:5000/api/accountDetails', {
         email,
         password,
         firstName,
@@ -122,29 +124,34 @@ const UpdateDetails = () => {
 
       if (response.data) {
         console.log('Update successful:', response.data);
+        toast.success('Update successful');
       } else if (response) {
         console.error('Update successful but response is not as expected:', response);
+        toast.success('Update successful but response is not as expected');
       } else {
         console.error('Update successful but response is not as expected.');
+        toast.success('Update successful but response is not as expected');
       }
 
-      alert('Update successful');
-      history(-1);
+      // השהייה לפני הניתוב חזרה לדף הקודם
+      setTimeout(() => {
+        history(-1);
+      }, 2000);
     } catch (error) {
       if (error.response && error.response.data) {
         console.log('Update failed:', error.response.data);
+        toast.error('Update failed: ' + error.response.data.message);
       } else if (error.response) {
         console.log('Update failed with response but no data:', error.response);
+        toast.error('Update failed with response but no data');
       } else {
         console.log('Update failed:', error);
+        toast.error('Update failed: ' + error.message);
       }
-      alert('Update failed');
     } finally {
       setLoading(false);
     }
   };
-
-  
   return (
     <div className="mt-10 min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
@@ -258,6 +265,7 @@ const UpdateDetails = () => {
         </div>
       </div>
       {loading && <Loader />}
+      <ToastContainer />
     </div>
   );
 };

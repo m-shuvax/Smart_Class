@@ -1,4 +1,3 @@
-// Importing required modules
 const User = require('./../models/userModel');
 const Class = require('./../models/classModel');
 const Chat = require('./../models/chatModel');
@@ -6,49 +5,6 @@ const Message = require('./../models/messageModel');
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 
-
-// Function to create a new message
-exports.createMessage = asyncHandler(async (req, res, next) => {
-  const { userId, chatId, messageText } = req.body;
-
-  try {
-    // Find the chat by its ID
-    const existingChat = await Chat.findById(chatId);
-
-    if (!existingChat) {
-      return next(new AppError('Chat not found', 404));
-    }
-
-    // Create a new message
-    const newMessage = new Message({
-      authorId: userId,
-      message: messageText
-    });
-
-    // Save the new message
-    await newMessage.save();
-
-    // Add the new message to the chat's array of messages
-    existingChat.messages.push(newMessage);
-    await existingChat.save();
-
-    // Populate the chat object with the messages
-    const populatedChat = await existingChat.populate('messages').execPopulate();
-
-    // Respond with success and the populated chat
-    res.status(201).json({
-      success: true,
-      chat: populatedChat
-    });
-  } catch (error) {
-    // Handle any errors
-    return next(new AppError('Something went wrong', 500));
-  }
-});
-
-
-
-// Function to create a new chat
 exports.createChat = asyncHandler(async (classId, studentId) => {
   console.log ('createChat1', classId, studentId);
 
@@ -71,7 +27,6 @@ exports.createChat = asyncHandler(async (classId, studentId) => {
 
   await newChat.save();
 
-  // Create initial messages
   const studentMessage = new Message({
     authorId: studentId,
     message: 'Thank you for approving'
@@ -84,22 +39,54 @@ exports.createChat = asyncHandler(async (classId, studentId) => {
 
   console.log ('createChat4', studentMessage, instructorMessage);
 
-  // Save the messages
   await studentMessage.save();
   await instructorMessage.save();
 
-  // Add messages to the chat
   newChat.messages.push(studentMessage);
   newChat.messages.push(instructorMessage);
   await newChat.save();
 
   console.log ('createChat5', newChat); 
-
 });
 
-// Function to delete a message
+
+
+exports.createMessage = asyncHandler(async (req, res, next) => {
+  const { authorId, chatId, message } = req.body;
+
+  try {
+    const existingChat = await Chat.findById(chatId);
+
+    if (!existingChat) {
+      return next(new AppError('Chat not found', 404));
+    }
+
+    const newMessage = new Message({
+      authorId,
+      message
+    });
+
+    await newMessage.save();
+
+    existingChat.messages.push(newMessage);
+    await existingChat.save();
+
+    const populatedChat = await existingChat.populate('messages').execPopulate();
+
+    res.status(201).json({
+      success: true,
+      chat: populatedChat
+    });
+  } catch (error) {
+    return next(new AppError('Something went wrong', 500));
+  }
+});
+
+
+
 exports.deleteMessage = asyncHandler(async (req, res, next) => {
-  const { messageId, userId } = req.body;
+  const userId = req.user._id
+  const { messageId } = req.params;
 
   if (!messageId || !userId) {
     return next(new AppError('Message ID and User ID are required', 400));
