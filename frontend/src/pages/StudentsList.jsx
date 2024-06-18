@@ -82,16 +82,22 @@ const StudentList = () => {
             </div>
           )}
         </div>
-        <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
-          <h2 className="text-lg font-bold mb-4 text-white">Chat With Students</h2>
+        
           {selectedStudent ? (
+            <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
+          <h2 className="text-lg font-bold mb-4 text-white">{`Chat With Students ${selectedStudent.firstName} ${selectedStudent.lastName}`}</h2>
             <Chat chat={chat} />
-          ) : (
+            </div>
+          )
+          :
+          (
+            <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
+          <h2 className="text-lg font-bold mb-4 text-white">Chat With Students</h2>
             <p className="text-center text-xl text-gray-500">Select a student to start chatting</p>
+            </div>
           )}
         </div>
       </div>
-    </div>
   );
 };
 

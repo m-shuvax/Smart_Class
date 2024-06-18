@@ -406,9 +406,9 @@ const ClassPageInstructor = () => {
               )}
             </div>
             {!isAddingLesson && (
-              <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
-                {<InstructorChat chats={chats} />}
-              </div>
+              <div >
+                  {<InstructorChat chats={chats}  />}
+                </div>
             )}
           </div>
         )}
