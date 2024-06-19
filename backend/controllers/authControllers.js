@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs');
 const sendEmail = require('./../utils/email');
 const crypto = require('crypto');
 const customDate = require('./../features/dates');
-const { v4: uuidv4 } = require('uuid');
 const log = console.log;
 
 
@@ -133,11 +132,10 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
   console.log(`Reset token (hashed): ${resetPasswordToken}`);
 
   const name = user.firstName + (' ') + user.lastName;
-  const messageId = `<${uuidv4()}@gmail.com>`;
-  const resetURL = `${req.protocol}://localhost:5173/resetPassword/${resetToken}`;
+  const resetURL = `${process.env.FRONTEND_url}/resetPassword/${resetToken}`;
   const message = `
-     <div style="width: 100%; display: flex; justify-content: center;">
-    <div style="max-width: 600px; width: 100%; padding: 20px;">
+<div style="width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f7f7f7;">
+    <div style="max-width: 600px; width: 100%; padding: 20px; display: flex; justify-content: center; margin-right: 20%; margin-left:20%; ">
         <div style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); text-align: center; border: 2px solid #c0d6ff;">
             <div style="padding: 20px;">
                 <h3 style="font-size: 24px;">Hi ${name}</h3>
@@ -152,11 +150,11 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
 </div>
 
 
+
     `
 
   try {
     await sendEmail({
-      messageId: messageId,
       email: user.email,
       subject: 'Password Reset | smart class',
       html: message
