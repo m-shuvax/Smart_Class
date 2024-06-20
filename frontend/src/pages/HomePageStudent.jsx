@@ -20,6 +20,7 @@ const HomePageStudent = () => {
         const response = await axios.get('http://localhost:5000/api/studentHomePage', { withCredentials: true })
         console.log(response);
         setUser(response.data.user);
+        console.log(user);
         setClassrooms(response.data.classes);
         console.log(classrooms)
       }
@@ -69,7 +70,7 @@ const HomePageStudent = () => {
           {classrooms.map((classroom) => (
             <Link
               key={classroom._id}
-              to={`/ClassPageStudent`}
+              to={`/ClassPageStudent/${classroom._id}`}
               onClick={() => { setClassId(classroom._id); console.log(33, classId) }}
               className="text-2xl bg-[url('src/assets/class.jpg')] bg-cover bg-center border-2 border-current p-2 rounded-md shadow-md h-32 flex items-center justify-center hover:bg-blue-200 transition-colors duration-300"
             >
@@ -102,7 +103,6 @@ const HomePageStudent = () => {
               placeholder="Enter classroom code"
               value={newClassroomCode}
               onChange={(e) => setNewClassroomCode(e.target.value)}
-              // onKeyPress={handleEnterKeyPress}
               className="border border-gray-300 rounded px-3 py-2 my-3 w-4/5"
             />
             <button

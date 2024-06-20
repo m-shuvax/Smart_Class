@@ -7,6 +7,7 @@ const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
 const categorizeFiles = require('./../utils/categorize');
 const { createChat } = require('./chatControllers');
+const Message = require('./../models/messageModel');
 
 
 
@@ -83,7 +84,6 @@ exports.renderStudentClasses = asyncHandler(async (req, res, next) => {
 // CLASS RENDERING
 
 exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
-  console.log('renderClass0');
   const { classId } = req.params;
   const userId = req.user._id;
   console.log('renderClass0', classId, userId);
@@ -99,26 +99,54 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
     return next(new AppError('User or class not found', 404));
   }
 
-  console.log('renderClass1');
   const files = await File.find({ classId: classId }).sort({ date: -1 });
-  console.log('renderClass2', files);
   const lessons = await Lesson.find({ classId: classId });
-  console.log('renderClass3', lessons);
   const students = await User.find({ _id: { $in: classData.students } });
-  console.log('renderClass4', students);
-  const chats = await Chat.find({ classId: classId }).populate('messages');
-  console.log('renderClass4', chats);
   const categorizedFiles = categorizeFiles(files);
   const liveLink = classData.liveLink;
+  let chats = await Chat.find({ classId: classId })
+  .populate(  'messages');
+
+  chats = await Promise.all(chats.map (async (chat) => {
+    console.log(chat._id);
+    chat = chat.toObject();
+    console.log(chat._id);
+    console.log('renderClass4', chat);
+    chat.messages = await Message.populate(chat.messages ,{ path: 'user', select: 'firstName lastName' });
+    const student = await User.findById(chat.studentId).select('firstName lastName');
+    
+    if (!student) {
+      console.warn(`Student with ID ${chat.studentId} not found`);
+      return {
+        ...chat,
+        studentName: 'Unknown Student',
+        studentId: chat.studentId,
+        lastMessageDate: new Date(0),
+      };
+    }
+    console.log('renderClass4.2', student);
+    
+    return {
+      ...chat._doc,
+      studentName: `${student.firstName} ${student.lastName}`,
+      studentId: chat.studentId,
+      _id: chat._id,
+      lastMessageDate: chat.messages[0] ? chat.messages[0].date : new Date(0),
+      classId: chat.classId,
+      messages: chat.messages,
+    };
+    chats = chats.messages.sort((a, b) => b.lastMessageDate - a.lastMessageDate);
+  }));
+  console.log('renderClass5', chats);
 
   res.status(200).json({
     files: categorizedFiles,
-    lessons: lessons,
-    user: user,
-    students: students,
-    pendingStudents: classData.pendingStudents,
-    chats: chats,
-    liveLink: liveLink
+      lessons: lessons,
+      user: user,
+      students: students,
+      pendingStudents: classData.pendingStudents,
+      chats: chats,
+      liveLink: liveLink,
   });
 });
 
@@ -182,8 +210,8 @@ exports.addPendingStudent = asyncHandler(async (req, res, next) => {
     return next(new AppError('Class not found', 404));
   }
 
-  if (classData.pendingStudents.includes(userId)) {
-    return next(new AppError('Student already in pending list', 400));
+  if (classData.pendingStudents.includes(userId) || classData.students.includes(userId)) {
+    return next(new AppError('Student already recorded', 400));
   }
 
   classData.pendingStudents.push(userId);
@@ -219,13 +247,13 @@ exports.handlePendingStudent = asyncHandler(async (req, res, next) => {
 
   if (action === 'approve') {
     classData.students.push(studentId);
+    createChat(classId, studentId);
   }
 
   classData.pendingStudents.splice(studentIndex, 1);
   await classData.save();
   console.log('handlePendingStudent4');
-
-  createChat(classId, studentId);
+  
 
   res.status(200).json({ success: true, message: `Student ${action === 'approve' ? 'approved' : 'rejected'}` });
 });

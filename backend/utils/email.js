@@ -15,7 +15,12 @@ const sendEmail = async options => {
     subject: options.subject,
     messageId: options.messageId,
     html: options.html,
-    text: options.message
+    text: options.message,
+    headers: {
+      'Message-ID': `<${Date.now()}-${Math.random()}@example.com>`,
+      'In-Reply-To': '',
+      'References': ''
+  }
   };
 
   await transporter.sendMail(mailOptions);

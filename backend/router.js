@@ -16,9 +16,13 @@ router.route('/resetPassword/:token')
     .post(authControllers.login);
 
 router.route('/')
-    .get(authControllers.protect, pageRenders.renderStudentClasses)
-    .post(authControllers.protect, pageRenders.renderStudentClasses);
-
+    .get(authControllers.protect, (req, res, next) => {
+      const renderFunction = req.user.role === 'instructor' 
+        ? pageRenders.renderInstructorClasses 
+        : pageRenders.renderStudentClasses;
+      renderFunction(req, res, next);
+    });
+    
 router.route('/classes')
     .get(authControllers.protect, authControllers.retrictToInstructor, pageRenders.renderInstructorClasses)
     .post(authControllers.protect, authControllers.retrictToInstructor, controllers.createClass);
@@ -61,6 +65,9 @@ router.route('/lessons')
 
 router.route('/editLiveLink')
     .put(authControllers.protect, controllers.updateClassLiveLink);
+
+router.route('/messages')
+    .post(authControllers.protect, chatControllers.createMessage)
 
 router.route('/messages/:messageId')
     .post(authControllers.protect, chatControllers.createMessage)
