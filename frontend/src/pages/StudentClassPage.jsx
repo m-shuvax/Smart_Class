@@ -127,7 +127,7 @@ const StudentClassPage = () => {
                     >
                       <div className="flex items-center">
                         <button onClick={() => window.open(file.fLink)}>
-                          <span className="text-base font-medium">{file.name}</span>
+                          <span className="text-base text-xl underline hover:font-bold">{file.name}</span>
                         </button>
                       </div>
                       <div style={{ textAlign: 'end', flex: 1 }}>
@@ -146,7 +146,7 @@ const StudentClassPage = () => {
                     >
                       <div className="flex items-center">
                         <button onClick={() => window.open(lesson.lLinkd)}>
-                          <span className="text-base font-medium">{lesson.name}</span>
+                          <span className="text-base text-xl underline hover:font-bold">{lesson.name}</span>
                         </button>
                       </div>
                       <div style={{ textAlign: 'center', flex: 1 }}>

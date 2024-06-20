@@ -389,9 +389,9 @@ const ClassPageInstructor = () => {
               )}
 
               {showLessons && (
-                <div className="ml-52 grow grid grid-cols-1 md:grid-cols-1 gap-4">
+                <div className="ml-52 mt-6 grow flex flex-col h-80 overflow-y-auto">
                   {lessons.map((lesson, index) => (
-                    <div key={index} className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center">
+                    <div key={index} className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center mb-4">
                       <div className="flex items-center">
                         <button onClick={() => window.open(lesson.lLinkd)}>
                           <span className="text-base text-xl underline hover:font-bold">{lesson.name}</span>
