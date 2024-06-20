@@ -58,6 +58,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
   if (!decoded) return next(new AppError('Token is invalid or has expired', 401));
 
   const user = await User.findById(decoded.id);
+  console.log('protect3', user);
 
   if (!user) return next(new AppError('The user belonging to this token does no longer exist', 401));
 
@@ -68,7 +69,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 
 exports.retrictToInstructor = asyncHandler(async (req, res, next) => {
+  console.log('retrictToInstructor', customDate.getFormatDate());
   if (req.user.role != 'instructor') return next(new AppError("The user isn't permitted", 407));
+  next();
 }
 )
 
@@ -77,6 +80,7 @@ exports.retrictToInstructor = asyncHandler(async (req, res, next) => {
 exports.login = asyncHandler(async (req, res, next) => {
   console.log('login');
   const { email, password } = req.body;
+  console.log(email,password);
   if (!email || !password) return next(new AppError('Email or password is missing', 400));
   const user = await User.findOne({ email }).select('+password');
   console.log(user.password);

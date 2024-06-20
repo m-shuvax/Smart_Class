@@ -20,6 +20,7 @@ const HomePageStudent = () => {
         const response = await axios.get('http://localhost:5000/api/studentHomePage', { withCredentials: true })
         console.log(response);
         setUser(response.data.user);
+        console.log(user);
         setClassrooms(response.data.classes);
         console.log(classrooms)
       }
@@ -102,7 +103,6 @@ const HomePageStudent = () => {
               placeholder="Enter classroom code"
               value={newClassroomCode}
               onChange={(e) => setNewClassroomCode(e.target.value)}
-              // onKeyPress={handleEnterKeyPress}
               className="border border-gray-300 rounded px-3 py-2 my-3 w-4/5"
             />
             <button

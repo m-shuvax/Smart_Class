@@ -62,9 +62,14 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
   res.status(204).json({ success: true, data: null });
 });
 
-
 exports.createFile = asyncHandler(async (req, res, next) => {
   const { fileName, fileDate, classId, category, fileLink } = req.body;
+  
+  if (!fileName || !fileDate || !classId || !category || !fileLink) {
+    return next(new AppError('Missing required fields', 400));
+  }
+
+  console.log('Received data:', { fileName, fileDate, classId, category, fileLink });
 
   const file = await File.create({
     name: fileName,
@@ -78,7 +83,7 @@ exports.createFile = asyncHandler(async (req, res, next) => {
     return next(new AppError('Failed to create file', 500));
   }
 
-  console.log('File created');
+  console.log('File created:', file);
   res.status(201).json({ success: true, data: file });
 });
 
