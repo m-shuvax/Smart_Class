@@ -108,7 +108,9 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
   .populate(  'messages');
 
   chats = await Promise.all(chats.map (async (chat) => {
+    console.log(chat._id);
     chat = chat.toObject();
+    console.log(chat._id);
     console.log('renderClass4', chat);
     chat.messages = await Message.populate(chat.messages ,{ path: 'user', select: 'firstName lastName' });
     const student = await User.findById(chat.studentId).select('firstName lastName');
@@ -128,6 +130,7 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
       ...chat._doc,
       studentName: `${student.firstName} ${student.lastName}`,
       studentId: chat.studentId,
+      _id: chat._id,
       lastMessageDate: chat.messages[0] ? chat.messages[0].date : new Date(0),
       classId: chat.classId,
       messages: chat.messages,
@@ -207,8 +210,8 @@ exports.addPendingStudent = asyncHandler(async (req, res, next) => {
     return next(new AppError('Class not found', 404));
   }
 
-  if (classData.pendingStudents.includes(userId)) {
-    return next(new AppError('Student already in pending list', 400));
+  if (classData.pendingStudents.includes(userId) || classData.students.includes(userId)) {
+    return next(new AppError('Student already recorded', 400));
   }
 
   classData.pendingStudents.push(userId);
@@ -244,13 +247,13 @@ exports.handlePendingStudent = asyncHandler(async (req, res, next) => {
 
   if (action === 'approve') {
     classData.students.push(studentId);
+    createChat(classId, studentId);
   }
 
   classData.pendingStudents.splice(studentIndex, 1);
   await classData.save();
   console.log('handlePendingStudent4');
-
-  createChat(classId, studentId);
+  
 
   res.status(200).json({ success: true, message: `Student ${action === 'approve' ? 'approved' : 'rejected'}` });
 });

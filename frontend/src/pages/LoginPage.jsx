@@ -33,8 +33,9 @@ const LoginPage = () => {
         console.log(response.data)
         const newUser = response.data.user;
         setUser(newUser);
+        console.log("3");
         const isStudent = newUser.role === 'student';
-
+        console.log("4");
         if (isStudent) {
           navigate('/HomePageStudent');
         } else {
