@@ -11,7 +11,7 @@ import { useAppContext } from '../Context';
 const ClassPageInstructor = () => {
   const { classId } = useParams();
   const [category, setCategory] = useState('assignments');
-  const [filesByCategory, setFilesByCategory] = useState([]);
+  const [filesByCategory, setFilesByCategory] = useState({});
   const [filteredFiles, setFilteredFiles] = useState([]);
   const [lessons, setLessons] = useState([]);
   const [showLessons, setShowLessons] = useState(false);
@@ -20,6 +20,7 @@ const ClassPageInstructor = () => {
   const [newFileLink, setNewFileLink] = useState('');
   const [newLessonName, setNewLessonName] = useState('');
   const [newLessonDate, setNewLessonDate] = useState('');
+  const [newLessonLink, setNewLessonLink] = useState('');
   const [liveBroadcastLink, setLiveBroadcastLink] = useState('');
   const [isEditingBroadcast, setIsEditingBroadcast] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
@@ -33,7 +34,6 @@ const ClassPageInstructor = () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/instructorClass/${classId}`, { withCredentials: true });
       const { files, lessons, user, chats, liveLink, students } = response.data;
-      console.log('chats', chats);
       setFilesByCategory(files);
       setStudentsList(students);
       setLessons(lessons);
@@ -42,6 +42,7 @@ const ClassPageInstructor = () => {
       setLiveBroadcastLink(liveLink);
       setLoading(false);
     } catch (error) {
+      console.error('Error fetching class data:', error);
       setError('Error fetching class data');
       setLoading(false);
     }
@@ -50,24 +51,39 @@ const ClassPageInstructor = () => {
   useEffect(() => {
     document.title = "Class Page";
     fetchClassData();
-
+    
     const intervalId = setInterval(() => {
       fetchClassData();
     }, 600000000);
     console.log('intervalId:', classId);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [classId]);
+
+  useEffect(() => {
+    if (filesByCategory && filesByCategory[category]) {
+      setFilteredFiles(filesByCategory[category]);
+    } else {
+      setFilteredFiles([]);
+    }
+  }, [filesByCategory, category]);
 
   const handleFileInputChange = (event) => {
     const { name, value } = event.target;
     if (name === 'newFileName') setNewFileName(value);
     if (name === 'newFileDate') setNewFileDate(value);
-    if (name === 'newFileLink') setNewFileLink(value)
+    if (name === 'newFileLink') setNewFileLink(value);
   };
 
   const handleAddFile = async () => {
     try {
+      console.log('Attempting to add file:', {
+        fileName: newFileName,
+        fileDate: newFileDate,
+        category,
+        classId,
+        fileLink: newFileLink
+      });
       const response = await axios.post('http://localhost:5000/api/files', {
         fileName: newFileName,
         fileDate: newFileDate,
@@ -75,9 +91,25 @@ const ClassPageInstructor = () => {
         classId,
         fileLink: newFileLink
       }, { withCredentials: true });
-      setFilesByCategory([...filesByCategory, response.data.file]);
+
+      if (response.data && response.data.data) {
+        console.log('File added successfully:', response.data.data);
+        setFilesByCategory(prevFiles => {
+          const updatedFiles = { ...prevFiles };
+          if (!Array.isArray(updatedFiles[category])) {
+            updatedFiles[category] = [];
+          }
+          updatedFiles[category].push(response.data.data);
+          return updatedFiles;
+        });
+      } else {
+        console.error('Unexpected response data:', response.data);
+        setError('Unexpected response data');
+      }
+
       setIsAddingFile(false);
     } catch (error) {
+      console.error('Error adding file:', error);
       setError('Error adding file');
     }
   };
@@ -86,6 +118,7 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newLessonName') setNewLessonName(value);
     if (name === 'newLessonDate') setNewLessonDate(value);
+    if (name === 'newLessonLink') setNewLessonLink(value);
     if (name === 'liveLink') setLiveBroadcastLink(value);
   };
 
@@ -95,21 +128,22 @@ const ClassPageInstructor = () => {
         name: newLessonName,
         date: newLessonDate,
         classId,
-        lLink: liveBroadcastLink
+        lLink: newLessonLink
       }, { withCredentials: true });
       setLessons([...lessons, response.data.data]);
       setIsAddingLesson(false);
     } catch (error) {
+      console.error('Error adding lesson:', error);
       setError('Error adding lesson');
     }
   };  
-
 
   const handleDeleteLesson = async (lessonId) => {
     try {
       await axios.delete(`http://localhost:5000/api/lessons/${lessonId}`, { withCredentials: true });
       setLessons(lessons.filter(lesson => lesson._id !== lessonId));
     } catch (error) {
+      console.error('Error deleting lesson:', error);
       setError('Error deleting lesson');
     }
   };
@@ -117,7 +151,7 @@ const ClassPageInstructor = () => {
   const handleLinkInputChange = (event) => {
     const { value } = event.target;
     setLiveBroadcastLink(value);
-  }
+  };
 
   const handleEditLiveBroadcastLink = async () => {
     try {
@@ -125,10 +159,10 @@ const ClassPageInstructor = () => {
         liveLink: liveBroadcastLink,
         classId
       }, { withCredentials: true });
-      console.log(response.data)
       setLiveBroadcastLink(response.data.liveLink);
       setIsEditingBroadcast(false);
     } catch (error) {
+      console.error('Error editing live broadcast link:', error);
       setError('Error editing live broadcast link');
     }
   };
@@ -137,17 +171,29 @@ const ClassPageInstructor = () => {
     setIsEditingBroadcast(!isEditingBroadcast);
   };
 
-
   const handleDeleteFile = async (fileId) => {
     try {
+      console.log('Attempting to delete file with ID:', fileId);
       await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });
-      setFilesByCategory(filesByCategory.filter(file => file.id !== fileId));
+      setFilesByCategory(prevFiles => {
+        const updatedFiles = { ...prevFiles };
+        updatedFiles[category] = updatedFiles[category].filter(file => file._id !== fileId);
+        return updatedFiles;
+      });
+      setFilteredFiles(prevFiles => prevFiles.filter(file => file._id !== fileId));
     } catch (error) {
-      console.error(error);
+      console.error('Error deleting file:', error);
       setError('Error deleting file');
     }
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="flex flex-col h-screen bg-blue-100">
@@ -341,8 +387,8 @@ const ClassPageInstructor = () => {
                               <input
                                 type="text"
                                 placeholder="Lesson Link"
-                                name="liveLink"
-                                value={liveBroadcastLink}
+                                name="newLessonLink"
+                                value={newLessonLink}
                                 onChange={handleLessonInputChange}
                                 className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                               />
@@ -380,8 +426,8 @@ const ClassPageInstructor = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteFile(file.id)}>
-                        <FaTrash className="w-4 h-4 inline-block ml-2" style={{ verticalAlign: 'middle' }} />
+                      <button onClick={() => handleDeleteFile(file._id)}>
+                        <FaTrash className="w-4 h-4 inline-block" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>
                   ))}
@@ -393,7 +439,7 @@ const ClassPageInstructor = () => {
                   {lessons.map((lesson, index) => (
                     <div key={index} className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center mb-4">
                       <div className="flex items-center">
-                        <button onClick={() => window.open(lesson.lLinkd)}>
+                        <button onClick={() => window.open(lesson.lLink)}>
                           <span className="text-base text-xl underline hover:font-bold">{lesson.name}</span>
                         </button>
                       </div>

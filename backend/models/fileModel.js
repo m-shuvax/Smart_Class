@@ -10,10 +10,10 @@ const fileSchema = new mongoose.Schema({
         ref: 'Class',
         required: true
     },
-    date:{
+    date: {
         type: Date,
         required: true
-    },
+      },
     category:{
         type: String,
         enum:{
@@ -27,5 +27,4 @@ const fileSchema = new mongoose.Schema({
 })
      
 const file = mongoose.model('File', fileSchema)
-
 module.exports = file

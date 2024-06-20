@@ -24,8 +24,8 @@ router.route('/')
     });
     
 router.route('/classes')
-    .get(authControllers.protect, pageRenders.renderInstructorClasses)
-    .post(authControllers.protect, controllers.createClass);
+    .get(authControllers.protect, authControllers.retrictToInstructor, pageRenders.renderInstructorClasses)
+    .post(authControllers.protect, authControllers.retrictToInstructor, controllers.createClass);
 
 router.route('/studentHomePage')
     .get(authControllers.protect, pageRenders.renderStudentClasses);
