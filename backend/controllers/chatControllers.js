@@ -53,6 +53,7 @@ exports.createChat = asyncHandler(async (classId, studentId) => {
 
 exports.createMessage = asyncHandler(async (req, res, next) => {
   const { authorId, chatId, message } = req.body;
+  console.log(authorId, chatId, message)
 
   try {
     const existingChat = await Chat.findById(chatId);
@@ -67,11 +68,14 @@ exports.createMessage = asyncHandler(async (req, res, next) => {
     });
 
     await newMessage.save();
+    console.log(newMessage);
 
     existingChat.messages.push(newMessage);
     await existingChat.save();
+    console.log(55555)
 
-    const populatedChat = await existingChat.populate('messages').execPopulate();
+    const populatedChat = await existingChat.populate('messages');
+    console.log(populatedChat);
 
     res.status(201).json({
       success: true,

@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios'
+import { useAppContext } from '../Context';
 
-const Chat = ({ chat, classId, studentId }) => {
-  // const [chat, setChat] = useState(null);
+const Chat = ({ chat, setChat }) => {
+  console.log('sssssssss\n', chat);
+  const studentId = chat.studentId;
   const [newMessage, setNewMessage] = useState('');
   const [error, setError] = useState(null);
-  // const { userId, setUser } = u/seAppContext();
+  const {user} = useAppContext();
+  console.log(user);
+  const userId = user._id;
 
   const handleSend = async () => {
     if (newMessage.trim()) {
       try {
-        const res = await axios.post('/api/chats/createMessage', {
-          userId: studentId,
-          chatId: chat._id, // Assuming chat object has _id property
-          messageText: newMessage
-        });
+        const res = await axios.post('http://localhost:5000/api/messages', {
+          authorId: userId,
+          chatId: chat._id,
+          message: newMessage
+        }, { withCredentials: true });
+        console.log(res.data);
         if (res.data && res.data.chat) {
           setChat(res.data.chat);
           setNewMessage('');
@@ -21,7 +27,7 @@ const Chat = ({ chat, classId, studentId }) => {
       } catch (error) {
         setError('Error sending message: ' + error.message);
       }
-    }
+    } 
   };
 
   if (error) {
