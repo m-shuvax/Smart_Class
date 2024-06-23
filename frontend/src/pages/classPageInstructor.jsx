@@ -16,18 +16,17 @@ const ClassPageInstructor = () => {
   const [lessons, setLessons] = useState([]);
   const [showLessons, setShowLessons] = useState(false);
   const [newFileName, setNewFileName] = useState('');
-  const [newFileDate, setNewFileDate] = useState('');
+  const [newFileDate, setNewFileDate] = useState(new Date().toISOString().slice(0, 10));
   const [newFileLink, setNewFileLink] = useState('');
   const [newLessonName, setNewLessonName] = useState('');
-  const [newLessonDate, setNewLessonDate] = useState('');
+  const [newLessonDate, setNewLessonDate] = useState(new Date().toISOString().slice(0, 10));
   const [liveBroadcastLink, setLiveBroadcastLink] = useState('');
   const [isEditingBroadcast, setIsEditingBroadcast] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
   const [isAddingFile, setIsAddingFile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user, setUser, studentsList, setStudentsList } = useAppContext();
-  const [chats, setChats] = useState([]);
+  const { user, setUser, studentsList, setStudentsList ,chats, setChats} = useAppContext();
 
   const fetchClassData = async () => {
     try {
@@ -50,6 +49,7 @@ const ClassPageInstructor = () => {
   useEffect(() => {
     document.title = "Class Page";
     fetchClassData();
+    console.log('date:', newFileDate, newLessonDate);
 
     const intervalId = setInterval(() => {
       fetchClassData();
@@ -409,7 +409,7 @@ const ClassPageInstructor = () => {
               )}
             </div>
             {!isAddingLesson && (
-              <div >
+              <div pb-0 mb-0>
                   {<InstructorChat chats={chats}  />}
                 </div>
             )}

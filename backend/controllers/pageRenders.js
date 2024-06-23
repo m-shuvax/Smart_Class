@@ -135,8 +135,9 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
       classId: chat.classId,
       messages: chat.messages,
     };
-    chats = chats.messages.sort((a, b) => b.lastMessageDate - a.lastMessageDate);
   }));
+  chats = chats.sort((a, b) => b.lastMessageDate - a.lastMessageDate);
+
   console.log('renderClass5', chats);
 
   res.status(200).json({
