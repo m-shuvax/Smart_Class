@@ -44,16 +44,17 @@ const InstructorChat = ({ chats }) => {
                 :
                 (
                     <div >
-                            <button
+                            
+                        <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
+                            <h2 className="text-lg font-bold mb-4 text-white">{`Chat with ${selectedStudent.studentName}`}</h2>
+                            <Chat chat={chat} />
+                        </div>
+                        <button
                                 onClick={handleBackClick}
                                 className=" w-12 h-12 ml-2"
                             >
                                 <XCircleIcon className="h-8 w-8 text-blue-500" />
                             </button>
-                        <div className="fixed top-20 right-4 h-4/5 w-1/3 bg-blue-300 p-4 rounded-md shadow-md">
-                            <h2 className="text-lg font-bold mb-4 text-white">{`Chat with ${selectedStudent.studentName}`}</h2>
-                            <Chat chat={chat} />
-                        </div>
                     </div>
                 )}
         </div>
