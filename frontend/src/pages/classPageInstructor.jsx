@@ -53,7 +53,9 @@ const ClassPageInstructor = () => {
 
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 600000);
+    }, 600000000);
+    console.log('intervalId:', classId);
+
     return () => clearInterval(intervalId);
   }, []);
 
@@ -84,6 +86,7 @@ const ClassPageInstructor = () => {
     const { name, value } = event.target;
     if (name === 'newLessonName') setNewLessonName(value);
     if (name === 'newLessonDate') setNewLessonDate(value);
+    if (name === 'liveLink') setLiveBroadcastLink(value);
   };
 
   const handleAddLesson = async () => {
@@ -99,7 +102,7 @@ const ClassPageInstructor = () => {
     } catch (error) {
       setError('Error adding lesson');
     }
-  };
+  };  
 
 
   const handleDeleteLesson = async (lessonId) => {

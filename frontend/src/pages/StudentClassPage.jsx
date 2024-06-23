@@ -17,9 +17,9 @@ const StudentClassPage = () => {
     files: [],
     lessons: [],
     userDetails: null,
-    chat: null,
     liveLink: null
   });
+  const [chat, setChat] = useState([])
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [category, setCategory] = useState('assignments');
@@ -37,10 +37,11 @@ const StudentClassPage = () => {
       const response = await axios.get(`http://localhost:5000/api/studentClass/${classId}`, { withCredentials: true });
       console.log(response.data);
       const { files, lessons, user, chat, liveLink } = response.data;
-      setData({ files, lessons, user, chat, liveLink });
+      setData({ files, lessons, user, liveLink });
+      setChat(chat)
       console.log(files)
       setLoading(false);
-      console.log(chat);
+      console.log('chat', chat);
       setFilesByCategory(files);
       setUser(user);
     } catch (error) {
@@ -61,7 +62,7 @@ const StudentClassPage = () => {
     return () => clearInterval(intervalId);
   }, [classId]);
 
-  const { files, lessons, chat, liveLink } = data;
+  const { files, lessons, liveLink } = data;
   console.log('user: ', user, 'files:', files, 'lessons:', lessons, 'chat:', chat, 'liveLink:', liveLink);
 
   return (
@@ -161,6 +162,7 @@ const StudentClassPage = () => {
             <h2 className="text-lg font-bold mb-4 text-white">Chat with Teacher</h2>
             <Chat
               chat={chat}
+              setChat={setChat}
             />
              </div>
         </div>
