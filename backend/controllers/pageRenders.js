@@ -100,21 +100,23 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
   }
 
   const files = await File.find({ classId: classId }).sort({ date: -1 });
-  const lessons = await Lesson.find({ classId: classId });
+  const lessons = await Lesson.find({ classId: classId }).sort({ date: -1 });
   const students = await User.find({ _id: { $in: classData.students } });
+  console.log(files);
   const categorizedFiles = categorizeFiles(files);
+  console.log(categorizedFiles);
   const liveLink = classData.liveLink;
   let chats = await Chat.find({ classId: classId })
-  .populate(  'messages');
+    .populate('messages');
 
-  chats = await Promise.all(chats.map (async (chat) => {
+  chats = await Promise.all(chats.map(async (chat) => {
     console.log(chat._id);
     chat = chat.toObject();
     console.log(chat._id);
     console.log('renderClass4', chat);
-    chat.messages = await Message.populate(chat.messages ,{ path: 'user', select: 'firstName lastName' });
+    chat.messages = await Message.populate(chat.messages, { path: 'user', select: 'firstName lastName' });
     const student = await User.findById(chat.studentId).select('firstName lastName');
-    
+
     if (!student) {
       console.warn(`Student with ID ${chat.studentId} not found`);
       return {
@@ -125,7 +127,7 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
       };
     }
     console.log('renderClass4.2', student);
-    
+
     return {
       ...chat._doc,
       studentName: `${student.firstName} ${student.lastName}`,
@@ -142,12 +144,12 @@ exports.renderInstructorClass = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     files: categorizedFiles,
-      lessons: lessons,
-      user: user,
-      students: students,
-      pendingStudents: classData.pendingStudents,
-      chats: chats,
-      liveLink: liveLink,
+    lessons: lessons,
+    user: user,
+    students: students,
+    pendingStudents: classData.pendingStudents,
+    chats: chats,
+    liveLink: liveLink,
   });
 });
 
@@ -254,7 +256,7 @@ exports.handlePendingStudent = asyncHandler(async (req, res, next) => {
   classData.pendingStudents.splice(studentIndex, 1);
   await classData.save();
   console.log('handlePendingStudent4');
-  
+
 
   res.status(200).json({ success: true, message: `Student ${action === 'approve' ? 'approved' : 'rejected'}` });
 });

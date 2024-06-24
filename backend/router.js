@@ -17,12 +17,12 @@ router.route('/resetPassword/:token')
 
 router.route('/')
     .get(authControllers.protect, (req, res, next) => {
-      const renderFunction = req.user.role === 'instructor' 
-        ? pageRenders.renderInstructorClasses 
-        : pageRenders.renderStudentClasses;
-      renderFunction(req, res, next);
+        const renderFunction = req.user.role === 'instructor'
+            ? pageRenders.renderInstructorClasses
+            : pageRenders.renderStudentClasses;
+        renderFunction(req, res, next);
     });
-    
+
 router.route('/classes')
     .get(authControllers.protect, pageRenders.renderInstructorClasses)
     .post(authControllers.protect, controllers.createClass);
@@ -55,12 +55,12 @@ router.route('/files')
     .post(authControllers.protect, controllers.createFile)
 
 router.route('/files/:id')
-.delete(authControllers.protect, controllers.deleteFile);
+    .delete(authControllers.protect, controllers.deleteFile);
 
 router.route('/lessons')
     .post(authControllers.protect, controllers.createLesson)
-    
- router.route('/lessons/:id')
+
+router.route('/lessons/:id')
     .delete(authControllers.protect, controllers.deleteLesson);
 
 router.route('/editLiveLink')
