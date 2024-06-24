@@ -79,13 +79,14 @@ const ClassPageInstructor = () => {
         fileLink: newFileLink
       }, { withCredentials: true });
       setFilesByCategory(response.data.files);
+      setIsAddingFile(false);
+      console.log(1111111111111);
       if (category === 'allFiles') {
         console.log(123);
-        const allFilesArray = Object.values(filesByCategory).flat();
+        const allFilesArray = Object.values(response.data.files).flat();
         const sortedFiles = allFilesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
         setFilteredFiles(sortedFiles);
-      } else { console.log(456); setFilteredFiles(filesByCategory[category] || []) };
-      setIsAddingFile(false);
+      } else { console.log(55555, response.data.files, filesByCategory[category]); setFilteredFiles(response.data.files[category] || []) };
     } catch (error) {
       setError('Error adding file');
     }
@@ -152,10 +153,10 @@ const ClassPageInstructor = () => {
       const response = await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });
       setFilesByCategory(response.data.files);
       if (category === 'allFiles') {
-        const allFilesArray = Object.values(filesByCategory).flat();
+        const allFilesArray = Object.values(response.data.files).flat();
         const sortedFiles = allFilesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
         setFilteredFiles(sortedFiles);
-      } else { setFilteredFiles(filesByCategory[category] || []) };
+      } else { setFilteredFiles(response.data.files[category] || []) };
     } catch (error) {
       console.error(error);
       setError('Error deleting file');
@@ -407,7 +408,7 @@ const ClassPageInstructor = () => {
                   {lessons.map((lesson, index) => (
                     <div key={index} className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center">
                       <div className="flex items-center">
-                        <button onClick={() => window.open(lesson.lLinkd)}>
+                        <button onClick={() => window.open(lesson.lLink)}>
                           <span className="text-base text-xl underline hover:font-bold">{lesson.name}</span>
                         </button>
                       </div>

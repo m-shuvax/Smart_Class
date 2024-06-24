@@ -15,16 +15,13 @@ router.route('/resetPassword/:token')
     .patch(authControllers.resetPassword)
     .post(authControllers.login);
 
-// router.route('/')
-//     .get(authControllers.protect, (req, res, next) => {
-//         const renderFunction = req.user.role === 'instructor'
-//             ? pageRenders.renderInstructorClasses
-//             : pageRenders.renderStudentClasses;
-//         renderFunction(req, res, next);
-//     });
-
 router.route('/')
-    .get(authControllers.protect);
+    .get(authControllers.protect, (req, res, next) => {
+        const renderFunction = req.user.role === 'instructor'
+            ? pageRenders.renderInstructorClasses
+            : pageRenders.renderStudentClasses;
+        renderFunction(req, res, next);
+    });
 
 router.route('/classes')
     .get(authControllers.protect, pageRenders.renderInstructorClasses)
