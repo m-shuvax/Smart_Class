@@ -11,6 +11,7 @@ import { useAppContext } from '../Context';
 const ClassPageInstructor = () => {
   const { classId } = useParams();
   const [category, setCategory] = useState('assignments');
+  const [cat, setCat] = useState('assignments');
   const [filesByCategory, setFilesByCategory] = useState([]);
   const [filteredFiles, setFilteredFiles] = useState([]);
   const [lessons, setLessons] = useState([]);
@@ -73,16 +74,17 @@ const ClassPageInstructor = () => {
       const response = await axios.post('http://localhost:5000/api/files', {
         fileName: newFileName,
         fileDate: newFileDate,
-        category,
+        category: cat,
         classId,
         fileLink: newFileLink
       }, { withCredentials: true });
-      console.log(response.data.file);
       setFilesByCategory(response.data.files);
-      const allFilesArray = Object.values(filesByCategory).flat();
-      const sortedFiles = allFilesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
-      setFilteredFiles(sortedFiles);
-      console.log(11111111111);
+      if (category === 'allFiles') {
+        console.log(123);
+        const allFilesArray = Object.values(filesByCategory).flat();
+        const sortedFiles = allFilesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setFilteredFiles(sortedFiles);
+      } else { console.log(456); setFilteredFiles(filesByCategory[category] || []) };
       setIsAddingFile(false);
     } catch (error) {
       setError('Error adding file');
@@ -152,8 +154,8 @@ const ClassPageInstructor = () => {
       if (category === 'allFiles') {
         const allFilesArray = Object.values(filesByCategory).flat();
         const sortedFiles = allFilesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
-        setFilteredFiles(sortedFiles)
-      } else { setFilteredFiles(filesByCategory[category]) };
+        setFilteredFiles(sortedFiles);
+      } else { setFilteredFiles(filesByCategory[category] || []) };
     } catch (error) {
       console.error(error);
       setError('Error deleting file');
@@ -218,8 +220,8 @@ const ClassPageInstructor = () => {
                           />
                           <select
                             name="category"
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
+                            value={cat}
+                            onChange={(e) => setCat(e.target.value)}
                             className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                           >
                             <option value="lessonSummaries">lessonSummaries</option>

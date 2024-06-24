@@ -125,6 +125,7 @@ const UpdateDetails = () => {
       if (response.data) {
         console.log('Update successful:', response.data);
         toast.success('Update successful');
+        setUser(response.data.user)
       } else if (response) {
         console.error('Update successful but response is not as expected:', response);
         toast.success('Update successful but response is not as expected');
