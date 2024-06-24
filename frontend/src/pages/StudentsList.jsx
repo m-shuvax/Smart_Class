@@ -7,9 +7,9 @@ import { useAppContext } from '../Context';
 const StudentList = () => {
   const history = useNavigate();
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [chat, setChat] = useState ([]);
+  const [chat, setChat] = useState([]);
   const { studentsList, chats } = useAppContext();
-  console.log('chats:',chats); 
+  console.log('chats:', chats);
 
   const handleStudentClick = (student) => {
     setSelectedStudent(student);
@@ -78,26 +78,28 @@ const StudentList = () => {
                   {selectedStudent.phoneNumber}
                 </a>
               </p>
-              {/* Additional details about the student can be added here */}
             </div>
           )}
         </div>
-        
-          {selectedStudent ? (
-            <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
-          <h2 className="text-lg font-bold mb-4 text-white">{`Chat With Students ${selectedStudent.firstName} ${selectedStudent.lastName}`}</h2>
-            <Chat chat={chat} />
-            </div>
-          )
+
+        {selectedStudent ? (
+          <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
+            <h2 className="text-lg font-bold mb-4 text-white">{`Chat With Students ${selectedStudent.firstName} ${selectedStudent.lastName}`}</h2>
+            <Chat
+              chat={chat}
+              setChat={setChat}
+            />
+          </div>
+        )
           :
           (
             <div className="w-1/3 p-4 h-full bg-blue-300 rounded-md shadow-md overflow-y-auto">
-          <h2 className="text-lg font-bold mb-4 text-white">Chat With Students</h2>
-            <p className="text-center text-xl text-gray-500">Select a student to start chatting</p>
+              <h2 className="text-lg font-bold mb-4 text-white">Chat With Students</h2>
+              <p className="text-center text-xl text-gray-500">Select a student to start chatting</p>
             </div>
           )}
-        </div>
       </div>
+    </div>
   );
 };
 

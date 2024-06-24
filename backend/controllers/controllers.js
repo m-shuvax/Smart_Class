@@ -42,7 +42,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
   user.firstName = firstName || user.firstName;
   user.lastName = lastName || user.lastName;
   user.email = email || user.email;
-  user.password = password || user.password;
+  if(password) { user.password = password };
   user.phoneNumber = phoneNumber || user.phoneNumber;
   await user.save({ validateBeforeSave: false });
 
