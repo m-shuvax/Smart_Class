@@ -4,6 +4,7 @@ const Class = require('../models/classModel');
 const File = require('../models/fileModel');
 const Lesson = require('../models/lessonModel');
 const AppError = require('../utils/AppError');
+const categorizeFiles = require('../utils/categorize')
 
 exports.createUser = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
@@ -65,6 +66,7 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 
 exports.createFile = asyncHandler(async (req, res, next) => {
   const { fileName, fileDate, classId, category, fileLink } = req.body;
+  console.log(category);
 
   const file = await File.create({
     name: fileName,
@@ -78,20 +80,27 @@ exports.createFile = asyncHandler(async (req, res, next) => {
     return next(new AppError('Failed to create file', 500));
   }
 
+  const files = await File.find({ classId: classId }).sort({ date: -1 });
+  const categorizedFiles = categorizeFiles(files);
+
   console.log('File created');
-  res.status(201).json({ success: true, data: file });
+  res.status(201).json({ success: true, files: categorizedFiles });
 });
 
 
 exports.deleteFile = asyncHandler(async (req, res, next) => {
   const file = await File.findByIdAndDelete(req.params.id);
+  const classId = file.classId;
 
   if (!file) {
     return next(new AppError('File not found', 404));
   }
 
+  const files = await File.find({ classId: classId }).sort({ date: -1 });
+  const categorizedFiles = categorizeFiles(files);
+
   console.log('File deleted');
-  res.status(200).json({ success: true, message: 'File deleted successfully' });
+  res.status(200).json({ success: true, message: 'File deleted successfully', files: categorizedFiles });
 });
 
 

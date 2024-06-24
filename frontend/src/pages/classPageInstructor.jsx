@@ -34,7 +34,7 @@ const ClassPageInstructor = () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/instructorClass/${classId}`, { withCredentials: true });
       const { files, lessons, user, chats, liveLink, students } = response.data;
-      console.log('chats', chats);
+      console.log('chats', chats, files, lessons);
       setFilesByCategory(files);
       setStudentsList(students);
       setLessons(lessons);
@@ -77,7 +77,9 @@ const ClassPageInstructor = () => {
         classId,
         fileLink: newFileLink
       }, { withCredentials: true });
-      setFilesByCategory([...filesByCategory, response.data.file]);
+      console.log(response.data.file);
+      setFilesByCategory(response.data.files);
+      console.log(11111111111);
       setIsAddingFile(false);
       toast.success('File added');
     } catch (error) {
@@ -150,8 +152,8 @@ const ClassPageInstructor = () => {
 
   const handleDeleteFile = async (fileId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });
-      setFilesByCategory(filesByCategory.filter(file => file.id !== fileId));
+      response = await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });
+      setFilesByCategory(response.data.files);
     } catch (error) {
       console.error(error);
       setError('Error deleting file');
@@ -390,7 +392,7 @@ const ClassPageInstructor = () => {
                       <div style={{ textAlign: 'center', flex: 1 }}>
                         <span className="text-gray-500">{new Date(file.date).toLocaleDateString('en-GB')}</span>
                       </div>
-                      <button onClick={() => handleDeleteFile(file.id)}>
+                      <button onClick={() => handleDeleteFile(file._id)}>
                         <FaTrash className="w-4 h-4 inline-block ml-2" style={{ verticalAlign: 'middle' }} />
                       </button>
                     </div>
