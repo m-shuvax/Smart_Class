@@ -7,6 +7,8 @@ import FilesNav from '../components/filesNav';
 import Navbar from '../features/Navbar';
 import InstructorChat from '../components/instructorChat';
 import { useAppContext } from '../Context';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ClassPageInstructor = () => {
   const { classId } = useParams();
@@ -77,8 +79,10 @@ const ClassPageInstructor = () => {
       }, { withCredentials: true });
       setFilesByCategory([...filesByCategory, response.data.file]);
       setIsAddingFile(false);
+      toast.success('File added');
     } catch (error) {
       setError('Error adding file');
+      setIsAddingFile(false);
     }
   };
 
@@ -99,8 +103,10 @@ const ClassPageInstructor = () => {
       }, { withCredentials: true });
       setLessons([...lessons, response.data.data]);
       setIsAddingLesson(false);
+      toast.success('Lesson added');
     } catch (error) {
       setError('Error adding lesson');
+      toast.error('Error adding lesson');
     }
   };  
 
@@ -109,8 +115,10 @@ const ClassPageInstructor = () => {
     try {
       await axios.delete(`http://localhost:5000/api/lessons/${lessonId}`, { withCredentials: true });
       setLessons(lessons.filter(lesson => lesson._id !== lessonId));
+      toast.success('Lesson deleted');
     } catch (error) {
       setError('Error deleting lesson');
+      toast.error('Error deleting lesson');
     }
   };
 
@@ -128,8 +136,10 @@ const ClassPageInstructor = () => {
       console.log(response.data)
       setLiveBroadcastLink(response.data.liveLink);
       setIsEditingBroadcast(false);
+      toast.success('Live broadcast link edited');
     } catch (error) {
       setError('Error editing live broadcast link');
+      toast.error('Error editing live broadcast link');
     }
   };
 
@@ -416,6 +426,7 @@ const ClassPageInstructor = () => {
           </div>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };
