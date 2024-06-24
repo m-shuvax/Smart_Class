@@ -100,7 +100,7 @@ exports.deleteFile = asyncHandler(async (req, res, next) => {
   const categorizedFiles = categorizeFiles(files);
 
   console.log('File deleted');
-  res.status(200).json({ success: true, message: 'File deleted successfully', files: categorizedFiles });
+  res.status(200).json({ success: true, files: categorizedFiles });
 });
 
 

@@ -28,7 +28,7 @@ const ClassPageInstructor = () => {
   const [isAddingFile, setIsAddingFile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user, setUser, studentsList, setStudentsList ,chats, setChats} = useAppContext();
+  const { user, setUser, studentsList, setStudentsList, chats, setChats } = useAppContext();
 
   const fetchClassData = async () => {
     try {
@@ -55,11 +55,13 @@ const ClassPageInstructor = () => {
 
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 600000000);
+    }, 60000);
     console.log('intervalId:', classId);
 
     return () => clearInterval(intervalId);
   }, []);
+
+
 
   const handleFileInputChange = (event) => {
     const { name, value } = event.target;
@@ -79,6 +81,9 @@ const ClassPageInstructor = () => {
       }, { withCredentials: true });
       console.log(response.data.file);
       setFilesByCategory(response.data.files);
+      const allFilesArray = Object.values(filesByCategory).flat();
+      const sortedFiles = allFilesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setFilteredFiles(sortedFiles);
       console.log(11111111111);
       setIsAddingFile(false);
       toast.success('File added');
@@ -110,7 +115,7 @@ const ClassPageInstructor = () => {
       setError('Error adding lesson');
       toast.error('Error adding lesson');
     }
-  };  
+  };
 
 
   const handleDeleteLesson = async (lessonId) => {
@@ -152,8 +157,13 @@ const ClassPageInstructor = () => {
 
   const handleDeleteFile = async (fileId) => {
     try {
-      response = await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });
+      const response = await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });
       setFilesByCategory(response.data.files);
+      if (category === 'allFiles') {
+        const allFilesArray = Object.values(filesByCategory).flat();
+        const sortedFiles = allFilesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setFilteredFiles(sortedFiles)
+      } else { setFilteredFiles(filesByCategory[category]) };
     } catch (error) {
       console.error(error);
       setError('Error deleting file');
@@ -422,8 +432,8 @@ const ClassPageInstructor = () => {
             </div>
             {!isAddingLesson && (
               <div pb-0 mb-0>
-                  {<InstructorChat chats={chats}  />}
-                </div>
+                {<InstructorChat chats={chats} />}
+              </div>
             )}
           </div>
         )}
