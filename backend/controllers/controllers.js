@@ -48,7 +48,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   console.log('User updated');
-  res.status(200).json({ success: true, data: user });
+  res.status(200).json({ success: true, user });
 });
 
 
@@ -100,7 +100,7 @@ exports.deleteFile = asyncHandler(async (req, res, next) => {
   const categorizedFiles = categorizeFiles(files);
 
   console.log('File deleted');
-  res.status(200).json({ success: true, message: 'File deleted successfully', files: categorizedFiles });
+  res.status(200).json({ success: true, files: categorizedFiles });
 });
 
 

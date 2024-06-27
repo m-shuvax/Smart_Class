@@ -52,7 +52,11 @@ const InstructorChat = ({ chats }) => {
                                 <XCircleIcon className="h-8 w-8" />
                             </button>
                             <h2 className="text-lg font-bold mb-4 text-white pt-1 pl-2">{`Chat with ${selectedStudent.studentName}`}</h2>
-                            <Chat chat={chat} setChat={setChat} />
+                            <Chat
+                                chat={chat}
+                                setChat={setChat}
+                            />
+
                         </div>
                     </div>
                 )}

@@ -11,6 +11,7 @@ import { useAppContext } from '../Context';
 const ClassPageInstructor = () => {
   const { classId } = useParams();
   const [category, setCategory] = useState('assignments');
+  const [cat, setCat] = useState('assignments');
   const [filesByCategory, setFilesByCategory] = useState([]);
   const [filteredFiles, setFilteredFiles] = useState([]);
   const [lessons, setLessons] = useState([]);
@@ -26,7 +27,7 @@ const ClassPageInstructor = () => {
   const [isAddingFile, setIsAddingFile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user, setUser, studentsList, setStudentsList ,chats, setChats} = useAppContext();
+  const { user, setUser, studentsList, setStudentsList, chats, setChats } = useAppContext();
 
   const fetchClassData = async () => {
     try {
@@ -53,11 +54,13 @@ const ClassPageInstructor = () => {
 
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 600000000);
+    }, 60000);
     console.log('intervalId:', classId);
 
     return () => clearInterval(intervalId);
   }, []);
+
+
 
   const handleFileInputChange = (event) => {
     const { name, value } = event.target;
@@ -71,14 +74,19 @@ const ClassPageInstructor = () => {
       const response = await axios.post('http://localhost:5000/api/files', {
         fileName: newFileName,
         fileDate: newFileDate,
-        category,
+        category: cat,
         classId,
         fileLink: newFileLink
       }, { withCredentials: true });
-      console.log(response.data.file);
       setFilesByCategory(response.data.files);
-      console.log(11111111111);
       setIsAddingFile(false);
+      console.log(1111111111111);
+      if (category === 'allFiles') {
+        console.log(123);
+        const allFilesArray = Object.values(response.data.files).flat();
+        const sortedFiles = allFilesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setFilteredFiles(sortedFiles);
+      } else { console.log(55555, response.data.files, filesByCategory[category]); setFilteredFiles(response.data.files[category] || []) };
     } catch (error) {
       setError('Error adding file');
     }
@@ -104,7 +112,7 @@ const ClassPageInstructor = () => {
     } catch (error) {
       setError('Error adding lesson');
     }
-  };  
+  };
 
 
   const handleDeleteLesson = async (lessonId) => {
@@ -142,8 +150,13 @@ const ClassPageInstructor = () => {
 
   const handleDeleteFile = async (fileId) => {
     try {
-      response = await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });
+      const response = await axios.delete(`http://localhost:5000/api/files/${fileId}`, { withCredentials: true });
       setFilesByCategory(response.data.files);
+      if (category === 'allFiles') {
+        const allFilesArray = Object.values(response.data.files).flat();
+        const sortedFiles = allFilesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setFilteredFiles(sortedFiles);
+      } else { setFilteredFiles(response.data.files[category] || []) };
     } catch (error) {
       console.error(error);
       setError('Error deleting file');
@@ -208,8 +221,8 @@ const ClassPageInstructor = () => {
                           />
                           <select
                             name="category"
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
+                            value={cat}
+                            onChange={(e) => setCat(e.target.value)}
                             className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
                           >
                             <option value="lessonSummaries">lessonSummaries</option>
@@ -395,7 +408,7 @@ const ClassPageInstructor = () => {
                   {lessons.map((lesson, index) => (
                     <div key={index} className="bg-white rounded-md shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex justify-between items-center">
                       <div className="flex items-center">
-                        <button onClick={() => window.open(lesson.lLinkd)}>
+                        <button onClick={() => window.open(lesson.lLink)}>
                           <span className="text-base text-xl underline hover:font-bold">{lesson.name}</span>
                         </button>
                       </div>
@@ -412,8 +425,8 @@ const ClassPageInstructor = () => {
             </div>
             {!isAddingLesson && (
               <div pb-0 mb-0>
-                  {<InstructorChat chats={chats}  />}
-                </div>
+                {<InstructorChat chats={chats} />}
+              </div>
             )}
           </div>
         )}

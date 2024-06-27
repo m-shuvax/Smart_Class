@@ -29,6 +29,7 @@ const LoginPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log(-111111111111);
         const response = await axios.get('http://localhost:5000/api/', { withCredentials: true });
         console.log(response.data)
         const newUser = response.data.user;
@@ -46,9 +47,9 @@ const LoginPage = () => {
       }
     };
 
-    if (!user) {
+    //if (!user) {
       fetchData();
-    }
+    //}
   }, [navigate, setUser, user]);
 
   const handleSubmit = async (e) => {
