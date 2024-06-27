@@ -10,6 +10,7 @@ import UpdateDetails from './pages/UpdateDetails'
 import StudentClassPage from './pages/StudentClassPage'
 import ResetPassword from './pages/ResetPassword';
 import { AppProvider } from './Context';
+import SendPendingStudant from './components/pendingStudentFM';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/StudentList" element={<StudentList />} />
             <Route path="/UpdateDetails" element={<UpdateDetails />} />
             <Route path="/ResetPassword/:token" element={<ResetPassword />} />
+            <Route path="/PendingStudent/" element={<SendPendingStudant />} />
           </Routes>
         </div>
       </AppProvider>
