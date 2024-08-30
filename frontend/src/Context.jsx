@@ -19,7 +19,7 @@ const useLocalStorage = (key, initialValue) => {
 
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useLocalStorage('user',null);
-  const [classId, setClassId] = useLocalStorage('classId','665d7a1e65de6ed8c1b44b6c');
+  const [classId, setClassId] = useLocalStorage('classId','');
   const [studentsList, setStudentsList] = useLocalStorage('studentList',[])
   const [className, setClassName] = useLocalStorage('className','Math4Algo')
   const [chats, setChats] = useLocalStorage('chats',[])

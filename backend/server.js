@@ -10,6 +10,7 @@ connectDB(process.env.MONGO)
 console.log("The data base has been connected");
 })
 .catch(err=> console.log(err.message))
+
 const port = process.env.PORT
 const server = app.listen(port, '127.0.0.1' , ()=>{
     console.log(`Server is listening on port ${port}`);
