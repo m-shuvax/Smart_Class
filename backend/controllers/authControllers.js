@@ -32,6 +32,8 @@ const createSendToken = (user, statusCode, res) => {
   res.cookie('jwt', token, cookieOptions);
   console.log('createSendToken2', token);
   user.password = undefined;
+  user.confirmPassword = undefined;
+  user.resetPasswordToken = undefined;
   res.status(statusCode).json({
     status: 'success',
     token,
@@ -51,15 +53,15 @@ exports.protect = asyncHandler(async (req, res, next) => {
   if (req.headers.cookie) {
     token = req.headers.cookie.split('=')[1];
   }
-  if (!token) return next(new AppError('Please login', 401));
+  if (!token) return next(new AppError(401, 'Please login'));
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   console.log('protect2', decoded);
-  if (!decoded) return next(new AppError('Token is invalid or has expired', 401));
+  if (!decoded) return next(new AppError(401, 'Token is invalid or has expired'));
 
   const user = await User.findById(decoded.id);
 
-  if (!user) return next(new AppError('The user belonging to this token does no longer exist', 401));
+  if (!user) return next(new AppError(401, 'The user belonging to this token does no longer exist'));
 
   req.user = user;
   next();
@@ -68,7 +70,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 
 exports.retrictToInstructor = asyncHandler(async (req, res, next) => {
-  if (req.user.role != 'instructor') return next(new AppError("The user isn't permitted", 407));
+  if (req.user.role != 'instructor') return next(new AppError(407 ,"The user isn't permitted"));
 }
 )
 
@@ -78,10 +80,10 @@ exports.login = asyncHandler(async (req, res, next) => {
   console.log('login');
   const { email, password } = req.body;
   console.log(email,password);
-  if (!email || !password) return next(new AppError('Email or password is missing', 400));
+  if (!email || !password) return next(new AppError(400, 'Email or password is missing'));
   const user = await User.findOne({ email }).select('+password');
   console.log(user.password);
-  if (!user || !await user.checkPassword(password, user.password)) return next(new AppError('Email or password is incorrect', 401));
+  if (!user || !await user.checkPassword(password, user.password)) return next(new AppError(401, 'Email or password is incorrect'));
   createSendToken(user, 200, res);
 });
 
@@ -105,7 +107,7 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
     log('user not found')
-    return next(new AppError('There is no user with that email address.', 404));
+    return next(new AppError(404, 'There is no user with that email address.'));
   }
 
   const resetToken = crypto.randomBytes(32).toString('hex');
@@ -126,7 +128,7 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save({ validateBeforeSave: false });
-    return next(new AppError('There was an error seving user . Try again later!', 500));
+    return next(new AppError(500, 'There was an error seving user . Try again later!'));
   }
 
   console.log(`Reset token (raw): ${resetToken}`);
@@ -170,7 +172,7 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
     user.resetPasswordExpires = undefined;
     await user.save({ validateBeforeSave: false });
 
-    return next(new AppError('There was an error sending the email. Try again later!', 500));
+    return next(new AppError(500, 'There was an error sending the email. Try again later!'));
   }
 });
 
@@ -188,7 +190,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   console.log(`Hashed reset token: ${hashedToken}`);
 
   if (!user) {
-    return next(new AppError('Token is invalid or has expired', 400));
+    return next(new AppError(400, 'Token is invalid or has expired'));
   }
   user.password = req.body.password;
   user.confirmPassword = req.body.confirmPassword;

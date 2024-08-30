@@ -2,7 +2,7 @@ const sendEmail = require('../../utils/email')
 const User = require('../../models/userModel');
 const Class = require('../../models/classModel');
 
-exports.pendingStudentMail = async ( user, classId ) => {
+exports.pendingStudentMail = async (user, classId) => {
     const className = (await Class.findById(classId)).name;
     const instructorId = (await Class.findById(classId)).instructor;
     const instructor = await User.findById(instructorId);
@@ -14,23 +14,24 @@ exports.pendingStudentMail = async ( user, classId ) => {
     const rejectUrl = `${process.env.FRONTEND_URL}/PendingStudent?studentId=${studentId}&classId=${classId}&action=reject`;
     const subject = 'A new pending student!';
     const message = `
-        < div style = "width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f7f7f7;" >
-            <div style="max-width: 600px; width: 100%; padding: 20px; display: flex; justify-content: center; margin-right: 20%; margin-left:20%;">
-                <div style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); text-align: center; border: 2px solid #c0d6ff;">
-                    <div style="padding: 20px;">
-                        <h3 style="font-size: 24px;">Hi ${instructorName}</h3>
-                        <p style="font-size: 17px; font-weight: bold;">${studentName} wants to join your class.</p>
-                        <p style="font-size: 16px;">The name of the class you wish to join: ${className}.</p>
-                        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
-                            <a href="${acceptUrl}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Accept</a>
-                            <a href="${rejectUrl}" style="display: inline-block; padding: 12px 24px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Reject</a>
-                        </div>
-                        <p style="font-size: 16px;">If you want to deal with it later, please ignore this email!</p>
-
-                    </div>
-                </div>
-            </div>
-    </div >
+       <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #f7f7f7; text-align: center;">
+  <div style="background-color: white; border-radius: 10px; border: 2px solid #c0d6ff; padding: 20px; margin: 20px;">
+    <h3 style="font-size: 24px; margin-bottom: 10px;">Hi ${instructorName}</h3>
+    <p style="font-size: 17px; font-weight: bold; margin-bottom: 10px;">${studentName} wants to join your class.</p>
+    <p style="font-size: 16px; margin-bottom: 20px;">The name of the class you wish to join: ${className}.</p>
+    <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
+      <tr>
+        <td style="padding-right: 10px;">
+          <a href="${acceptUrl}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Accept</a>
+        </td>
+        <td style="padding-left: 10px;">
+          <a href="${rejectUrl}" style="display: inline-block; padding: 12px 24px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Reject</a>
+        </td>
+      </tr>
+    </table>
+    <p style="font-size: 16px; margin-top: 20px;">If you want to deal with it later, please ignore this email!</p>
+  </div>
+</div>
         `;
 
 
