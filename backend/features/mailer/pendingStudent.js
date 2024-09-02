@@ -18,7 +18,7 @@ exports.pendingStudentMail = async (user, classId) => {
   <div style="background-color: white; border-radius: 10px; border: 2px solid #c0d6ff; padding: 20px; margin: 20px;">
     <h3 style="font-size: 24px; margin-bottom: 10px;">Hi ${instructorName}</h3>
     <p style="font-size: 17px; font-weight: bold; margin-bottom: 10px;">${studentName} wants to join your class.</p>
-    <p style="font-size: 16px; margin-bottom: 20px;">The name of the class you wish to join: ${className}.</p>
+    <p style="font-size: 16px; margin-bottom: 20px;">The name of the class he/she wishes to join: ${className}.</p>
     <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
       <tr>
         <td style="padding-right: 10px;">

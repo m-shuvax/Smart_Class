@@ -22,6 +22,7 @@ const SendPendingStudant = () => {
         }, {withCredentials: true}
     );
         console.log('Data sent successfully:', response.data);
+        window.close();
       } catch (error) {
         console.error('Error sending data:', error);
       }
