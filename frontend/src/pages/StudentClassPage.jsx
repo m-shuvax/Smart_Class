@@ -57,7 +57,7 @@ const StudentClassPage = () => {
 
     const intervalId = setInterval(() => {
       fetchClassData();
-    }, 60000000);
+    }, 600);
 
     return () => clearInterval(intervalId);
   }, [classId]);
