@@ -1,9 +1,10 @@
 const asyncHandler = require('express-async-handler');
 const AppError = require('./../utils/AppError');
+const {cookieSettings, signToken} = require('./../utils/cookies')
 const User = require('./../models/userModel');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+//const bcrypt = require('bcryptjs');
 const sendEmail = require('./../utils/email');
 const crypto = require('crypto');
 const customDate = require('./../features/dates');
@@ -13,28 +14,12 @@ const log = console.log;
 
 // TOKEN
 
-const signToken = id => {
-  return jwt.sign({ id, iat: Date.now() }, process.env.JWT_SECRET);
-};
-
-
-const createSendToken = (user, statusCode, res) => {
-  console.log(customDate.getFormatDate());
+const createSendToken = (user, res) => {
   const token = signToken(user._id);
-  const cookieOptions = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production' // Use secure cookies in production
-  };
-  console.log('createSendToken', token, '\n', cookieOptions);
-  res.cookie('jwt', token, cookieOptions);
-  console.log('createSendToken2', token);
-  user.password = undefined;
-  user.confirmPassword = undefined;
-  user.resetPasswordToken = undefined;
-  res.status(statusCode).json({
+  res.cookie('jwt',
+             token,
+             cookieSettings);
+  res.status(200).json({
     status: 'success',
     token,
     data: {
@@ -48,58 +33,62 @@ const createSendToken = (user, statusCode, res) => {
 // ROUTE PROTECTION
 
 exports.protect = asyncHandler(async (req, res, next) => {
-  console.log('protect', customDate.getFormatDate(), '\n', req.headers.cookie);
+
   let token;
+  console.log('JWT_COOKIE_EXPIRES_IN:', process.env.JWT_COOKIE_EXPIRES_IN);
+
   if (req.headers.cookie) {
     token = req.headers.cookie.split('=')[1];
   }
-  if (!token) return next(new AppError(401, 'Please login'));
+  if (!token) return next(new AppError('Please login', 401));
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log('protect2', decoded);
-  if (!decoded) return next(new AppError(401, 'Token is invalid or has expired'));
+  if (!decoded) return next(new AppError('Token is invalid or has expired', 401));
 
   const user = await User.findById(decoded.id);
-
-  if (!user) return next(new AppError(401, 'The user belonging to this token does no longer exist'));
-
+  if (!user) return next(new AppError('The user belonging to this token does no longer exist', 401));
   req.user = user;
+
   next();
 });
 
 
 
-exports.retrictToInstructor = asyncHandler(async (req, res, next) => {
-  if (req.user.role != 'instructor') return next(new AppError(407 ,"The user isn't permitted"));
-}
-)
+// exports.isInstructor = asyncHandler(async (req, res, next) => {
+//   if (req.user.role != 'instructor') return next(new AppError("The user isn't permitted", 407));
+// }
+// )
 
 
 
 exports.login = asyncHandler(async (req, res, next) => {
-  console.log('login');
   const { email, password } = req.body;
-  console.log(email,password);
-  if (!email || !password) return next(new AppError(400, 'Email or password is missing'));
+  if (!email || !password) return next(new AppError('Email or password is missing', 400));
+
   const user = await User.findOne({ email }).select('+password');
-  console.log(user.password);
-  if (!user || !await user.checkPassword(password, user.password)) return next(new AppError(401, 'Email or password is incorrect'));
-  createSendToken(user, 200, res);
+  if (!user || !await user.checkPassword(password, user.password)) return next(new AppError('Email or password is incorrect', 401));
+  
+  user.password = undefined;
+  
+  createSendToken(user, res);
 });
 
 
 
 exports.logout = asyncHandler(async (req, res, next) => {
-  res.cookie('jwt', 'loggedout', {
-    expires: new Date(Date.now() + 10),
-    httpOnly: true
-  });
+  log(1000);
+  res.cookie('jwt',
+             'loggedout',
+             {expires: new Date(Date.now() + 10),
+              httpOnly: true
+             }
+            );
   res.status(200).json({ status: 'success' });
 });
 
 
 
-// PASSWORD RESETING
+// PASSWORD RESETTING
 
 exports.forgetPassword = asyncHandler(async (req, res, next) => {
   log(customDate.getFormatDate(), 'forgetPassword');
@@ -107,7 +96,7 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
     log('user not found')
-    return next(new AppError(404, 'There is no user with that email address.'));
+    return next(new AppError('There is no user with that email address.', 404));
   }
 
   const resetToken = crypto.randomBytes(32).toString('hex');
@@ -128,7 +117,7 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save({ validateBeforeSave: false });
-    return next(new AppError(500, 'There was an error seving user . Try again later!'));
+    return next(new AppError('There was an error seving user . Try again later!', 500));
   }
 
   console.log(`Reset token (raw): ${resetToken}`);
@@ -172,7 +161,7 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
     user.resetPasswordExpires = undefined;
     await user.save({ validateBeforeSave: false });
 
-    return next(new AppError(500, 'There was an error sending the email. Try again later!'));
+    return next(new AppError('There was an error sending the email. Try again later!', 500));
   }
 });
 
@@ -190,7 +179,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   console.log(`Hashed reset token: ${hashedToken}`);
 
   if (!user) {
-    return next(new AppError(400, 'Token is invalid or has expired'));
+    return next(new AppError('Token is invalid or has expired', 400));
   }
   user.password = req.body.password;
   user.confirmPassword = req.body.confirmPassword;
