@@ -8,7 +8,7 @@ const AppError = require('./../utils/AppError');
 const categorizeFiles = require('./../utils/categorize');
 const { createChat } = require('./chatControllers');
 const Message = require('./../models/messageModel');
-
+const {pendingStudentMail} = require('./../features/mailer/pendingStudent');
 
 
 // HOME-PAGE RENDERING 
@@ -201,6 +201,7 @@ exports.addPendingStudent = asyncHandler(async (req, res, next) => {
   console.log('addPendingStudent0', req.params, req.user._id);
   const { classId } = req.params;
   const userId = req.user._id;
+  const user = req.user
 
   if (!userId || !classId) {
     return next(new AppError('User ID and Class ID are required', 400));
@@ -219,6 +220,7 @@ exports.addPendingStudent = asyncHandler(async (req, res, next) => {
 
   classData.pendingStudents.push(userId);
   await classData.save();
+  pendingStudentMail(user, classId)
 
   res.status(200).json({ success: true, message: 'Student added to pending list' });
 });

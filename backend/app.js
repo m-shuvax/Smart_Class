@@ -1,8 +1,10 @@
 const express = require('express');
 const router = require('./router');
-const app = express();
 const cors = require('cors');
 const AppError = require('./utils/AppError');
+
+const app = express();
+
 
 
 app.use(cors({
